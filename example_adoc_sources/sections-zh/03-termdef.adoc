@@ -1,0 +1,118 @@
+== Terms and Definitions
+
+For the purposes of this document, the following terms and definitions apply.
+
+ISO and IEC maintain terminological databases for use in standardization at the following addresses:
+
+* ISO Online browsing platform: available at http://www.iso.org/obp
+* IEC Electropedia: available at http://www.electropedia.org
+
+:sectnums!:
+[[paddy]]
+=== paddy
+alt:[paddy rice]
+alt:[rough rice]
+
+rice retaining its husk after threshing
+
+[.source]
+<<ISO7301,clause 3.1>>
+
+[[husked_rice]]
+=== husked rice
+deprecated:[cargo rice]
+
+_paddy_ (<<paddy>>) from which the husk only has been removed
+
+[.source]
+<<ISO7301,clause 3.2>>, The term "cargo rice" is shown as deprecated, and Note 1 to entry is not included here
+
+=== milled rice
+alt:[white rice]
+
+_husked rice_ (<<husked_rice>>) from which almost all of the bran and embryo have been removed by milling
+
+[.source]
+<<ISO7301,clause 3.3>>
+
+=== parboiled rice
+
+rice whose starch has been fully gelatinized by soaking _paddy_ (<<paddy>>) rice or _husked rice_ (<<husked_rice>>) in water followed by a heat treatment and a drying process
+
+=== waxy rice
+variety of rice whose kernels have a white and opaque appearance
+
+NOTE: The starch of waxy rice consists almost entirely of amylopectin. The kernels have a tendency to stick together after cooking.
+
+=== extraneous matter
+alt:[EM]
+domain:[rice]
+
+organic and inorganic components other than whole or broken kernels
+
+[example]
+Foreign seeds, husks, bran, sand, dust.
+
+[[HDK]]
+=== HDK
+alt:[heat-damaged kernel]
+
+kernel, whole or broken, which has changed its normal colour as a result of heating
+
+NOTE: This category includes whole or broken kernels that are yellow due to alteration. Parboiled rice in a batch of non-parboiled rice is also included in this category.
+
+=== damaged kernel
+kernel, whole or broken, showing obvious deterioration due to moisture, pests, disease or other causes, but excluding _HDK_ (<<HDK>>)
+
+=== immature kernel
+alt:[unripe kernel]
+
+kernel, whole or broken, which is unripe and/or underdeveloped
+
+=== husked rice yield
+amount of husked rice obtained from paddy
+
+// all terms and defs references are dated
+[.source]
+<<ISO6646,clause 3.1>>
+
+=== nitrogen content
+quantity of nitrogen determined after application of the procedure described
+
+NOTE: It is expressed as a mass fraction of dry product, as a percentage.
+
+[.source]
+<<ISO20483,clause 3.1>>
+
+=== crude protein content
+quantity of crude protein obtained from the nitrogen content as determined by applying the specified method, calculated by multiplying this content by an appropriate factor depending on the type of cereal or pulse
+
+NOTE: It is expressed as a mass fraction of dry product, as a percentage.
+
+[.source]
+<<ISO20483,clause 3.1>>
+
+[[gelatinization]]
+=== gelatinization
+hydration process conferring the jelly-like state typical of the coagulated colloids, which are named gels, on kernels
+
+NOTE: See <<figureC-1>>.
+
+[.source]
+<<ISO14864,clause 3.1>>
+
+[[gel_state]]
+=== gel state
+condition reached as a consequence of _gelatinization_ (<<gelatinization>>), when the kernel is fully transparent and absolutely free from whitish and opaque granules after being pressed between two glass sheets
+
+[.source]
+<<ISO14864,clause 3.1>>
+
+=== gelatinization time
+stem:[t_90]
+
+time necessary for 90 % of the kernels to pass from their natural state to the _gel state_ (<<gel_state>>)
+
+[.source]
+<<ISO14864,clause 3.1>>
+

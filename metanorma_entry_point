@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+require 'rubygems'
+require 'bundler/setup'
+
+# start up the CLI
+require "metanorma/cli"
+
+Metanorma::Cli.start(ARGV)

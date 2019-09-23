@@ -1,0 +1,15 @@
+[[clause7]]
+== Test report
+
+For each test method, the test report shall specify the following:
+
+[loweralpha]
+. all information necessary for the complete identification of the sample;
+. a reference to this document (i.e. ISO {docnumber}-{partnumber});
+. the sampling method used;
+. the test method used;
+. the test result(s) obtained or, if the repeatability has been checked, the final quoted result obtained;
+. all operating details not specified in this document, or regarded as optional, together with details of any incidents which may have influenced the test result(s);
+. any unusual features (anomalies) observed during the test;
+. the date of the test.
+

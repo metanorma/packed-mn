@@ -1,0 +1,668 @@
+.前言
+
+ISO（国际标准化组织）是国际标准组织（ISO成员机构）的全球联合会。
+制定国际标准的工作通常通过ISO技术委员会进行。对建立技术委员会的主题感兴趣的每个成员团体均有权参加该委员会的代表。
+与ISO有联系的国际组织，政府和非政府组织也参与了这项工作。
+ISO与国际电工委员会（IEC）就电工标准化的所有事宜密切合作。
+
+ISO / IEC指令第1部分描述了用于开发此文件的程序和用于进一步维护的程序。尤其应注意不同类型ISO文件所需的不同批准标准。
+本文件是根据ISO / IEC指令第2部分（见 www.iso.org/directives）的编辑规则起草的。
+
+请注意本文件的某些内容可能成为专利权的主题。 ISO不负责识别任何或所有此类专利权。在文件制定过程中确定的任何专利权的细节将在导言和/或ISO收到的专利声明清单中
+（见 www.iso.org/patents）。
+
+本文档中使用的任何商品名称都是为了方便用户而提供的信息，并不构成认可。
+
+关于标准的自愿性质的解释，与合格评定相关的ISO特定术语和表达的含义以及关于ISO遵守世界贸易组织（WTO）在技术性贸易壁垒（TBT）中的原则的信息参见网址如下：www.iso.org/iso/foreword.html。
+
+本文件由
+技术委员会 ISO / TC {technical-committee-number}, _{technical-committee}_,
+小组委员会 SC {subcommittee-number}, _{subcommittee}_ 编制。
+
+本第二版取消并取代了第一版（ISO {docnumber}-{partnumber}：2009），该版本已进行了技术性修订。
+
+与之前版本相比的主要变化是：
+
+* 更新的规范性参考文献;
+* 删除4.3。
+
+可以在ISO网站上找到ISO {docnumber} 系列中所有部件的列表。
+
+[reviewer=ISO,date=2017-01-01,from=foreword,to=foreword]
+****
+每个文件中都应有前言部分。 通用文本在这里显示，不包含要求，建议或权限。
+
+有关前言的更多信息，请参阅 *ISO / IEC指令，2016年第2部分，第12章*。
+****
+
+:sectnums!:
+== 引言
+
+本文件是为满足世界范围内对大米最低规格要求而开发的，因为大多数未经过筛选或吸入的商品大块含有一定比例的其他谷物，杂草种子，谷壳，稻草，石头，沙子，植物材料可具有不同于主要成分的物理和生物学特性，因此可影响储存行为。
+
+稻米是相当可观的微生物群落的永久寄主；大多数微生物都是世界性的，多数是无害的，但有些会产生有害副产物。存在于新鲜收获的大米上的微生物群落包括许多类型的细菌，霉菌和酵母。当大米成熟并且水分含量下降时，田间微生物（主要是细菌）的数量减少。当大米收获时，它被贮藏微生物侵入，并且田间微生物群落逐渐消失。如果水分的质量分数（以前以水分含量表示）低于18％，微生物群落不会繁殖，而高于18％的水分会迅速增殖。因此，在收获时，微生物群落的定性和定量构成更多取决于生态因素而非稻米品种。在运输和储存过程中，会出现微生物种群的增加。收获时稻米上的微生物趋于在储存过程中消失，并被适应储存条件的微生物替代。
+
+据估计，储存损失平均为5％，多达30％，特别是在气候条件恶化的国家迅速发展，储存技术发展缓慢的国家，如潮湿的热带地区的发展中国家。这些数字的大小突出表明需要在全世界促进保护技术的迅速改进。
+
+发行人提请注意这样一个事实，即声称遵守本文件可能涉及使用<<AnnexA>>中给出的和<<figureA-1>>中所示的样本分隔器专利。
+
+本发行人对本专利权的证据，有效性和范围不作立场。
+
+该专利权持有人向发行人保证，他/她愿意与全世界的申请人在合理和非歧视性的条款和条件下谈判许可证。 在这方面，该专利权持有人的声明已在发行人登记。 信息可从以下网址获得：
+
+[align=left]
+Vache Equipment +
+Fictitious +
+World +
+gehf@vacheequipment.fic
+
+请注意本文件的某些内容可能成为上述以外专利权的主题。 发行人不负责识别任何或所有此类专利权。
+
+:sectnums:
+== 范围
+
+本文件规定了稻米（_Oryza sativa L._）的最低要求和测试方法。
+
+适用于直接或修复后适用于人类食用的糙米，糙米，精米和碾米。
+
+此文件并不适用于熟食米饭制品。
+
+[bibliography]
+== 规范性引用文件
+
+下列文件对于本文件的应用是必不可少的。凡是注日期的引用文件，仅注日期的版本适用于本文件。凡是不注日期的引用文件，其最新版本（包括所有的修改单）适用于本文件。
+
+* [[[ISO712,ISO 712]]], _谷物和谷类产品水分含量的测定参考方法，Cereals and cereal products -- Determination of moisture content -- Reference method_
+
+* [[[ISO6646, ISO 6646]]], _水稻 - 稻谷和糙米潜在碾磨产量的测定，Rice -- Determination of the potential milling yield from paddy and from husked rice_
+
+* [[[ISO8351-1,ISO 8351-1:1994]]], _包装 - 麻袋规范的方法 第1部分：纸袋，Packaging -- Method of specification for sacks -- Part 1: Paper sacks_
+
+* [[[ISO8351-2,ISO 8351-2]]], _包装 - 麻袋规范的方法 第2部分：由热塑性柔性薄膜制成的麻袋，Packaging -- Method of specification for sacks -- Part 2: Sacks made from thermoplastic flexible film_
+
+* [[[ISO16634,ISO 16634:--]]] footnote:[准备中。（出版时阶段为ISO / DIS 16634）], _谷物，豆类，谷类制品，油料和动物饲料 - 根据Dumas原理测定燃烧的总氮含量并计算粗蛋白含量，Cereals, pulses, milled cereal products, oilseeds and animal feeding stuffs -- Determination of the total nitrogen content by combustion according to the Dumas principle and calculation of the crude protein content_
+
+* [[[ISO20483,ISO 20483:2013]]], _谷物和豆类 - 测定氮含量和计算粗蛋白质含量 - 凯氏定氮法，Cereals and pulses -- Determination of the nitrogen content and calculation of the crude protein content -- Kjeldahl method_
+
+* [[[ISO24333,ISO 24333:2009]]], _谷物和谷物制品 - 取样，Cereals and cereal products -- Sampling_
+
+[source="ISO712,ISO24333"]
+== 术语和定义
+
+:sectnums!:
+[[paddy]]
+=== [en]#paddy# [zh]#稻谷#
+[alt]#糙米 rough rice#
+
+打谷后保留壳的大米
+
+[.source]
+<<ISO7301,section 3.1>>
+
+[[husked_rice]]
+=== [en]#husked rice# [zh]#糙米#
+[deprecated]#货米 cargo rice#
+
+从中只去除了壳的 _水稻_（<<paddy>>）
+
+[.source]
+<<ISO7301>>, 3.2, “货米”一词改为以弃用，不包含注1
+
+=== [en]#milled rice# [zh]#精米#
+[alt]#白米 white rice#
+
+通过碾磨去除了几乎所有麸皮和胚芽都的 _糙米_（<<husked_rice>>）
+
+[.source]
+<<ISO7301>>, 3.3
+
+=== [en]#parboiled rice# [zh]#熟米饭#
+
+通过在水中浸泡 _稻谷_（<<paddy>>）或 _稻米_（<<husked_rice>>），然后进行热处理和干燥过程，将淀粉完全糊化的大米
+
+=== [en]#waxy rice# [zh]#糯米#
+
+其内核具有白色和不透明外观的各种大米
+
+NOTE: 糯米淀粉几乎全部由支链淀粉组成。烹饪后，心倾向于粘在一起。
+
+=== [en]#extraneous matter# [zh]#异物#
+[alt]#EM#
+[domain]#稻米#
+
+非整粒或破碎颗粒的有机和无机成分
+
+[example]
+外来种子，外壳，麸皮，沙子，灰尘。
+
+[[HDK]]
+=== HDK
+[alt]#热损内核 heat-damaged kernel#
+
+由于加热而改变正常颜色的破损或整体的内核
+
+NOTE: 这个类别包括由于改变而变黄的完整或破碎的内核。 一批非蒸煮大米中的水煮米饭也包含在此类别中。
+
+=== [en]#damaged kernel# [zh]#损内核#
+内核，完整或破损，由于水分，害虫，疾病或其他原因而显示明显劣化，但不包括 _HDK_（<<HDK>>）
+
+=== [en]#immature kernel# [zh]#未成熟内核#
+[alt]#未成熟内核 unripe kernel#
+
+未成熟和/或发育不全的、完整或破碎的内核
+
+=== [en]#husked rice yield# [zh]#糙米产量#
+
+从水稻获得的糙米量
+
+[.source]
+<<ISO6646>>, 3.1
+
+=== [en]#nitrogen content# [zh]#氮含量#
+
+在执行所述程序后确定的氮量
+
+NOTE: 表示为干产品的质量分数，以百分比表示。
+
+[.source]
+<<ISO20483>>, 3.1
+
+=== [en]#crude protein content# [zh]#粗蛋白含量#
+
+通过应用特定方法确定的由氮含量获得的粗蛋白质的量，通过将该含量乘以取决于谷类或脉冲的类型的适当因子
+
+NOTE: 表示为干产品的质量分数，以百分比表示。
+
+[.source]
+<<ISO20483>>, 3.2
+
+[[gelatinization]]
+=== [en]#gelatinization# [zh]#糊化#
+
+在稻米内核的水合过程中，赋予凝胶状物的凝胶状状态，凝胶状物质称为凝胶状物
+
+NOTE: 请见图<<figureC-1>>.
+
+[.source]
+<<ISO14864>>, 3.1
+
+[[gel_state]]
+=== [en]#gel state# [zh]#凝胶状态#
+
+通过糊化（<<gelatinization>>）而达到的状态，内核是完全透明，并且当在两块玻璃板之间压制后完全没有白色和不透明内核
+
+[.source]
+<<ISO14864>>, 3.2
+
+=== [en]#gelatinization time# [zh]#糊化时间#
+
+stem:[t_90]
+
+90％的谷粒从其自然状态转变为 _凝胶状态_ （<<gel_state>>）所需的时间
+
+[.source]
+<<ISO14864>>, 3.3
+
+:sectnums:
+== 规格
+
+=== 一般，感官和健康特征
+
+大米的谷粒，无论是煮过的，去皮的还是碾磨的，以及整个还是破碎的，都应该是健康的，干净的，没有异味或异味，表明其变质。
+
+添加剂和杀虫剂残留物及其他污染物的含量不得超过目的地国允许的最大限量。
+
+不允许肉眼可见的活昆虫的存在。 在将大块样品分离为测试样品之前应该确定这一点。
+
+=== 物理和化学特性
+
+==== {blank}
+
+
+根据<<ISO712>>，使用符合<<IEC61010-2>>要求的烤箱测定的水分质量分数不得大于15％。footnote:[从前表示为15％（m/米）。]
+
+根据<<AnnexA>>，确定的糙米和精米中外来物质和有缺陷谷粒的质量分数，无论是否煮熟，均不得大于<<table1>>中规定的数值。
+
+NOTE: 根据气候，运输和储存的持续时间，某些目的地有时需要较低的湿度质量分数。 有关更多详细信息，请参见<<ISO6322-1>>，<<ISO6322-2>>和<<ISO6322-3>>。
+
+
+==== {blank}
+
+按照<<AnnexA>>中给出的方法考虑的类别的缺陷容差不得超过<<table1>>中给出的限制。
+
+[#table1]
+[cols="<,^,^,^,^",options="header,footer",headerrows=2]
+.缺陷的最大允许质量分数
+|===
+.2+|缺陷 4+^| 脱壳米的最大允许质量分数 +
+stem:[w_max]
+| 在糙米中 | 精米（非糯米） | 在糙米饭里 | 在被碾碎的煮熟的米
+
+| 外来物质：有机物 footnote:[有机杂质包括外来种子，外壳，麸皮，稻草等部分。] | 1,0 | 0,5 | 1,0 | 0,5
+// not rendered list here
+| 外来物质：无机物 footnote:[无机杂质包括石头，沙子，灰尘等。] | 0,5 | 0,5 | 0,5 | 0,5
+| 稻米 | 2,5 | 0,3 | 2,5 | 0,3
+| 糙米，非蒸煮 | 不适用 | 1,0 | 1,0 | 1,0
+| 碾米，非蒸煮 | 1,0 | 不适用 | 1,0 | 1,0
+| 烤大米，煮熟 | 1,0 | 1,0 | 不适用 | 1,0
+| 精米，煮熟 | 1,0 | 1,0 | 1,0 | 不适用
+| Chips | 0,1 | 0,1 | 0,1 | 0,1
+| HDK | 2,0 footnoteref:[defectsmass,缺陷的最大允许质量分数应根据研磨后获得的质量分数确定。] | 2,0 | 2,0 footnoteref:[defectsmass] | 2,0
+| 损坏的内核 | 4,0 | 3,0 | 4,0 | 3,0
+| 不成熟和/或畸形的内核 | 8,0 | 2,0 | 8,0 | 2,0
+| 垩白粒 | 5,0 footnoteref:[defectsmass] | 5,0 | 不适用 | 不适用
+| 红仁和红色条纹的内核 | 12,0 | 12,0 | 12,0 footnoteref:[defectsmass] | 12,0
+| 部分糊化内核 | 不适用 | 不适用 | 11,0 footnoteref:[defectsmass] | 11,0
+| 米斗 | 不适用 | 不适用 | 4,0 | 2,0
+| 糯米 | 1,0 footnoteref:[defectsmass] | 1,0 | 1,0 footnoteref:[defectsmass] | 1,0
+
+5+a| 活昆虫不得存在。 死虫应包含在异物中。
+|===
+
+NOTE: 该表基于<<ISO7301>>表1。
+
+NOTE: 除了本表中提供的信息外，一些商业合同还需要信息。
+
+NOTE: 本表仅考虑全红面包（货）米。
+
+
+[[clause5]]
+== 采样
+
+采样应按照<<ISO24333>>，第5章.
+
+== 测试方法
+
+=== 含水量
+
+按照<<ISO712>>中规定的方法确定湿度的质量分数。
+
+=== 糯米含量
+
+确定糯米的质量分数。 <<AnnexB >>给出了一个合适方法的例子。
+
+=== 氮含量和粗蛋白质含量
+
+根据<<ISO16634>>，第9章或<<ISO20483>>确定氮含量和粗蛋白质含量。 有关使用凯氏定氮法测定蛋白质含量的详细信息，请参见参考书目中的参考文献<< ref12 >>。 有关使用Dumas方法的详细信息，请参见参考资料<<ref10>>和<<ref16>>。
+
+通过将氮含量乘以<<ISO20483>>，附录C和表C.1中规定的转换系数，计算出干品的粗蛋白质含量，并根据谷类或豆类的类型进行调整。<<ref13, fn>><<ref14,fn>>和它们的用法。
+
+=== 糊化时间
+
+确定糊化时间，stem:[t_90]，用于米粒在烹饪过程中。 <<figureC-1>>中给出了一个典型曲线的例子。 <<figureC-2>>中显示了三个典型的糊化阶段。
+
+按照<<clause7>>中的规定报告结果。
+
+=== 糙米产量
+
+==== 判定
+
+CAUTION: 只能用水稻或煮米饭来确定糙米产量。
+
+根据<<ISO6646>>确定糙米产量。
+
+==== 精确
+
+===== 实验室间测试
+
+The results of an interlaboratory test are given in <<AnnexD>> for information
+
+实验室间试验的结果在<<AnnexD>>中提供以供参考。
+
+===== 重复性
+
+//The absolute difference between two independent single test results, obtained using the same method on identical test material in the same laboratory by the same operator using the same equipment within a short interval of time, shall not exceed the arithmetic mean of the values for stem:[r] obtained from the interlaboratory study for husked rice in more than 5 % of cases:
+
+同一个实验室在同一实验室使用相同的方法在相同的实验室中使用相同的设备在短时间间隔内使用相同的设备获得的两个独立的单一测试结果之间的绝对差值不得超过干的值的算术平均值stem:[r]从超过5％的情况下对稻谷的实验室间研究中获得：
+
+
+[stem]
+++++
+r = 1 %
+++++
+
+式中：
+
+stem:[r]:: 是重复性极限。
+
+===== 再生性
+
+//The absolute difference between two single test results, obtained using the same method on identical test material in different laboratories by different operators using different equipment, shall not exceed the arithmetic mean of the values for [R] obtained from the interlaboratory study in more than 5 % of cases:
+
+不同实验室使用不同设备的相同测试材料，在同一测试材料上获得的两个单一测试结果的绝对差值，不得超过实验室间研究中获得的stem:[R]值的算术平均值，超过5 %的实验：
+
+[stem]
+++++
+R = 3 %
+++++
+
+式中：
+
+stem:[R]:: 是重现性限制。
+
+[[clause7]]
+== 测试报告
+
+对于每种测试方法，测试报告应指定以下内容：
+
+[loweralpha]
+. 所有完整识别样本所需的信息；
+. 对本文件的引用 (即 ISO {docnumber}-{partnumber})；
+. 采用的抽样方法；
+. 使用的测试方法；
+. 所获得的测试结果，或者如果重复性已被检查，则获得最终的报告结果；
+. 所有未在本文件中规定或视为可选的操作细节，以及可能影响测试结果的任何事件的详细信息；
+. 在测试过程中观察到的任何异常特征（异常）；
+. 测试的日期。
+
+== 包装
+
+包装不得将任何气味或味道传递给产品，也不得包含可能损害产品或构成健康风险的物质。
+
+如果使用袋子，则应符合<<ISO8531-1>>第9条或<<ISO8351-2>>的要求。
+
+== 印记
+
+包装应按照目的地国家的要求标记或标签。
+
+[[AnnexA]]
+[appendix,subtype=normative]
+== 缺陷的确定
+
+// "normative" follows title
+=== 原理
+
+根据以下类型手动分离外来物质，破碎的内核，破损的内核和其他类型的大米：糙米，精米，外壳糙米和碾米。 然后称重每种类型。
+
+=== 仪器
+
+通常的实验室设备，特别是以下。
+
+[%inline-header]
+[[AnnexA-2-1]]
+==== 样品分配器，
+
+由具有分配系统的圆锥形样品分配器或多槽样品分配器组成，例如， “Split-it-right-right”示例分频器，如<<figureA-1>>中所示。
+
+[%inline-header]
+==== 筛,
+
+筛孔直径为1.4毫米的圆形穿孔。
+
+[%inline-header]
+==== 镊子.
+
+[%inline-header]
+==== 解剖刀.
+
+[%inline-header]
+==== 画笔.
+
+[%inline-header]
+[[AnnexA-2-6]]
+==== 钢碗,
+
+直径100毫米±5毫米; 每个测试样本7个。
+
+[%inline-header]
+==== 秤,
+
+可以读取到最接近的0.01克。
+
+=== 采样
+
+请见<<clause5>>.
+
+=== 程序
+
+[[AnnexA-4-1]]
+==== 测试样品的制备
+
+小心地混合实验室样品使其尽可能均匀，然后使用分隔器（<<AnnexA-2-1>>）进行减少，直到获得约30g的量。
+
+卡在滤网孔中的所有颗粒都应该被认为是被滤网截留的。
+
+[[figureA-1]]
+.Split-it-right 样本分频器
+image::images/a1.png[]
+
+=== 判定
+
+按照<<AnnexA-4-1>>的规定，将其中一个测试样品称重，精确至0.1g，并将不同的缺陷分成碗（<<AnnexA-2-6>>）。 当内核有多个缺陷时，将其分类到最大允许值最低的缺陷类别（参见<<table1>>）。
+
+称重，精确至0.01克，得到的馏分。
+
+=== 计算
+
+用（<<formulaA-1>>）公式表示每个缺陷的质量分数:
+
+[[formulaA-1,A.1]]
+[stem]
+++++
+w = (m_D) / (m_s)
+++++
+
+式中：
+
+stem:[w]:: 是测试样品中具有特定缺陷的晶粒的质量分数；
+stem:[m_D]:: 是具有该缺陷的颗粒的质量，以克为单位；
+stem:[m_S]:: 是测试样品的质量，以克为单位。
+
+=== 测试报告
+
+按照<<clause7>>中的规定报告结果。
+
+[[AnnexB]]
+[appendix]
+== 蒸米饭中糯米含量的测定
+
+=== 原理
+
+糯米粒在碘溶液中染色时具有红棕色，而非糯米粒显示深蓝色。
+
+=== 仪器
+
+通常的实验室设备，特别是以下。
+
+[%inline-header]
+[[AnnexB-2-1]]
+==== 秤，
+
+能够称量到最接近的0.01克。
+
+[%inline-header]
+[[AnnexB-2-2]]
+==== 玻璃烧杯,
+
+容量250毫升。
+
+[%inline-header]
+[[AnnexB-2-3]]
+==== 小白色彩色碗，
+
+或任何合适尺寸的白色容器。
+
+[%inline-header]
+[[AnnexB-2-4]]
+==== 铁丝筛，
+
+长圆形的孔(1 mm stem:[{:(+0.02),(0):}] mm stem:[times] 20 mm stem:[{:(+2),(-1):}] mm）。
+
+[%inline-header]
+[[AnnexB-2-5]]
+==== 搅拌棒。
+
+[%inline-header]
+[[AnnexB-2-6]]
+==== 镊子或钳子。
+
+[%inline-header]
+[[AnnexB-2-7]]
+==== 棉纸。
+
+=== 试剂
+
+WARNING: 碘与皮肤直接接触会引起损伤，所以在处理碘时应该小心。 碘蒸气对眼睛和粘膜非常刺激。
+
+[%inline-header]
+[[AnnexB-3-1]]
+==== 去离子水，
+
+<<ISO3696>>中规定的3级质量。
+
+[%inline-header]
+[[AnnexB-3-2]]
+==== 碘储备液，
+
+包含质量分数为4,1％碘和6,3％碘化钾的去离子水，如Lugols。footnote:[Lugols是商业上合适的产品的一个例子。 这些信息是为了方便本文档的用户而提供的，并不构成对此产品的认可。]
+
+[%inline-header]
+[[AnnexB-3-3]]
+==== 碘工作液，
+
+通过用去离子水稀释原液（<<AnnexB-3-2>>）两次（按体积）获得的碘工作溶液（<<AnnexB-3-1>>）。
+
+每天重新准备。
+
+=== 采样
+
+采样应按照<<clause5>>进行。
+
+=== 判定
+
+==== {blank}
+
+称取约100克精米的一部分，放入玻璃烧杯中（<<AnnexB-2-2>>）。
+
+==== {blank}
+
+加入足够的碘工作溶液（<<AnnexB-3-3 >>）浸泡谷物，并搅拌（<<AnnexB-2-5>>），直到所有谷物都浸没在溶液中。 让内核在溶液中浸泡30秒。
+
+==== {blank}
+
+将米和溶液倒入铁丝筛（<<AnnexB-2-4 >>）中，稍微摇动篮子以排出溶液。 然后将棉纸放置在铁丝筛（<<AnnexB-2-7 >>）上以吸收多余的液体。
+
+==== {blank}
+
+将染色的核仁倒入碗中（<<AnnexB-2-3>>）。 使用镊子或镊子（<<AnnexB-2-6 >>），将糯米的红棕色内核与非糯米的深蓝色内核分开。
+
+==== {blank}
+
+将糯米部分（stem:[m_1]）和非糯米部分（stem:[m_2]）称量至最接近的0.1g。
+
+=== 计算
+
+使用公式（<<formulaB-1 >>）计算糯米，stem:[w_(wax)]的质量分数，以百分比表示：
+
+// Indexing formulas
+[[formulaB-1,B.1]]
+[stem]
+++++
+w_(wax) = (m_1) / (m_1 + m_2) xx 100
+++++
+
+式中：
+
+stem:[m_1]:: 是糯米部分的质量，用克表示；
+stem:[m_2]:: 是非糯米部分的质量，用克表示。
+
+=== 测试报告
+
+按照<<clause7 >>中的规定报告结果，并使用公式（<<formulaB-1 >>）计算结果。
+
+[[AnnexC]]
+[appendix,subtype=informative]
+== 糊化
+
+<<figureC-1>>给出了典型的糊化曲线的例子。 <<figureC-2>>显示了糊化的三个阶段。
+
+[[figureC-1]]
+.典型糊化曲线
+// Footnote macro cannot contain stem macro!
+image::images/b1.png[]
+footnote:[此例子的时间stem:[t_90]估计为18,2分钟。]
+
+*图例*
+
+stem:[w]:: 以百分比表示的糊化颗粒的质量分数
+stem:[t]:: 烹饪时间，以分钟表示
+stem:[t_90]:: 将90％的内核糊化所需的时间
+P:: 曲线的点对应于stem:[t_90]的烹饪时间
+
+NOTE: 这些结果是基于对三种不同类型内核的研究。
+
+[[figureC-2]]
+.糊化阶段
+====
+.初始阶段：没有谷物完全糊化（谷粒内可见未糊化的淀粉颗粒）
+image::images/c2-a.png[]
+
+.中间阶段：一些完全糊化的核心是可见的
+image::images/c2-b.png[]
+
+.最后阶段：所有的谷物都完全糊化
+image::images/c2-c.png[]
+
+====
+
+[[AnnexD]]
+[appendix]
+== 稻谷产量的实验室间试验结果
+
+ENR [水稻研究中心（意大利）]在根据<<ISO5725-1>>和<<ISO5725-2>>要求下，於
+15个实验室的参与下进行了实验室间实验<<ref15>>。 每个实验室对四种不同类型的核进行了三次测定。
+统计结果显示在<<tableD-1>>中。
+
+[[tableD-1]]
+[cols="<,^,^,^,^"]
+.糙米产量的可重复性和重复性
+
+|===
+.2+| 描述 4+| 大米样品
+| Arborio | Drago footnote:[半熟米] | Balilla | Thaibonnet
+
+| 消除异常值后保留的实验室数量 | 13 | 11 | 13 | 13
+| 平均值，克/ 100克 | 81,2 | 82,0 | 81,8 | 77,7
+| 重复性标准偏差，stem:[s_r]，克/ 100克 | 0,41 | 0,15 | 0,31 | 0,53
+| 重复性的变异系数, % | 0,5 | 0,2 | 0,4 | 0,7
+| 重复性限制, stem:[r] (= 2,83 stem:[s_r]) | 1,16 | 0,42 | 0,88 | 1,50
+| 再现性的标准差, stem:[s_R], g/100 g | 1,02 | 0,20 | 0,80 | 2,14
+| 重现性变异系数, % | 1,3 | 0,2 | 1,0 | 2,7
+| 再现性限制, stem:[R] (= 2,83 stem:[s_R]) | 2,89 | 0,57 | 2,26 | 6,06
+|===
+
+[bibliography]
+== 参考文献
+
+* [[[ISO3696,ISO 3696]]], _分析实验室用水 - 规范和试验方法，Water for analytical laboratory use -- Specification and test methods_
+
+* [[[ISO5725-1,ISO 5725-1]]], _Accuracy (trueness and precision) of measurement methods and results -- Part 1: General principles and definitions_
+
+* [[[ISO5725-2,ISO 5725-2]]], _测量方法和结果的准确性（准确性和精确性）第1部分：一般原理和定义，Accuracy (trueness and precision) of measurement methods and results -- Part 2: Basic method for the determination of repeatability and reproducibility of a standard measurement method_
+
+* [[[ISO6322-1,ISO 6322-1]]], _谷物和豆类的贮存 第1部分：谷物保存的一般性建议， Storage of cereals and pulses -- Part 1: General recommendations for the keeping of cereals_
+
+* [[[ISO6322-2,ISO 6322-2]]], _谷类和豆类的贮藏 第2部分：实用建议，Storage of cereals and pulses -- Part 2: Practical recommendations_
+
+* [[[ISO6322-3,ISO 6322-3]]], _谷类和豆类的贮藏 第3部分：防治害虫侵袭，Storage of cereals and pulses -- Part 3: Control of attack by pests_
+
+* [[[ISO7301,ISO 7301:2011]]], _大米 - 规格，Rice -- Specification_
+
+* [[[ISO14864,ISO 14864:1998]]], _水稻 - 烹饪过程中谷粒糊化时间的评估，Rice -- Evaluation of gelatinization time of kernels during cooking_
+
+* [[[IEC61010-2,IEC 61010-2:1998]]], _测量，控制和实验室用电气设备的安全要求 第2部分：加热材料的实验室设备的特殊要求， Safety requirements for electric equipment for measurement, control, and laboratory use -- Part 2: Particular requirements for laboratory equipment for the heating of material_
+
+* [[[ref10,10]]] [smallcap]#Standard No I.C.C 167#. _根据杜马斯燃烧法测定食品和动物饲料中谷物和谷类食品中的蛋白质含量，Determination of the protein content in cereal and cereal products for food and animal feeding stuffs according to the Dumas combustion method_ (see http://www.icc.or.at)
+
+* [[[ref11,11]]] 氮 - 氨 - 蛋白质改性凯氏定氮法 - 氧化钛和硫酸铜催化剂，Nitrogen-ammonia-protein modified Kjeldahl method -- Titanium oxide and copper sulfate catalyst. _AOCS的官方方法和建议措施_，_Official Methods and Recommended Practices of the AOCS_ (ed. Firestone, D.E.), AOCS Official Method Ba Ai 4-91, 1997, AOCS Press, Champaign, IL
+
+* [[[ref12,12]]] [smallcap]#Berner D.L., & Brown J.# 蛋白质氮燃烧法的协同研究1：与Smalley总凯氏定氮法和燃烧结果的比较，Protein nitrogen combustion method collaborative study I. Comparison with Smalley total Kjeldahl nitrogen and combustion results. _J. Am. Oil Chem. Soc._ 1994, *71* (11) pp 1291-1293
+
+* [[[ref13,13]]] [smallcap]#Buckee G.K.# 凯氏定氮法和Dumas燃烧法测定大麦，麦芽和啤酒中的总氮量 - 协作试验，Determination of total nitrogen in barley, malt and beer by Kjeldahl procedures and the Dumas combustion method -- Collaborative trial. _J. Inst. Brew._ 1994, *100* (2) pp 57-64
+
+* [[[ref14,14]]] [smallcap]#Frister H.# _杜马斯分析直接测定氮含量; 精密特性的实验室间研究，Direct determination of nitrogen content by Dumas analysis; Interlaboratory study on precision characteristics_. AOAC International, Europe Section 4th International Symposium, Nyon, Switzerland, 1994, 33 pp
+
+* [[[ref15,15]]] [smallcap]#Ranghino F.# 根据谷粒的糊化时间估算水稻对蒸煮的抵抗力，Evaluation of rice resistance to cooking, based on the gelatinization time of kernels. _Il Riso_. 1966, *XV* pp 117-127
+
+* [[[ref16,16]]] [smallcap]#Tkachuk R.# 谷类和油籽粉的氮转蛋白转换系数，Nitrogen-to-protein conversion factors for cereals and oilseed meals. _Cereal Chem._ 1969, *46* (4) pp 419-423
+
