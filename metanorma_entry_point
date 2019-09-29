@@ -1,8 +1,49 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 require 'rubygems'
 require 'bundler/setup'
+dl_ext = (RbConfig::CONFIG['host_os'] =~ /darwin/ ? 'bundle' : 'so')
+LIBSASS_TEMP_WRAPPER = "libsass.#{dl_ext}"
 
-# start up the CLI
-require "metanorma/cli"
+begin
+  # HACK: create temp libsass wrapper in current directory to use with ffi
+  require 'bundler/cli'
+  require 'bundler/cli/common'
+  sassc_path = Bundler::CLI::Common
+               .select_spec('sassc', :regex_match).full_gem_path
+  File
+    .new(LIBSASS_TEMP_WRAPPER, 'wb')
+    .puts(File.read(File.join(sassc_path, 'ext', LIBSASS_TEMP_WRAPPER)))
 
-Metanorma::Cli.start(ARGV)
+  # explicitly load all dependent gems
+  # ruby packer cannot use gem load path correctly.
+  require 'isodoc'
+  require 'metanorma-acme'
+  require 'metanorma-csand'
+  require 'metanorma-csd'
+  require 'metanorma-gb'
+  require 'metanorma-iec'
+  require 'metanorma-ietf'
+  require 'metanorma-itu'
+  require 'metanorma-m3d'
+  require 'metanorma-mpfd'
+  require 'metanorma-nist'
+  require 'metanorma-ogc'
+  require 'metanorma-rsd'
+  require 'metanorma-standoc'
+  require 'metanorma-unece'
+  require 'metanorma'
+  require 'nokogiri'
+  require 'git'
+  require 'metanorma-iso'
+  require 'metanorma/cli'
+  require 'sassc'
+  require 'thor'
+
+  # start up the CLI
+  Metanorma::Cli.start(ARGV)
+ensure
+  # Ensure temp wrapper was deleted
+  FileUtils.rm(LIBSASS_TEMP_WRAPPER)
+end

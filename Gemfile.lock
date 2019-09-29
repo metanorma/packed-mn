@@ -1,3 +1,19 @@
+GIT
+  remote: git@github.com:w00lf/ruby-jing.git
+  revision: 7a4dbb8b082acba4d3585d3f49340f5e1f758781
+  ref: 7a4dbb8b082acba4d3585d3f49340f5e1f758781
+  specs:
+    ruby-jing (0.0.1)
+      optout (>= 0.0.2)
+
+GIT
+  remote: https://github.com/w00lf/sassc-ruby.git
+  revision: 044a30dc1ab837b568c9ec1d474c0a62f035cbf6
+  ref: 044a30dc1ab837b568c9ec1d474c0a62f035cbf6
+  specs:
+    sassc (2.2.1)
+      ffi (~> 1.9)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -5,6 +21,8 @@ GEM
       public_suffix (>= 2.0.2, < 5.0)
     asciidoctor (1.5.8)
     asciimath (1.0.8)
+    ast (2.4.0)
+    byebug (11.0.1)
     camertron-eprun (1.1.1)
     cldr-plurals-runtime-rb (1.0.1)
     cnccs (0.1.3)
@@ -40,6 +58,7 @@ GEM
       thread_safe
       uuidtools
     isoics (0.1.7)
+    jaro_winkler (1.5.3)
     liquid (4.0.3)
     metanorma (0.3.14)
       asciidoctor
@@ -118,7 +137,7 @@ GEM
       ruby-jing
       thread_safe
       uuidtools
-    metanorma-mpfd (0.3.1)
+    metanorma-mpfd (0.3.2)
       asciidoctor (~> 1.5.7)
       htmlentities (~> 4.3.4)
       isodoc (~> 1.0.0)
@@ -139,7 +158,7 @@ GEM
       isodoc (~> 1.0.0)
       metanorma-standoc (~> 1.3.0)
       ruby-jing
-    metanorma-rsd (1.3.1)
+    metanorma-rsd (1.3.2)
       asciidoctor (~> 1.5.7)
       htmlentities (~> 4.3.4)
       isodoc (~> 1.0.0)
@@ -172,7 +191,11 @@ GEM
     nokogiri (1.10.4)
       mini_portile2 (~> 2.4.0)
     optout (0.0.2)
+    parallel (1.17.0)
+    parser (2.6.4.1)
+      ast (~> 2.4.0)
     public_suffix (4.0.1)
+    rainbow (3.0.0)
     rake (12.3.3)
     relaton (0.5.4)
       relaton-gb (~> 0.6.0)
@@ -212,12 +235,16 @@ GEM
       faraday
       relaton-iso-bib (~> 0.3.0)
     roman-numerals (0.3.0)
-    ruby-jing (0.0.1)
-      optout (>= 0.0.2)
+    rubocop (0.74.0)
+      jaro_winkler (~> 1.5.1)
+      parallel (~> 1.10)
+      parser (>= 2.6)
+      rainbow (>= 2.2.2, < 4.0)
+      ruby-progressbar (~> 1.7)
+      unicode-display_width (>= 1.4.0, < 1.7)
+    ruby-progressbar (1.10.1)
     ruby_deep_clone (0.8.0)
     rubyzip (1.2.4)
-    sassc (2.2.1)
-      ffi (~> 1.9)
     sterile (1.0.14)
       nokogiri
     thor (0.20.3)
@@ -230,6 +257,7 @@ GEM
       concurrent-ruby (~> 1.0)
     tzinfo-data (1.2019.3)
       tzinfo (>= 1.0.0)
+    unicode-display_width (1.6.0)
     unicode2latex (0.0.2)
     uuidtools (2.1.5)
 
@@ -237,8 +265,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  git
-  isodoc
+  byebug
   metanorma
   metanorma-acme
   metanorma-cli (~> 1.2)
@@ -247,7 +274,6 @@ DEPENDENCIES
   metanorma-gb
   metanorma-iec
   metanorma-ietf
-  metanorma-iso
   metanorma-itu
   metanorma-m3d
   metanorma-mpfd
@@ -256,8 +282,9 @@ DEPENDENCIES
   metanorma-rsd
   metanorma-standoc
   metanorma-unece
-  nokogiri
-  thor
+  rubocop
+  ruby-jing!
+  sassc!
 
 BUNDLED WITH
-   1.17.1
+   1.17.3
