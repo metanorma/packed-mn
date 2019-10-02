@@ -1,0 +1,15 @@
+name: Compiler
+
+on: [push]
+
+jobs:
+  build_osx:
+    runs-on: macOS-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install dependencies
+      run: brew install squashfs
+    - name: Lookup
+      run: ls
+    - name: run build
+      run: make build
