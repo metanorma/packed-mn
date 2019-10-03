@@ -4,18 +4,10 @@ on: [push]
 
 jobs:
   build_osx:
-    runs-on: macOS-latest
+    runs-on: macOS-10.14
     steps:
     - uses: actions/checkout@v1
-    - name: Set up Ruby 2.5
-      uses: actions/setup-ruby@v1
-      with:
-        ruby-version: 2.5.x
-    - name: 'Perl lookup'
-      run: perl -v
     - name: Install dependencies
       run: brew install squashfs
-    - name: Lookup
-      run: ls
     - name: run build
       run: make build
