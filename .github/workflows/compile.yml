@@ -5,14 +5,20 @@ on: [push]
 jobs:
   build_osx:
     runs-on: macOS-10.14
+    env:
+      PERL_LWP_SSL_VERIFY_HOSTNAME: 0
     steps:
     - uses: actions/checkout@v1
-    - name: install perlbrew
-      run: curl -L https://install.perlbrew.pl | bash
-    - name: Install perl 5.16.0
-      run: source ~/perl5/perlbrew/etc/bashrc && perlbrew install perl-5.16.0
-    - name: Switch perl
-      run: source ~/perl5/perlbrew/etc/bashrc && perlbrew switch perl-5.16.0
+    - name: install plenv
+      run: brew update && brew install plenv && brew install perl-build
+    - name: Activate plenv
+      run: eval "$(plenv init -)"
+    - name: Install perl 5.16.2
+      run: plenv install 5.16.2 -Dusethreads
+    - name: plenv rehash
+      run: plenv rehash
+    - name: set global perl
+      run: plenv global 5.16.2
     - name: Perl version
       run: perl -v
     - name: Install dependencies
