@@ -7,6 +7,8 @@ jobs:
     runs-on: macOS-10.14
     steps:
     - uses: actions/checkout@v1
+    - name: Perl version
+      run: perl -v
     - name: Install dependencies
       run: brew install squashfs
     - name: run build
