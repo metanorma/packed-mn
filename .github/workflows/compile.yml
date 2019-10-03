@@ -8,11 +8,11 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: install perlbrew
-      run: curl -L https://install.perlbrew.pl | bash &&  source ~/perl5/perlbrew/etc/bashrc
+      run: curl -L https://install.perlbrew.pl | bash
     - name: Install perl 5.16.0
-      run: perlbrew install perl-5.16.0
+      run: source ~/perl5/perlbrew/etc/bashrc && perlbrew install perl-5.16.0
     - name: Switch perl
-      run: perlbrew switch perl-5.16.0
+      run: source ~/perl5/perlbrew/etc/bashrc && perlbrew switch perl-5.16.0
     - name: Perl version
       run: perl -v
     - name: Install dependencies
