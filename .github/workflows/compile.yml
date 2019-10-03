@@ -11,6 +11,8 @@ jobs:
       uses: actions/setup-ruby@v1
       with:
         ruby-version: 2.5.x
+    - name: 'Perl lookup'
+      run: perl -v
     - name: Install dependencies
       run: brew install squashfs
     - name: Lookup
