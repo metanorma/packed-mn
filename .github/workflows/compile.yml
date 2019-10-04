@@ -10,9 +10,12 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: install plenv
-      run: brew update && brew install plenv && brew install perl-build
+      run: brew update && brew install plenv
+      # && brew install perl-build
     - name: Activate plenv
       run: eval "$(plenv init -)"
+    - name: Install Perl-Build as plenv plugin
+      run: git clone git://github.com/tokuhirom/Perl-Build.git $(plenv root)/plugins/perl-build/
     - name: Install perl 5.16.2
       run: plenv install 5.16.2 -Dusethreads
     - name: plenv rehash
