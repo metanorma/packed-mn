@@ -21,7 +21,7 @@ gem 'metanorma-rsd'
 gem 'metanorma-standoc'
 gem 'metanorma-unece'
 gem 'ruby-jing',
-    git: 'git@github.com:w00lf/ruby-jing.git',
+    git: 'https://github.com/w00lf/ruby-jing.git',
     ref: '7a4dbb8b082acba4d3585d3f49340f5e1f758781'
 gem 'sassc',
     git: 'https://github.com/w00lf/sassc-ruby.git',
