@@ -1,4 +1,4 @@
-name: Compiler
+name: compile
 
 on: [push]
 
