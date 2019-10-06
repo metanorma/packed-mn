@@ -1,0 +1,86 @@
+[[AnnexA]]
+[appendix,obligation=normative]
+== Determination of defects
+
+=== Principle
+
+Extraneous matter, broken kernels, damaged kernels and other kinds of rice are separated manually according to the following types: husked rice, milled rice, husked parboiled rice and milled parboiled rice. Each type is then weighed.
+
+=== Apparatus
+
+The usual laboratory apparatus and, in particular, the following.
+
+[%inline-header]
+[[AnnexA-2-1]]
+==== Sample divider,
+
+consisting of a conical sample divider or multiple-slot sample divider with a distribution system, e.g. "Split-it-right" sample divider, such as that shown in <<figureA-1>>.
+
+[%inline-header]
+==== Sieve,
+
+with round perforations of diameter 1,4 mm.
+
+[%inline-header]
+==== Tweezers.
+
+[%inline-header]
+==== Scalpel.
+
+[%inline-header]
+==== Paintbrush.
+
+[%inline-header]
+[[AnnexA-2-6]]
+==== Steel bowls,
+
+of diameter 100 mm ± 5 mm; seven per test sample.
+
+[%inline-header]
+==== Balance,
+
+which can be read to the nearest 0,01 g.
+
+=== Sampling
+
+See <<clause5>>.
+
+=== Procedure
+
+[[AnnexA-4-1]]
+==== Preparation of test sample
+
+Carefully mix the laboratory sample to make it as uniform as possible, then proceed to reduce it, using a divider (<<AnnexA-2-1>>), until a quantity of about 30 g is obtained.
+
+All parts of kernels which get stuck in the perforations of a sieve should be considered to be retained by the sieve.
+
+[[figureA-1]]
+.Split-it-right sample divider
+image::images/a1.png[]
+
+=== Determination
+
+Weigh, to the nearest 0,1 g, one of the test samples obtained in accordance with <<AnnexA-4-1>> and separate the different defects into the bowls (<<AnnexA-2-6>>). When a kernel has several defects, classify it in the defect category for which the maximum permissible value is the lowest (see <<table1>>).
+
+Weigh, to the nearest 0,01 g, the fractions so obtained.
+
+=== Calculation
+
+Express the mass fraction of each defect using <<formulaA-1>>:
+
+[[formulaA-1,A.1]]
+[stem]
+++++
+w = (m_D) / (m_s)
+++++
+
+where
+
+stem:[w]:: is the mass fraction of grains with a particular defect in the test sample;
+stem:[m_D]:: is the mass, in grams, of grains with that defect;
+stem:[m_S]:: is the mass, in grams, of the test sample.
+
+=== Test report
+
+Report the results as specified in <<clause7>>.
+

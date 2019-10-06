@@ -1,5 +1,5 @@
 GIT
-  remote: git@github.com:w00lf/ruby-jing.git
+  remote: https://github.com/w00lf/ruby-jing.git
   revision: 7a4dbb8b082acba4d3585d3f49340f5e1f758781
   ref: 7a4dbb8b082acba4d3585d3f49340f5e1f758781
   specs:

@@ -1,4 +1,0 @@
-[[clause5]]
-== Sampling
-Sampling shall be carried out in accordance with <<ISO24333,clause 5>>
-

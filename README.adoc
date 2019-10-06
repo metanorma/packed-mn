@@ -1,0 +1,62 @@
+= Metanorma-CLI single executable binary
+
+image:https://github.com/metanorma/packed-mn/workflows/compile/badge.svg["Build Status", link="https://github.com/metanorma/packed-mn/actions?workflow=compile"]
+
+
+== Purpose
+
+Metanorma is a sophisticated document publishing tool for
+standardization bodies.
+It is written in Ruby with a number of dependencies.
+
+User organizations of Metanorma run on multiple platforms,
+including Windows, Linux and macOS.
+
+The challenge is how to ensure the distribution and installation of
+Metanorma works on the target system reliably.
+
+Today, Metanorma offers:
+
+* Ruby gem
+* Linux setup script
+* macOS Homebrew package
+* Windows Chocolatey package
+* Docker container
+
+However, all these packages require a long installation process
+with caveats, such as being prone to network failures and a network
+of dependencies to install.
+
+This repo attempts to package dependencies using `ruby-packer`, a
+tool that packages a Ruby interpreter with gems and dependencies
+into a RAM disk.
+
+Our goal is to make installation quick and dependable for our users.
+
+
+== Usage
+
+=== Compile executable (only macOS supported for now)
+
+[source,sh]
+----
+$: make build
+----
+
+This will clear `build/` folder files and compile a new version
+from the `metanorma_entry_point` Ruby script.
+
+
+== metanorma_entry_point
+
+This script loads all dependencies in order to ruby packer
+correctly link all gems and their native extensions.
+
+
+== TODO
+
+Currently, it uses 2 forks of `sassc` and `ruby-jing` gems:
+
+* SassC was patched in order to load `libsass` bindings into
+  `memfs` of executable.
+* `ruby-jing` fork skips the usage of `jing` command completely.

@@ -1,0 +1,63 @@
+== Test methods
+
+=== Moisture content
+
+Determine the mass fraction of moisture in accordance with the method specified in <<ISO712>>.
+
+=== Waxy rice content
+
+Determine the mass fraction of waxy rice. <<AnnexB>> gives an example of a suitable method.
+
+=== Nitrogen content and crude protein content
+
+Determine the nitrogen content and crude protein content in accordance with either <<ISO16634,clause 9>>, or <<ISO20483>>. For details on the determination of protein content using the Kjeldahl method, see Reference <<ref12>> in the Bibliography. For details concerning the use of the Dumas method, see References <<ref10>> and <<ref16>>.
+
+// can't join two bibliographic localities with "and" currently
+Calculate the crude protein content of the dry product by multiplying the value of the nitrogen content by the conversion factor specified in <<ISO20483,annex C>> and Table C.1, that is adapted to the type of cereals or pulses <<ref13,fn>><<ref14,fn>> and to their use.
+
+=== Gelatinization time
+
+Determine the gelatinization time, stem:[t_90], for rice kernels during cooking. An example of a typical curve is given in <<figureC-1>>. Three typical stages of gelatinization are shown in <<figureC-2>>.
+
+Report the results as specified in <<clause7>>.
+
+=== Husked rice yield
+
+==== Determination
+
+CAUTION: Only use paddy or parboiled rice for the determination of husked rice yield.
+
+Determine the husked rice yield in accordance with <<ISO6646>>.
+
+==== Precision
+
+===== Interlaboratory test
+
+The results of an interlaboratory test are given in <<AnnexD>> for information
+
+===== Repeatability
+
+The absolute difference between two independent single test results, obtained using the same method on identical test material in the same laboratory by the same operator using the same equipment within a short interval of time, shall not exceed the arithmetic mean of the values for stem:[r] obtained from the interlaboratory study for husked rice in more than 5 % of cases:
+
+[stem]
+++++
+r = 1 %
+++++
+
+where
+
+stem:[r]:: is the repeatability limit.
+
+===== Reproducibility
+
+The absolute difference between two single test results, obtained using the same method on identical test material in different laboratories by different operators using different equipment, shall not exceed the arithmetic mean of the values for stem:[R] obtained from the interlaboratory study in more than 5 % of cases:
+
+[stem]
+++++
+R = 3 %
+++++
+
+where
+
+stem:[R]:: is the reproducibility limit.
+

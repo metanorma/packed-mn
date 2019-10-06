@@ -1,6 +1,0 @@
-== Packaging
-
-The packaging shall not transmit any odour or flavour to the product and shall not contain substances which may damage the product or constitute a health risk.
-
-If bags are used, they shall comply with the requirements of <<ISO8351-1,clause 9>>, or <<ISO8351-2>>, as appropriate.
-
