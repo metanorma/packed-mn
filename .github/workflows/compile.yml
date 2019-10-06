@@ -5,8 +5,6 @@ on: [pull_request]
 jobs:
   build_osx:
     runs-on: macOS-10.14
-    env:
-      PERL_LWP_SSL_VERIFY_HOSTNAME: 0
     steps:
     - uses: actions/checkout@v1
     - uses: shogo82148/actions-setup-perl@v1
@@ -18,10 +16,11 @@ jobs:
       run: brew install squashfs
     - name: run build
       run: make build
+    - name: Test created binary on sample file
+      run: ./build/metanorma --type iso -x html ./sources/iso/iso-rice-en.adoc
     - name: Release binary
       uses: softprops/action-gh-release@v1
-      # Uncomment if needed binary create only on tag branch
-      # if: startsWith(github.ref, 'refs/tags/')
+      if: startsWith(github.ref, 'refs/tags/')
       with:
         files: build/metanorma
       env:
