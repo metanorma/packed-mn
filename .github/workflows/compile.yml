@@ -1,11 +1,7 @@
 name: compile
 
-# Build only on tag push
-on:
-  push:
-    tags:
-      - 'v*.*.*'
-# on: [pull_request]
+# Removed pull request trigger - causes to 2 heavy simultaneously jobs to execute
+on: [push]
 
 jobs:
   build_osx:
@@ -27,8 +23,11 @@ jobs:
       run: ./build/metanorma --type iso -x html ./sources/iso/iso-rice-en.adoc
     - name: Copy release binary
       run: cp build/metanorma metanorma-darwin-x64
+    - name: Set release binary permissions
+      run: chmod a+x metanorma-darwin-x64
     - name: Release binary
       uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
       with:
         files: metanorma-darwin-x64
       env:
