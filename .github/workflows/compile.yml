@@ -1,6 +1,11 @@
 name: compile
 
-on: [pull_request]
+# Build only on tag push
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+# on: [pull_request]
 
 jobs:
   build_osx:
