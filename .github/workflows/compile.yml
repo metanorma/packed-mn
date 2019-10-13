@@ -42,7 +42,7 @@ jobs:
     - name: Perl version
       run: perl -v
     - name: Install dependencies
-      run: sudo apt-get update && sudo apt-get -y -q install squashfs
+      run: sudo apt-get update && sudo apt-get -y -q install squashfs-tools
     - name: Download and install rubyc
       run: curl -L http://enclose.io/rubyc/rubyc-darwin-x64.gz | gunzip > rubyc && chmod +x rubyc
     - name: run build
