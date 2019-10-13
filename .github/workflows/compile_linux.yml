@@ -19,7 +19,7 @@ jobs:
     - name: Install dependencies
       run: sudo apt-get update && sudo apt-get -y -q install squashfs-tools bison
     - name: Download and install rubyc
-      run: curl -L http://enclose.io/rubyc/rubyc-linux-x64.gz | gunzip > /tmp/rubyc && chmod +x rubyc
+      run: curl -L http://enclose.io/rubyc/rubyc-linux-x64.gz | gunzip > /tmp/rubyc && chmod +x /tmp/rubyc
     - name: run build
       # https://trac.sagemath.org/ticket/19762
       env:
