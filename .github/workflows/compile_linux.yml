@@ -24,7 +24,7 @@ jobs:
       # https://trac.sagemath.org/ticket/19762
       env:
         CPPFLAGS: "-P"
-      run: /home/runner/rubyc --clean-tmpdir --make-args='-j1' -o /home/runner/metanorma-linux-x64 metanorma_entry_point
+      run: mkdir /tmp/project-temp && cp Gemfile* /tmp/project-temp/ && cp metanorma_entry_point /tmp/project-temp/ &&  /home/runner/rubyc --clean-tmpdir --make-args='-j1' -r /tmp/project-temp/ -o /home/runner/metanorma-linux-x64 -r /tmp/project-temp/metanorma_entry_point
     - name: Test created binary on sample file
       run: /home/runner/metanorma-linux-x64 --type iso -x html ./sources/iso/iso-rice-en.adoc
     - name: Copy release binary
