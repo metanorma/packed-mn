@@ -19,16 +19,16 @@ jobs:
     - name: Install dependencies
       run: sudo apt-get update && sudo apt-get -y -q install squashfs-tools bison
     - name: Download and install rubyc
-      run: curl -L http://enclose.io/rubyc/rubyc-linux-x64.gz | gunzip > rubyc && chmod +x rubyc
+      run: curl -L http://enclose.io/rubyc/rubyc-linux-x64.gz | gunzip > /tmp/rubyc && chmod +x rubyc
     - name: run build
       # https://trac.sagemath.org/ticket/19762
       env:
         CPPFLAGS: "-P"
-      run: ./rubyc --clean-tmpdir -o /tmp/metanorma-linux-x64 metanorma_entry_point
+      run: /tmp/rubyc --clean-tmpdir --make-args='j2' -o /tmp/metanorma-linux-x64 metanorma_entry_point
     - name: Test created binary on sample file
-      run: ./build/metanorma --type iso -x html ./sources/iso/iso-rice-en.adoc
+      run: /tmp/metanorma-linux-x64 --type iso -x html ./sources/iso/iso-rice-en.adoc
     - name: Copy release binary
-      run: mv /tmp/metanorma-linux-x64 metanorma-linux-x64
+      run: mv /tmp/metanorma-linux-x64 ./
     - name: Set release binary permissions
       run: chmod a+x metanorma-linux-x64
     - name: Release binary
