@@ -21,11 +21,11 @@ gem 'metanorma-rsd'
 gem 'metanorma-standoc'
 gem 'metanorma-unece'
 gem 'ruby-jing',
-    git: 'https://github.com/w00lf/ruby-jing.git',
-    ref: '7a4dbb8b082acba4d3585d3f49340f5e1f758781'
+    git: 'https://github.com/metanorma/ruby-jing.git',
+    ref: 'c28d0204766b502c2239799d2e2605c6d7d7778e'
 gem 'sassc',
-    git: 'https://github.com/w00lf/sassc-ruby.git',
-    ref: '044a30dc1ab837b568c9ec1d474c0a62f035cbf6'
+    git: 'https://github.com/metanorma/sassc-ruby.git',
+    ref: '8b9273ebfdd20f8c7e4d1aa0fd70b3b613128126'
 
 group :development do
   gem 'byebug'
