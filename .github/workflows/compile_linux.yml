@@ -24,6 +24,7 @@ jobs:
       # https://trac.sagemath.org/ticket/19762
       env:
         CPPFLAGS: "-P"
+        CXXFLAGS: "--param ggc-min-expand=1 --param ggc-min-heapsize=32768"
       run: make build
     - name: Test created binary on sample file
       run: /home/runner/metanorma-linux-x64 --type iso -x html ./sources/iso/iso-rice-en.adoc
