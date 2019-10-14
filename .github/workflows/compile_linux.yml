@@ -3,9 +3,13 @@ name: compile
 # Removed pull request trigger - causes to 2 heavy simultaneously jobs to execute
 on: [push]
 
+
+# workspace: Actions execute in this directory. An action can modify the contents of this directory, which subsequent actions can access.
+# Use the GITHUB_WORKSPACE environment variable to access this directory.
+
 jobs:
   build_linux:
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v1
     - uses: actions/setup-ruby@v1
