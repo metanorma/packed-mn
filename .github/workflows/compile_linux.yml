@@ -23,6 +23,8 @@ jobs:
       run: sudo apt-get update && sudo apt-get -y -q install squashfs-tools bison
     - name: Install gcc-8
       run: sudo add-apt-repository ppa:ubuntu-toolchain-r/test && sudo apt-get update && sudo apt-get -y install gcc-8 g++-8 && sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 800 --slave /usr/bin/g++ g++ /usr/bin/g++-8
+    - name: gcc
+      run: gcc -v
     - name: Download and install rubyc
       run: curl -L http://enclose.io/rubyc/rubyc-linux-x64.gz | gunzip > rubyc && chmod +x rubyc
     - name: run build
