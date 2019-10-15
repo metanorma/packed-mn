@@ -21,8 +21,8 @@ jobs:
       run: perl -v
     - name: Install dependencies
       run: sudo apt-get update && sudo apt-get -y -q install squashfs-tools bison
-    - name: Install gcc-8
-      run: sudo add-apt-repository ppa:ubuntu-toolchain-r/test && sudo apt-get update && sudo apt-get -y install gcc-8 g++-8 && sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 800 --slave /usr/bin/g++ g++ /usr/bin/g++-8
+    - name: Install gcc-9
+      run: sudo add-apt-repository ppa:ubuntu-toolchain-r/test && sudo apt-get update && sudo apt-get -y install gcc-9 g++-9 && sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 900 --slave /usr/bin/g++ g++ /usr/bin/g++-9
     - name: gcc
       run: gcc -v
     - name: Download and install rubyc
