@@ -26,11 +26,11 @@ jobs:
     - name: gcc
       run: gcc -v
     - name: Download and install rubyc
-      run: curl -L http://enclose.io/rubyc/rubyc-linux-x64.gz | gunzip > rubyc && chmod +x rubyc
+      run: curl -L https://github.com/metanorma/ruby-packer/releases/download/v1.0.1/rubyc.gz | gunzip > rubyc && chmod +x rubyc
     - name: run build
       # # https://trac.sagemath.org/ticket/19762
-      env:
-        CPPFLAGS: "-P"
+      # env:
+      #   CPPFLAGS: "-P"
       #   CXXFLAGS: "--param ggc-min-expand=1 --param ggc-min-heapsize=32768"
       run: make build
     - name: Test created binary on sample file
