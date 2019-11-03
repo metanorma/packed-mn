@@ -1,0 +1,36 @@
+name: compile
+
+# Removed pull request trigger - causes to 2 heavy simultaneously jobs to execute
+on: [push]
+
+jobs:
+  build_osx:
+    runs-on: windows-2016
+    steps:
+    - uses: actions/checkout@v1
+    - uses: shogo82148/actions-setup-perl@v1
+      with:
+        perl-version: '5.16.2'
+    - name: Perl version
+      run: perl -v
+    - name: test run
+      run: bin\build.bat
+    # - name: Install dependencies
+    #   run: brew install squashfs
+    # - name: Download and install rubyc
+    #   run: curl -L http://enclose.io/rubyc/rubyc-darwin-x64.gz | gunzip > rubyc && chmod +x rubyc
+    # - name: run build
+    #   run: make build
+    # - name: Test created binary on sample file
+    #   run: ./build/metanorma --type iso -x html ./sources/iso/iso-rice-en.adoc
+    # - name: Copy release binary
+    #   run: cp build/metanorma metanorma-darwin-x64
+    # - name: Set release binary permissions
+    #   run: chmod a+x metanorma-darwin-x64
+    # - name: Release binary
+    #   uses: softprops/action-gh-release@v1
+    #   if: startsWith(github.ref, 'refs/tags/')
+    #   with:
+    #     files: metanorma-darwin-x64
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
