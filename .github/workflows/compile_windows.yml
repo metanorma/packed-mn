@@ -8,6 +8,9 @@ jobs:
     runs-on: windows-2016
     steps:
     - uses: actions/checkout@v1
+    - uses: actions/setup-ruby@v1
+      with:
+        ruby-version: '2.4'
     - uses: shogo82148/actions-setup-perl@v1
       with:
         perl-version: '5.16.2'
