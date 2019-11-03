@@ -13,10 +13,6 @@ jobs:
         ruby-version: '2.4'
     - name: Install winflexbison
       run: choco install --yes winflexbison
-    - name: Install bison alias
-      run: doskey bison=win_bison $*
-    - name: Install flex alias
-      run: doskey flex=win_flex $*
     - name: Install squashfs
       run: choco install --yes squashfs
     - name: Run build
