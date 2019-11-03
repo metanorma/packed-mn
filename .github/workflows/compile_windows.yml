@@ -1,4 +1,4 @@
-name: compile
+name: compile_windows
 
 # Removed pull request trigger - causes to 2 heavy simultaneously jobs to execute
 on: [push]
@@ -14,7 +14,7 @@ jobs:
     - name: Perl version
       run: perl -v
     - name: test run
-      run: bin\build.bat
+      run: PowerShell.exe bin\build.ps1
     # - name: Install dependencies
     #   run: brew install squashfs
     # - name: Download and install rubyc
