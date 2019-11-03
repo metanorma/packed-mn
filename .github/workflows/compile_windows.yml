@@ -13,7 +13,7 @@ jobs:
         ruby-version: '2.4'
     # By Default github action windows env does not set up build tools, call VsDevCmd build tools
     - name: Prepare build tools
-      run: "C:\\Program Files \(x86\)\\Microsoft Visual Studio\\2017\\Enterprise\\Common7\\Tools\\VsDevCmd.bat"
+      run: "C:\\Program Files \\(x86\\)\\Microsoft Visual Studio\\2017\\Enterprise\\Common7\\Tools\\VsDevCmd.bat"
     - name: Run build
       run: PowerShell.exe bin\build.ps1
     # - name: Install dependencies
