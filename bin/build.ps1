@@ -14,6 +14,6 @@ dir "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise"
 & "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\Tools\VsDevCmd.bat"
 # Test nmake
 nmake -help
-.\rubyc\rubyc-v0.4.0-x64.exe --clean-tmpdir -o build\metanorma bin\metanorma || echo 'skip'
+.\rubyc\rubyc-v0.4.0-x64.exe --clean-tmpdir -o build\metanorma bin\metanorma
 # Check build folder
-dir C:/Users/RUNNER~1/AppData/Local/Temp/rubyc/zlib
+dir "C:/Users/RUNNER~1/AppData/Local/Temp/rubyc/zlib"
