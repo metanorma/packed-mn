@@ -6,8 +6,11 @@
 }
 # Test nmake
 nmake -help
-Set-Alias -Name bison -Value win_bison
-Set-Alias -Name flex -Value win_flex
+# Copy alias for bison and flex
+$win_bison = where.exe win_bison
+cp $win_bison $win_bison.Replace('win_bison', 'bison')
+$win_flex = where.exe win_flex
+cp $win_flex $win_flex.Replace('win_flex', 'flex')
 bison --help
 flex --help
 
