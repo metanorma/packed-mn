@@ -11,6 +11,10 @@ jobs:
     - uses: actions/setup-ruby@v1
       with:
         ruby-version: '2.4'
+    - name: Install winflexbison
+      run: choco install --yes winflexbison
+    - name: Install squashfs
+      run: choco install --yes squashfs
     - name: Run build
       run: PowerShell.exe bin\build.ps1
     # - name: Install dependencies
