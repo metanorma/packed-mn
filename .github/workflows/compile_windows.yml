@@ -4,19 +4,14 @@ name: compile_windows
 on: [push]
 
 jobs:
-  build_osx:
+  build_windows:
     runs-on: windows-2016
     steps:
     - uses: actions/checkout@v1
     - uses: actions/setup-ruby@v1
       with:
         ruby-version: '2.4'
-    - uses: shogo82148/actions-setup-perl@v1
-      with:
-        perl-version: '5.16.2'
-    - name: Perl version
-      run: perl -v
-    - name: test run
+    - name: Run build
       run: PowerShell.exe bin\build.ps1
     # - name: Install dependencies
     #   run: brew install squashfs
