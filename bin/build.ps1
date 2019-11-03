@@ -6,6 +6,8 @@
 }
 # Test nmake
 nmake -help
+bison --help
+flex --help
 
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 function Unzip
