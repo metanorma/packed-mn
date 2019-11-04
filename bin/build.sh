@@ -1,6 +1,6 @@
 #!/bin/sh
 
-[ -d ../build ] || mkdir ../build; rm -rf ../build/* || true
+[ -d build ] || mkdir build; rm -rf build/* || true
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
   export TEMP_DIR="$(mktemp -d)"
