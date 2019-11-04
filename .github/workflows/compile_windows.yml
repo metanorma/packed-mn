@@ -14,7 +14,7 @@ jobs:
     - name: gem version
       run: gem -v
     - name: rubygems update
-      run: gem update --system 2.6.14 || true
+      run: gem update --system 2.6.14
     - name: gem version
       run: gem -v
     - name: Install winflexbison
