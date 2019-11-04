@@ -1,3 +1,7 @@
 .tmp.xml
 relaton
 build
+rubyc*
+sources/*/*.doc
+sources/*/*.html
+sources/*/*.xml
