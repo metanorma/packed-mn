@@ -11,6 +11,10 @@ jobs:
     - uses: actions/setup-ruby@v1
       with:
         ruby-version: '2.5'
+    - name: gem version
+      run: gem -v
+    - name: rubygems update
+      run: gem update --system
     - name: Install winflexbison
       run: choco install --yes winflexbison
     - name: Install squashfs
