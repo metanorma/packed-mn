@@ -9,11 +9,11 @@ require 'net/https'
 require 'tempfile'
 
 def determine_cert_path
-  return 'D:/__enclose_io_memfs__/local/vendor/cacert.pem.mozzila' if Gem.win_platform?
-  path = '/__enclose_io_memfs__/local/vendor/cacert.pem.mozzila'
+  return 'D:/__enclose_io_memfs__/local/vendor/cacert.pem.mozilla' if Gem.win_platform?
+  path = '/__enclose_io_memfs__/local/vendor/cacert.pem.mozilla'
   return path if File.file?(path)
 
-  File.join('vendor', 'cacert.pem.mozzila')
+  File.join('vendor', 'cacert.pem.mozilla')
 end
 
 def cert_file_path
@@ -41,7 +41,7 @@ begin
   begin
     Net::HTTP.get(URI('https://www.iso.org/'))
   rescue OpenSSL::SSL::SSLError
-    puts('Canot use ssl requests, instaling custom certificate') if DEBUG
+    puts('Cannot use SSL requests, installing custom certificate') if DEBUG
     Net::HTTP.class_eval do
       alias _use_ssl= use_ssl=
 
