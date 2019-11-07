@@ -4,13 +4,13 @@
     $name, $value = $_ -split '=', 2
     set-content env:\"$name" $value
 }
-git clone https://github.com/sass/libsass.git
-cd .\libsass
-MSBuild.exe win\libsass.sln `
-/p:LIBSASS_STATIC_LIB=1 /p:Configuration=Release
-cd ..
-SET LDFLAGS="-fno-use-linker-plugin"
-SET CPPFLAGS="-fno-use-linker-plugin"
+# git clone https://github.com/sass/libsass.git
+# cd .\libsass
+# MSBuild.exe win\libsass.sln `
+# /p:LIBSASS_STATIC_LIB=1 /p:Configuration=Release
+# cd ..
+# SET LDFLAGS="-fno-use-linker-plugin"
+# SET CPPFLAGS="-fno-use-linker-plugin"
 # CXXFLAGS: "--param ggc-min-expand=1 --param ggc-min-heapsize=32768"
 # Test nmake
 nmake -help
