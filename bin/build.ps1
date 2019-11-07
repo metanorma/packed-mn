@@ -4,6 +4,11 @@
     $name, $value = $_ -split '=', 2
     set-content env:\"$name" $value
 }
+git clone https://github.com/sass/libsass.git
+cd .\libsass
+MSBuild.exe win\libsass.sln `
+/p:LIBSASS_STATIC_LIB=1 /p:Configuration=Release
+cd ..
 # Test nmake
 nmake -help
 # Copy alias for bison and flex
