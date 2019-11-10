@@ -5,7 +5,7 @@ on: [push]
 
 jobs:
   build_windows:
-    runs-on: windows-2016
+    runs-on: windows-2019
     steps:
     - uses: actions/checkout@v1
     - uses: actions/setup-ruby@v1
@@ -23,10 +23,10 @@ jobs:
       run: choco install --yes squashfs
     - name: Run build
       env:
-        CC: "cl -nologo"
-        LD: "cl -nologo"
-        LDSHARED: "cl -nologo -LD"
-        # CPPFLAGS: "-fno-use-linker-plugin"
+        # CC: "cl -nologo"
+        # LD: "cl -nologo"
+        # LDSHARED: "cl -nologo -LD"
+        # # CPPFLAGS: "-fno-use-linker-plugin"
         LIBSASS_STATIC_LIB: 1
       run: PowerShell.exe bin\build.ps1
     # - name: Install dependencies
