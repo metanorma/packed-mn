@@ -26,7 +26,7 @@ jobs:
         CC: "cl -nologo"
         LD: "cl -nologo"
         LDSHARED: "cl -nologo -LD"
-        CPPFLAGS: "-fno-use-linker-plugin"
+        # CPPFLAGS: "-fno-use-linker-plugin"
         LIBSASS_STATIC_LIB: 1
       run: PowerShell.exe bin\build.ps1
     # - name: Install dependencies
