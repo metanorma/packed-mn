@@ -1,6 +1,6 @@
 # By Default github action windows env does not set up build tools, call VsDevCmd build tools
 # Setup visual studio build tools
-& "${env:COMSPEC}" /s /c "`"C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat`" -no_logo && set" | foreach-object {
+& "${env:COMSPEC}" /s /c "`"C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\Tools\VsDevCmd.bat`" -no_logo && set" | foreach-object {
     $name, $value = $_ -split '=', 2
     set-content env:\"$name" $value
 }

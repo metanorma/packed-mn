@@ -5,12 +5,12 @@ on: [push]
 
 jobs:
   build_windows:
-    runs-on: windows-2019
+    runs-on: windows-2016
     steps:
     - uses: actions/checkout@v1
     - uses: actions/setup-ruby@v1
       with:
-        ruby-version: '2.5'
+        ruby-version: '2.4'
     - name: gem version
       run: gem -v
     - name: rubygems update
