@@ -1,17 +1,16 @@
 # By Default github action windows env does not set up build tools, call VsDevCmd build tools
 # Setup visual studio build tools
-& "${env:COMSPEC}" /s /c "`"C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\Tools\VsDevCmd.bat`" -no_logo && set" | foreach-object {
+# & "${env:COMSPEC}" /s /c "`"C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\Tools\VsDevCmd.bat`" -no_logo && set" | foreach-object {
+#     $name, $value = $_ -split '=', 2
+#     set-content env:\"$name" $value
+# }
+
+& "${env:COMSPEC}" /s /c "`"C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\Common7\Tools\VsDevCmd.bat`" -no_logo && set" | foreach-object {
     $name, $value = $_ -split '=', 2
     set-content env:\"$name" $value
 }
-# git clone https://github.com/sass/libsass.git
-# cd .\libsass
-# MSBuild.exe win\libsass.sln `
-# /p:LIBSASS_STATIC_LIB=1 /p:Configuration=Release
-# cd ..
-# SET LDFLAGS="-fno-use-linker-plugin"
-# SET CPPFLAGS="-fno-use-linker-plugin"
-# CXXFLAGS: "--param ggc-min-expand=1 --param ggc-min-heapsize=32768"
+
+
 # Test nmake
 nmake -help
 # Copy alias for bison and flex
