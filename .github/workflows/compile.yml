@@ -5,7 +5,7 @@ on: [push]
 
 jobs:
   build_osx:
-    runs-on: macOS-10.14
+    runs-on: macos-latest
     steps:
     - uses: actions/checkout@v1
     - uses: shogo82148/actions-setup-perl@v1
