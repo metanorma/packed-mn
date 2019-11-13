@@ -5,13 +5,15 @@
 #     set-content env:\"$name" $value
 # }
 
-& "${env:COMSPEC}" /s /c "`"C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\Common7\Tools\VsDevCmd.bat`" -no_logo && set" | foreach-object {
-    $name, $value = $_ -split '=', 2
-    set-content env:\"$name" $value
-}
+# Set 64-bit build envs for compiler - START
+cmd.exe /c "call `"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat`" && set > %temp%\vcvars.txt"
 
-# # Env for 64 bit system:
-# "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
+Get-Content "$env:temp\vcvars.txt" | Foreach-Object {
+  if ($_ -match "^(.*?)=(.*)$") {
+    Set-Content "env:\$($matches[1])" $matches[2]
+  }
+}
+# Set 64-bit build envs for compiler - END
 
 # Test nmake
 nmake -help
