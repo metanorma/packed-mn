@@ -3,3 +3,7 @@ relaton
 build
 project-temp
 rubyc
+rubyc*
+sources/*/*.doc
+sources/*/*.html
+sources/*/*.xml
