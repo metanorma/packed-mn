@@ -21,10 +21,16 @@ jobs:
       run: perl -v
     - name: Install dependencies
       run: sudo apt-get update && sudo apt-get -y -q install squashfs-tools bison flex texinfo
-    - name: Install gcc-9
-      run: sudo add-apt-repository ppa:ubuntu-toolchain-r/test && sudo apt-get update && sudo apt-get -y install gcc-9 g++-9 && sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 900 --slave /usr/bin/g++ g++ /usr/bin/g++-9
-    - name: gcc
-      run: gcc -v
+    - name: Check clang
+      run: clang -v
+    - name: Check lld
+      run: lld -v
+    - name: Use Clang for compilation
+      run: sudo update-alternatives --install /usr/bin/cc cc /usr/bin/clang 20 --slave /usr/bin/c++ c++ /usr/bin/clang++ --slave /usr/bin/ld ld /usr/bin/lld
+    - name: Enable swap
+      run: sudo fallocate -l 4g /mnt/compile.swap && chmod 600 /mnt/compile.swap && mkswap /mnt/compile.swap && swapon /mnt/compile.swap
+    - name: Check swap
+      run: sudo swapon --all --verbose
     - name: Download and install rubyc
       run: curl -L https://github.com/metanorma/ruby-packer/releases/download/v1.0.1/rubyc.gz | gunzip > rubyc && chmod +x rubyc
     - name: run build
