@@ -14,4 +14,3 @@ cp Gemfile* $TEMP_DIR && cp bin/metanorma $TEMP_DIR && cp -R vendor $TEMP_DIR
 
 echo $TEMP_DIR
 ./rubyc --clean-tmpdir -r $TEMP_DIR -o ./build/metanorma $TEMP_DIR/metanorma
-cp $TEMP_DIR/metanorma metanorma-build

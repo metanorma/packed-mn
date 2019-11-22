@@ -39,10 +39,10 @@ jobs:
         CC: /usr/bin/clang
         CXX: /usr/bin/clang++
       run: make build
-    - name: Copy release binary
-      run: mv metanorma-build metanorma-linux-x64
     - name: Test created binary on sample file
-      run: ./metanorma-linux-x64 --type iso -x html ./sources/iso/iso-rice-en.adoc
+      run: ./build/metanorma --type iso -x html ./sources/iso/iso-rice-en.adoc
+    - name: Copy release binary
+      run: mv build/metanorma metanorma-linux-x64
     - name: Set release binary permissions
       run: chmod a+x metanorma-linux-x64
     - name: Release binary
