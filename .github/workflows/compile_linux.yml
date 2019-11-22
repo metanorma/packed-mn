@@ -23,10 +23,10 @@ jobs:
       run: sudo apt-get update && sudo apt-get -y -q install squashfs-tools bison flex texinfo
     - name: Check clang
       run: clang -v
-    - name: Check lld
-      run: lld -v
+    - name: Check clang++
+      run: clang++ -v
     - name: Use Clang for compilation
-      run: sudo update-alternatives --install /usr/bin/cc cc /usr/bin/clang 20 --slave /usr/bin/c++ c++ /usr/bin/clang++ --slave /usr/bin/ld ld /usr/bin/lld
+      run: sudo update-alternatives --install /usr/bin/cc cc /usr/bin/clang 20 --slave /usr/bin/c++ c++ /usr/bin/clang++
     - name: Enable swap
       run: sudo fallocate -l 4g /mnt/compile.swap && chmod 600 /mnt/compile.swap && mkswap /mnt/compile.swap && swapon /mnt/compile.swap
     - name: Check swap
