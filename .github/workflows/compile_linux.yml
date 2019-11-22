@@ -26,7 +26,7 @@ jobs:
     - name: Check clang++
       run: clang++ -v
     - name: Use Clang for compilation
-      run: sudo update-alternatives --install /usr/bin/cc cc /usr/bin/clang 20 --slave /usr/bin/c++ c++ /usr/bin/clang++
+      run: sudo update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100 && update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 100
     - name: Enable swap
       run: sudo fallocate -l 4g /mnt/compile.swap && chmod 600 /mnt/compile.swap && mkswap /mnt/compile.swap && swapon /mnt/compile.swap
     - name: Check swap
