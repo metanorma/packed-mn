@@ -42,7 +42,7 @@ jobs:
     - name: Copy release binary
       run: mv metanorma-build metanorma-linux-x64
     - name: Test created binary on sample file
-      run: /home/runner/metanorma-linux-x64 --type iso -x html ./sources/iso/iso-rice-en.adoc
+      run: ./metanorma-linux-x64 --type iso -x html ./sources/iso/iso-rice-en.adoc
     - name: Set release binary permissions
       run: chmod a+x metanorma-linux-x64
     - name: Release binary
