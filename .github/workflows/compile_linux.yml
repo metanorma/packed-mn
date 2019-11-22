@@ -38,7 +38,6 @@ jobs:
       env:
         CC: /usr/bin/clang
         CXX: /usr/bin/clang++
-        CPP: /usr/bin/clang-cpp
       run: make build
     - name: Test created binary on sample file
       run: /home/runner/metanorma-linux-x64 --type iso -x html ./sources/iso/iso-rice-en.adoc
