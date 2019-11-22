@@ -2,6 +2,7 @@
 
 [ -d build ] || mkdir build; rm -rf build/* || true
 
+# TODO: wrong test for linux
 if [[ "$OSTYPE" == "darwin"* ]]; then
   export TEMP_DIR="$(mktemp -d)"
 else
