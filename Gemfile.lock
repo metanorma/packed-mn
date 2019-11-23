@@ -8,8 +8,8 @@ GIT
 
 GIT
   remote: https://github.com/metanorma/sassc-ruby.git
-  revision: 8b9273ebfdd20f8c7e4d1aa0fd70b3b613128126
-  ref: 8b9273ebfdd20f8c7e4d1aa0fd70b3b613128126
+  revision: 6e07d9634af0372006e8a5ea62bb80855cb69cb5
+  ref: 6e07d9634af0372006e8a5ea62bb80855cb69cb5
   specs:
     sassc (2.2.1)
       ffi (~> 1.9)
@@ -29,8 +29,8 @@ GEM
     concurrent-ruby (1.1.5)
     faraday (0.17.0)
       multipart-post (>= 1.2, < 3)
-    ffi (1.11.1)
-    gb-agencies (0.0.6)
+    ffi (1.11.2)
+    gb-agencies (0.0.5)
     git (1.5.0)
     html2doc (0.9.0)
       asciimath (~> 1.0.9)

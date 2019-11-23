@@ -27,7 +27,7 @@ gem 'ruby-jing',
     ref: 'c28d0204766b502c2239799d2e2605c6d7d7778e'
 gem 'sassc',
     git: 'https://github.com/metanorma/sassc-ruby.git',
-    ref: '8b9273ebfdd20f8c7e4d1aa0fd70b3b613128126'
+    ref: '6e07d9634af0372006e8a5ea62bb80855cb69cb5'
 
 group :development do
   gem 'byebug'

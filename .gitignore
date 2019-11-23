@@ -1,6 +1,8 @@
 .tmp.xml
 relaton
 build
+project-temp
+rubyc
 rubyc*
 sources/*/*.doc
 sources/*/*.html

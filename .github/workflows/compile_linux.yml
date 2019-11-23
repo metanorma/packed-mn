@@ -1,0 +1,54 @@
+name: compile
+
+# Removed pull request trigger - causes to 2 heavy simultaneously jobs to execute
+on: [push]
+
+# workspace: Actions execute in this directory. An action can modify the contents of this directory, which subsequent actions can access.
+# Use the GITHUB_WORKSPACE environment variable to access this directory.
+
+jobs:
+  build_linux:
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-ruby@v1
+      with:
+        ruby-version: '2.6'
+    - uses: shogo82148/actions-setup-perl@v1
+      with:
+        perl-version: '5.16.2'
+    - name: Perl version
+      run: perl -v
+    - name: Install dependencies
+      run: sudo apt-get update && sudo apt-get -y -q install squashfs-tools bison flex texinfo
+    - name: Check clang
+      run: clang -v
+    - name: Check clang++
+      run: clang++ -v
+    - name: Use Clang for compilation
+      run: sudo update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100 && sudo update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 100
+    - name: Enable swap
+      run: sudo fallocate -l 4g /mnt/compile.swap && sudo chmod 600 /mnt/compile.swap && sudo mkswap /mnt/compile.swap && sudo swapon /mnt/compile.swap
+    - name: Check swap
+      run: sudo swapon --all --verbose
+    - name: Download and install rubyc
+      run: curl -L http://enclose.io/rubyc/rubyc-linux-x64.gz | gunzip > rubyc && chmod +x rubyc
+    - name: run build
+      # # https://trac.sagemath.org/ticket/19762
+      env:
+        CC: /usr/bin/clang
+        CXX: /usr/bin/clang++
+      run: make build
+    - name: Test created binary on sample file
+      run: ./build/metanorma --type iso -x html ./sources/iso/iso-rice-en.adoc
+    - name: Copy release binary
+      run: mv build/metanorma metanorma-linux-x64
+    - name: Set release binary permissions
+      run: chmod a+x metanorma-linux-x64
+    - name: Release binary
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        files: metanorma-linux-x64
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
