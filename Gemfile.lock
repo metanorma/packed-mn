@@ -190,7 +190,7 @@ GEM
     mimemagic (0.3.3)
     mini_portile2 (2.4.0)
     multipart-post (2.1.1)
-    nokogiri (1.10.5)
+    nokogiri (1.10.8)
       mini_portile2 (~> 2.4.0)
     optout (0.0.2)
     parallel (1.18.0)
