@@ -4,9 +4,16 @@ source 'https://rubygems.org'
 
 git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 
+github_ref = ENV['GITHUB_REF']
+mn_cli_version = if github_ref&.start_with? 'refs/tags/v'
+  "= #{github_ref.delete_prefix('refs/tags/v')}"
+else
+  '~> 1.2'
+end
+
 gem 'metanorma'
 gem 'metanorma-acme'
-gem 'metanorma-cli', '~> 1.2'
+gem 'metanorma-cli', mn_cli_version
 gem 'metanorma-csand'
 gem 'metanorma-csd'
 gem 'metanorma-gb'
