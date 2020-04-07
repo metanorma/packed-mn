@@ -5,8 +5,10 @@ source 'https://rubygems.org'
 git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 
 github_ref = ENV['GITHUB_REF']
-mn_cli_version = if github_ref&.start_with? 'refs/tags/v'
-  "= #{github_ref.delete_prefix('refs/tags/v')}"
+tag_ref_prefix = 'refs/tags/v'
+mn_cli_version = if github_ref&.start_with? tag_ref_prefix
+  "= #{github_ref.gsub(/^#{tag_ref_prefix}/, '')}"
+  
 else
   '~> 1.2'
 end
