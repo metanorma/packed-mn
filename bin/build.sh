@@ -14,7 +14,7 @@ echo TEMP_DIR=$TEMP_DIR GITHUB_REF=$GITHUB_REF
 
 [[ "${GITHUB_REF:-}" = refs/tags/v* ]] && {
 	sudo gem install bundler -v 1.17.3
-	bundle update
+	rm Gemfile.lock
 	bundle install --jobs 4 --retry 3
 }
 
