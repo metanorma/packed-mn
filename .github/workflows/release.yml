@@ -1,0 +1,21 @@
+name: release
+
+on: [repository_dispatch]
+
+jobs:
+  build_linux:
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@v1
+    - name: Push tag
+      if: startsWith(github.event.client_payload.ref, 'refs/tags/v')
+      env:
+        METANORMA_CLI_TAG: ${{ github.event.client_payload.ref }}
+      run: |
+        curl -s -X POST https://api.github.com/repos/${GITHUB_REPOSITORY}/git/refs \
+          -H "Authorization: token $GITHUB_TOKEN" \
+          -d @- << EOF
+          {
+            "ref": "${METANORMA_CLI_TAG}",
+            "sha": "$(git rev-parse HEAD)"
+          }

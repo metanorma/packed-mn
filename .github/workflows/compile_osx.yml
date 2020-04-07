@@ -1,4 +1,4 @@
-name: compile
+name: osx
 
 # Removed pull request trigger - causes to 2 heavy simultaneously jobs to execute
 on: [push]
