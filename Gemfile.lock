@@ -279,13 +279,11 @@ DEPENDENCIES
   metanorma-itu
   metanorma-m3d
   metanorma-mpfd
-  metanorma-nist (= 0.2.3)
+  metanorma-nist
   metanorma-ogc
   metanorma-rsd
   metanorma-standoc
   metanorma-unece
-  relaton (= 0.5.9)
-  relaton-nist (~> 0.3.8)
   rubocop
   ruby-jing!
   sassc!
