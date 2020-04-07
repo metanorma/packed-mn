@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # Set strict mode
 set -eu
 
@@ -12,7 +12,7 @@ esac
 
 echo TEMP_DIR=$TEMP_DIR GITHUB_REF=$GITHUB_REF
 
-[[ ${GITHUB_REF:-} == refs/tags/v* ]] && {
+[[ "${GITHUB_REF:-}" = refs/tags/v* ]] && {
 	sudo gem install bundler -v 1.17.3
 	bundle update
 	bundle install --jobs 4 --retry 3
