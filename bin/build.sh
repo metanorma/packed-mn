@@ -11,5 +11,8 @@ case "${unameOut}" in
 esac
 
 echo $TEMP_DIR
+
+[[ ${GITHUB_REF} == refs/tags/v* ]] && bundle install --jobs 4 --retry 3
+
 cp Gemfile* $TEMP_DIR && cp bin/metanorma $TEMP_DIR && cp -R vendor $TEMP_DIR
 ./rubyc --clean-tmpdir -r $TEMP_DIR -o ./build/metanorma $TEMP_DIR/metanorma

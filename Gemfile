@@ -8,7 +8,6 @@ github_ref = ENV['GITHUB_REF']
 tag_ref_prefix = 'refs/tags/v'
 mn_cli_version = if github_ref&.start_with? tag_ref_prefix
   "= #{github_ref.gsub(/^#{tag_ref_prefix}/, '')}"
-  
 else
   '~> 1.2'
 end
