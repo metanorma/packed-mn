@@ -10,12 +10,12 @@ case "${unameOut}" in
     Darwin*)    export TEMP_DIR="$(mktemp -d)";;
 esac
 
-echo TEMP_DIR=$TEMP_DIR GITHUB_REF=$GITHUB_REF
+echo TEMP_DIR=$TEMP_DIR GITHUB_REF=${GITHUB_REF:-}
 
 [[ "${GITHUB_REF:-}" = refs/tags/v* ]] && {
-	sudo gem install bundler -v 1.17.3
-	rm Gemfile.lock
-	bundle install --jobs 4 --retry 3
+	sudo gem install bundler -v 1.15.3
+	bundle _1.15.3_ update
+	bundle _1.15.3_ install
 }
 
 cp Gemfile* $TEMP_DIR && cp bin/metanorma $TEMP_DIR && cp -R vendor $TEMP_DIR
