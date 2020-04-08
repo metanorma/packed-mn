@@ -13,7 +13,7 @@ esac
 echo TEMP_DIR=$TEMP_DIR GITHUB_REF=${GITHUB_REF:-}
 
 [[ "${GITHUB_REF:-}" = refs/tags/v* ]] && {
-	sudo gem install bundler -v 1.15.3
+	gem install bundler -v 1.15.3
 	bundle _1.15.3_ update
 	bundle _1.15.3_ install
 }
