@@ -16,6 +16,9 @@ echo TEMP_DIR=$TEMP_DIR GITHUB_REF=${GITHUB_REF:-}
 	gem install bundler -v 1.15.3
 	bundle _1.15.3_ update
 	bundle _1.15.3_ install
+	echo "----"
+	cat Gemfile.lock
+	echo "----"
 }
 
 cp Gemfile* $TEMP_DIR && cp bin/metanorma $TEMP_DIR && cp -R vendor $TEMP_DIR
