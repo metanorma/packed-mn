@@ -4,16 +4,10 @@ source 'https://rubygems.org'
 
 git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 
-github_ref = ENV['GITHUB_REF']
-tag_ref_prefix = 'refs/tags/v'
-mn_cli_version = if github_ref&.start_with? tag_ref_prefix
-  "= #{github_ref.gsub(/^#{tag_ref_prefix}/, '')}"
-else
-  '~> 1.2'
-end
-
 gem 'iso-639', '0.2.10'
-gem 'metanorma-cli', mn_cli_version
+# > mn-cli-dependency #
+gem 'metanorma-cli', '1.2.11'
+# < mn-cli-dependency #
 gem 'metanorma'
 gem 'metanorma-acme'
 gem 'metanorma-csand'
