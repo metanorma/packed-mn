@@ -19,12 +19,19 @@ jobs:
         METANORMA_CLI_TAG: ${{ github.event.client_payload.ref }}
       run: |
         echo "::set-env name=METANORMA_CLI_VERSION::${METANORMA_CLI_TAG#*/v}"
-    - name: Update Formula
+    - uses: actions/setup-ruby@v1
+      with:
+        ruby-version: '2.6'
+    - name: Install bundler
       run: |
-        ./set-mn-version.sh ${METANORMA_CLI_VERSION}
+        gem install bundler
+    - name: Update version
+      run: |
+        bundle remove metanorma-cli
+        bundle add metanorma-cli -v ${METANORMA_CLI_VERSION}
     - name: Push commit and tag
       run: |
-        git add Gemfile
+        git add Gemfile Gemfile.lock
         git commit -m "Bump version to ${METANORMA_CLI_VERSION}"
         git tag v${METANORMA_CLI_VERSION}
         git push github HEAD:${GITHUB_REF} --tags
