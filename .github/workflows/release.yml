@@ -1,21 +1,30 @@
 name: release
 
-on: [repository_dispatch]
+on:
+  repository_dispatch:
+    types: [ metanorma/metanorma-cli ]
 
 jobs:
   build_linux:
     runs-on: ubuntu-18.04
+    if: startsWith(github.event.client_payload.ref, 'refs/tags/v')
     steps:
     - uses: actions/checkout@v1
-    - name: Push tag
-      if: startsWith(github.event.client_payload.ref, 'refs/tags/v')
+    - name: Add writable remote
+      run: |
+        git remote add github "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git"
+        git pull github ${GITHUB_REF} --ff-only
+    - name: Parse metanorma-cli version
       env:
         METANORMA_CLI_TAG: ${{ github.event.client_payload.ref }}
       run: |
-        curl -s -X POST https://api.github.com/repos/${GITHUB_REPOSITORY}/git/refs \
-          -H "Authorization: token $GITHUB_TOKEN" \
-          -d @- << EOF
-          {
-            "ref": "${METANORMA_CLI_TAG}",
-            "sha": "$(git rev-parse HEAD)"
-          }
+        echo "::set-env name=METANORMA_CLI_VERSION::${METANORMA_CLI_TAG#*/v}"
+    - name: Update Formula
+      run: |
+        ./set-mn-version.sh ${METANORMA_CLI_VERSION}
+    - name: Push commit and tag
+      run: |
+        git add Gemfile
+        git commit -m "Bump version to ${METANORMA_CLI_VERSION}"
+        git tag v${METANORMA_CLI_VERSION}
+        git push github HEAD:${GITHUB_REF} --tags
