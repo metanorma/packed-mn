@@ -6,6 +6,7 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 
 gem 'iso-639', '0.2.10'
 # > mn-cli-dependency #
+gem 'metanorma-cli', '1.2.11'
 # < mn-cli-dependency #
 gem 'metanorma'
 gem 'metanorma-acme'
@@ -33,5 +34,3 @@ group :development do
   gem 'byebug'
   gem 'rubocop'
 end
-
-gem "metanorma-cli", "= 1.2.12"
