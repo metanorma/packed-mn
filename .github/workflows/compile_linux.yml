@@ -31,8 +31,6 @@ jobs:
       run: sudo fallocate -l 4g /mnt/compile.swap && sudo chmod 600 /mnt/compile.swap && sudo mkswap /mnt/compile.swap && sudo swapon /mnt/compile.swap
     - name: Check swap
       run: sudo swapon --all --verbose
-    - name: Download and install rubyc
-      run: curl -L http://enclose.io/rubyc/rubyc-linux-x64.gz | gunzip > rubyc && chmod +x rubyc
     - name: run build
       # # https://trac.sagemath.org/ticket/19762
       env:
@@ -40,7 +38,9 @@ jobs:
         CXX: /usr/bin/clang++
       run: make build
     - name: Test created binary on sample file
-      run: ./build/metanorma --type iso -x html ./sources/iso/iso-rice-en.adoc
+      env:
+        GITHUB_CREDENTIALS: "metanorma-ci:${{ secrets.METANORMA_CI_PAT_TOKEN }}"
+      run: make test
     - name: Copy release binary
       run: mv build/metanorma metanorma-linux-x64
     - name: Set release binary permissions
