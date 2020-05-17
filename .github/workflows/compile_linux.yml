@@ -32,6 +32,7 @@ jobs:
     - name: Check swap
       run: sudo swapon --all --verbose
     - name: run build
+      timeout-minutes: 180
       # # https://trac.sagemath.org/ticket/19762
       env:
         CC: /usr/bin/clang
