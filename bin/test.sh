@@ -1,5 +1,5 @@
 #!/bin/bash
-set -eu
+#set -eu
 
 CLONE_DIR=$(pwd)/build
 PROCESSORS=( iso cc gb iec itu ogc un iho nist )
