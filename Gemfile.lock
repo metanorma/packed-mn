@@ -83,9 +83,10 @@ GEM
     mathml2asciimath (0.0.10)
       htmlentities (~> 4.3.4)
       nokogiri (>= 1.10.4)
-    metanorma (1.0.3)
+    metanorma (1.0.5)
       asciidoctor
       htmlentities
+      mn2pdf (~> 1.13)
       nokogiri
     metanorma-acme (1.4.4)
       htmlentities (~> 4.3.4)
@@ -233,6 +234,7 @@ GEM
     mime-types-data (3.2019.1009)
     mimemagic (0.3.4)
     mini_portile2 (2.4.0)
+    mn2pdf (1.14)
     multipart-post (2.1.1)
     nokogiri (1.10.9)
       mini_portile2 (~> 2.4.0)
