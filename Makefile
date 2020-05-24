@@ -1,3 +1,6 @@
+#!make
+SHELL := /bin/bash
+
 .PHONY: build test test-flavor
 
 ifeq ($(OS),Windows_NT)
@@ -17,7 +20,9 @@ TEST_FLAVOR ?= iso
 rubyc:
 	curl -L http://enclose.io/rubyc/rubyc-$(PLATFORM)-x64.gz | gunzip > rubyc && chmod +x rubyc
 
-build: rubyc
+build: build/metanorma
+
+build/metanorma: rubyc
 	./bin/build.sh
 
 build/yq:
@@ -26,9 +31,9 @@ build/yq:
 test: build/yq build/metanorma 
 	PROCESSORS="iso cc gb iec itu ogc un iho nist"; \
 	parallel -j+0 --joblog parallel.log --eta make test-flavor TEST_FLAVOR={} "&>" test_{}.log ::: $${PROCESSORS}; \
-	parallel -j+0 --joblog parallel.log --resume-failed 'echo ---- {} ----; cat test_{}.log; echo ---- --- ----' ::: $${PROCESSORS}
+	parallel -j+0 --joblog parallel.log --resume-failed 'echo ---- {} ----; cat test_{}.log; echo ---- --- ----; exit 1' ::: $${PROCESSORS}
 
-test-flavor:
-	CLONE_DIR=$(pwd)/build; \
-	[[ -d mn-samples-$(TEST_FLAVOR) ]] || git clone --recurse-submodules https://${GITHUB_CREDENTIALS}@github.com/metanorma/mn-samples-${TEST_FLAVOR}; \
-	cd $${CLONE_DIR}/$(TEST_FLAVOR); env PATH="$${CLONE_DIR}:$${PATH}" make all
+test-flavor: build/yq build/metanorma
+	CLONE_DIR=$(shell pwd)/build; \
+	[[ -d $${CLONE_DIR}/$(TEST_FLAVOR) ]] || git clone --recurse-submodules https://${GITHUB_CREDENTIALS}@github.com/metanorma/mn-samples-$(TEST_FLAVOR) $${CLONE_DIR}/$(TEST_FLAVOR); \
+	env PATH="$${CLONE_DIR}:$${PATH}" make all -C $${CLONE_DIR}/$(TEST_FLAVOR)
