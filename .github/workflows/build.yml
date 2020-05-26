@@ -131,8 +131,10 @@ jobs:
       run: systeminfo
     # - name: install clang
     #   run: choco install --yes llvm
+    - name: Change dir
+      run: cd ocra
     - name: Run build
-      run: ocra --gem-full --add-all-core --gemfile ocra/Gemfile ocra/metanorma.rb
+      run: ocra --gem-full --add-all-core --gemfile Gemfile metanorma.rb
 
     # - name: Install dependencies
     #   run: brew install squashfs
