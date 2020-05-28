@@ -42,6 +42,10 @@ jobs:
       env:
         GITHUB_CREDENTIALS: "metanorma-ci:${{ secrets.METANORMA_CI_PAT_TOKEN }}"
       run: make test
+    - uses: actions/upload-artifact@v2
+      with:
+        name: samples
+        path: build/**/publish/*
     - name: Copy release binary
       run: mv build/metanorma metanorma-linux-x64
     - name: Set release binary permissions

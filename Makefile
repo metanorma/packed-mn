@@ -36,7 +36,7 @@ test: build/yq build/metanorma
 test-flavor: build/yq build/metanorma
 	CLONE_DIR=$(shell pwd)/build; \
 	[[ -d $${CLONE_DIR}/$(TEST_FLAVOR) ]] || git clone --recurse-submodules https://${GITHUB_CREDENTIALS}@github.com/metanorma/mn-samples-$(TEST_FLAVOR) $${CLONE_DIR}/$(TEST_FLAVOR); \
-	env PATH="$${CLONE_DIR}:$${PATH}" make all -C $${CLONE_DIR}/$(TEST_FLAVOR)
+	env PATH="$${CLONE_DIR}:$${PATH}" env SKIP_BUNDLE_INSTALL=true make all publish -C $${CLONE_DIR}/$(TEST_FLAVOR)
 
 clean:
 	[ -d build ] || mkdir build; rm -rf build/* || true
