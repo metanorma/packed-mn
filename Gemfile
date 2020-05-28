@@ -25,10 +25,6 @@ gem 'metanorma-unece'
 gem 'ruby-jing',
     git: 'https://github.com/metanorma/ruby-jing.git',
     ref: 'c28d0204766b502c2239799d2e2605c6d7d7778e'
-gem 'sassc',
-    git: 'https://github.com/metanorma/sassc-ruby.git',
-    ref: 'ce6c3a65b29247476ea1cf1c0f53cf7d5fe46827' # 6e07d9634af0372006e8a5ea62bb80855cb69cb5 - old one
-
 group :development do
   gem 'byebug'
   gem 'rubocop'
