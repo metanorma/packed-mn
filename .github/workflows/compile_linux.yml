@@ -43,6 +43,11 @@ jobs:
         GITHUB_CREDENTIALS: "metanorma-ci:${{ secrets.METANORMA_CI_PAT_TOKEN }}"
       run: make test
     - uses: actions/upload-artifact@v2
+      if: ${{ always() }}
+      with:
+        name: samples_logs
+        path: test_*.log
+    - uses: actions/upload-artifact@v2
       with:
         name: samples
         path: build/**/publish/*

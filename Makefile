@@ -31,7 +31,7 @@ build/yq:
 test: build/yq build/metanorma 
 	PROCESSORS="iso cc gb iec itu ogc un iho nist"; \
 	parallel -j+0 --joblog parallel.log --eta make test-flavor TEST_FLAVOR={} "&>" test_{}.log ::: $${PROCESSORS}; \
-	parallel -j+0 --joblog parallel.log --resume-failed 'echo ---- {} ----; cat test_{}.log; echo ---- --- ----; exit 1' ::: $${PROCESSORS}
+	parallel -j+0 --joblog parallel.log --resume-failed 'echo ---- {} ----; tail -15 test_{}.log; echo ---- --- ----; exit 1' ::: $${PROCESSORS}
 
 test-flavor: build/yq build/metanorma
 	CLONE_DIR=$(shell pwd)/build; \
