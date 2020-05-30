@@ -107,34 +107,25 @@ jobs:
 
 
   build-windows:
-    runs-on: windows-2016
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v1
     - uses: actions/setup-ruby@v1
       with:
-       ruby-version: '2.4'
+       ruby-version: '2.6'
     - name: gem version
       run: gem -v
-    - name: rubygems update
-      run: gem update --system 2.6.14
-    #- name: ruby choco install
-    #  run: choco install ruby
-    - name: gem version
-      run: gem -v
-    - name: Install winflexbison
-      run: choco install --yes winflexbison
-    - name: Install squashfs
-      run: choco install --yes squashfs
-    - name: Install ocra
-      run: gem install ocra
     - name: Check swap
       run: systeminfo
-    # - name: install clang
-    #   run: choco install --yes llvm
-    - name: Change dir
-      run: cd ocra
+    - name: Install gems
+      working-directory: .\ocra\
+      run:
+        bundle install
     - name: Run build
-      run: ocra --gem-full --add-all-core --gemfile Gemfile metanorma.rb
+      working-directory: .\ocra\
+      shell: cmd
+      run:
+        build.bat
 
     # - name: Install dependencies
     #   run: brew install squashfs
