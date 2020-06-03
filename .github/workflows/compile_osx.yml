@@ -1,7 +1,9 @@
 name: osx
 
-# Removed pull request trigger - causes to 2 heavy simultaneously jobs to execute
-on: [push]
+on:
+  push:
+    branches: [ master ]
+  pull_request:
 
 jobs:
   build_osx:
@@ -20,7 +22,18 @@ jobs:
     - name: Test created binary on sample file
       env:
         GITHUB_CREDENTIALS: "metanorma-ci:${{ secrets.METANORMA_CI_PAT_TOKEN }}"
-      run: make test
+      run: |
+        sudo gem install relaton-cli
+        make test
+    - uses: actions/upload-artifact@v2
+      if: ${{ always() }}
+      with:
+        name: samples_logs
+        path: test_*.log
+    - uses: actions/upload-artifact@v2
+      with:
+        name: samples
+        path: build/**/published/*
     - name: Copy release binary
       run: cp build/metanorma metanorma-darwin-x64
     - name: Set release binary permissions

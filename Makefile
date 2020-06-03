@@ -31,9 +31,12 @@ build/yq:
 test: build/yq build/metanorma 
 	PROCESSORS="iso cc gb iec itu ogc un iho nist"; \
 	parallel -j+0 --joblog parallel.log --eta make test-flavor TEST_FLAVOR={} "&>" test_{}.log ::: $${PROCESSORS}; \
-	parallel -j+0 --joblog parallel.log --resume-failed 'echo ---- {} ----; cat test_{}.log; echo ---- --- ----; exit 1' ::: $${PROCESSORS}
+	parallel -j+0 --joblog parallel.log --resume-failed 'echo ---- {} ----; tail -15 test_{}.log; echo ---- --- ----; exit 1' ::: $${PROCESSORS}
 
 test-flavor: build/yq build/metanorma
 	CLONE_DIR=$(shell pwd)/build; \
 	[[ -d $${CLONE_DIR}/$(TEST_FLAVOR) ]] || git clone --recurse-submodules https://${GITHUB_CREDENTIALS}@github.com/metanorma/mn-samples-$(TEST_FLAVOR) $${CLONE_DIR}/$(TEST_FLAVOR); \
-	env PATH="$${CLONE_DIR}:$${PATH}" make all -C $${CLONE_DIR}/$(TEST_FLAVOR)
+	env PATH="$${CLONE_DIR}:$${PATH}" env SKIP_BUNDLE=true make all publish -C $${CLONE_DIR}/$(TEST_FLAVOR)
+
+clean:
+	[ -d build ] || mkdir build; rm -rf build/* || true

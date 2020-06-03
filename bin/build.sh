@@ -14,7 +14,6 @@ echo TEMP_DIR=$TEMP_DIR GITHUB_REF=${GITHUB_REF:-}
 
 [[ "${GITHUB_REF:-}" = refs/tags/v* ]] && {
 	gem install bundler -v 1.15.3
-	bundle _1.15.3_ update
 	bundle _1.15.3_ install
 	echo "----"
 	cat Gemfile.lock
