@@ -33,7 +33,7 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: samples
-        path: build/**/publish/*
+        path: build/**/published/*
     - name: Copy release binary
       run: cp build/metanorma metanorma-darwin-x64
     - name: Set release binary permissions
