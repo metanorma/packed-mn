@@ -26,14 +26,15 @@ jobs:
         ruby-version: '2.6'
     - name: Install bundler
       run: |
-        gem install bundler
+        gem install bundler -v 1.15.3
     - name: Update version
       run: |
-        bundle remove metanorma-cli
-        bundle add metanorma-cli -v ${METANORMA_CLI_VERSION}
+        bundle _1.15.3_ remove metanorma-cli
+        bundle _1.15.3_ add metanorma-cli -v ${METANORMA_CLI_VERSION}
+        bundle install --deployment
     - name: Push commit and tag
       run: |
-        git add Gemfile Gemfile.lock
+        git add Gemfile
         git commit -m "Bump version to ${METANORMA_CLI_VERSION}"
         git tag v${METANORMA_CLI_VERSION}
         git push github HEAD:${GITHUB_REF} --tags
