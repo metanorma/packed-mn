@@ -4,13 +4,8 @@ source 'https://rubygems.org'
 
 git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 
-gem 'iso-639', '0.2.10'
-
-gem 'metanorma-acme'
-gem 'metanorma-csand'
 gem 'metanorma-mpfd'
 gem 'metanorma-rsd'
-gem 'metanorma-unece'
 
 gem 'ruby-jing',
     git: 'https://github.com/metanorma/ruby-jing.git',
@@ -21,4 +16,4 @@ group :development do
   gem 'rubocop'
 end
 
-gem "metanorma-cli", "= 1.2.12"
+gem "metanorma-cli", "= 1.2.13"
