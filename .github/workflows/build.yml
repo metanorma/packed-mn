@@ -116,6 +116,9 @@ jobs:
       run: gem -v
     - name: Check swap
       run: systeminfo
+    - name: Install tools
+      run: |
+        choco install --no-progress make sed gnuwin32-coreutils.install grep gzip
     - name: Install gems
       working-directory: .\ocra\
       run:
@@ -123,25 +126,15 @@ jobs:
     - name: Run build
       working-directory: .\ocra\
       shell: cmd
-      run:
-        build.bat
-
-    # - name: Install dependencies
-    #   run: brew install squashfs
-    # - name: Download and install rubyc
-    #   run: curl -L http://enclose.io/rubyc/rubyc-darwin-x64.gz | gunzip > rubyc && chmod +x rubyc
-    # - name: run build
-    #   run: make build
-    # - name: Test created binary on sample file
-    #   run: ./build/metanorma --type iso -x html ./sources/iso/iso-rice-en.adoc
-    # - name: Copy release binary
-    #   run: cp build/metanorma metanorma-windows-x64
-    # - name: Set release binary permissions
-    #   run: chmod a+x metanorma-windows-x64
-    # - name: Release binary
-    #   uses: softprops/action-gh-release@v1
-    #   if: startsWith(github.ref, 'refs/tags/')
-    #   with:
-    #     files: metanorma-windows-x64
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: build.bat
+    - name: Test created binary on sample file
+      run: ocra\test.bat
+    - name: Copy release binary
+      run: cp ocra/metanorma.exe metanorma-windows-x64.exe
+    - name: Release binary
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        files: metanorma-windows-x64.exe
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
