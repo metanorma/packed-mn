@@ -4,13 +4,11 @@ set -eu
 
 [ -d build ] || mkdir build; rm -rf build/* || true
 
-[[ "${GITHUB_REF:-}" = refs/tags/v* ]] && {
-	gem install bundler -v 1.15.3
-	bundle _1.15.3_ install
-	echo "----"
-	cat Gemfile.lock
-	echo "----"
-}
+gem install bundler -v 1.15.3
+bundle _1.15.3_ install
+echo "-- Gemfile.lock --"
+cat Gemfile.lock
+echo "-- ------------ --"
 
 case "$(uname -s)" in
     Linux*)
