@@ -24,7 +24,6 @@ jobs:
       env:
         GITHUB_CREDENTIALS: "metanorma-ci:${{ secrets.METANORMA_CI_PAT_TOKEN }}"
       run: |
-        sudo gem install relaton-cli
         make test
     - uses: actions/upload-artifact@v2
       if: ${{ always() }}
@@ -82,7 +81,6 @@ jobs:
       env:
         GITHUB_CREDENTIALS: "metanorma-ci:${{ secrets.METANORMA_CI_PAT_TOKEN }}"
       run: |
-        gem install relaton-cli
         make test
     - uses: actions/upload-artifact@v2
       if: ${{ always() }}
@@ -117,20 +115,25 @@ jobs:
     - name: Check swap
       run: systeminfo
     - name: Install tools
-      run: |
-        choco install --no-progress make sed gnuwin32-coreutils.install grep gzip
-    - name: Install gems
-      working-directory: .\ocra\
-      run:
-        bundle install
+      uses: nick-invision/retry@v1
+      with:
+        polling_interval_seconds: 5
+        timeout_minutes: 5
+        max_attempts: 3
+        command: choco install --no-progress yq make gnuwin32-coreutils.install gzip wget git
+    - name: Bundle install
+      run: bundle install
     - name: Run build
-      working-directory: .\ocra\
       shell: cmd
-      run: build.bat
+      run: make -f Makefile.win build SHELL=cmd
     - name: Test created binary on sample file
-      run: ocra\test.bat
+      env:
+        GITHUB_CREDENTIALS: "metanorma-ci:${{ secrets.METANORMA_CI_PAT_TOKEN }}"
+      shell: cmd
+      run: |
+        make -f Makefile.win test-flavor SHELL=cmd
     - name: Copy release binary
-      run: cp ocra/metanorma.exe metanorma-windows-x64.exe
+      run: cp build/metanorma.exe metanorma-windows-x64.exe
     - name: Release binary
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')

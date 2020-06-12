@@ -11,9 +11,9 @@ require 'tempfile'
 COMPILER_MEMFS = '/__enclose_io_memfs__'
 
 def determine_cert_path
-  path = "#{COMPILER_MEMFS}/local/vendor/cacert.pem.mozilla"
+  return "#{File.expand_path(File.dirname(__FILE__))}/cacert.pem.mozilla" if Gem.win_platform?
 
-  return "D:#{path}" if Gem.win_platform?
+  path = "#{COMPILER_MEMFS}/local/vendor/cacert.pem.mozilla"
   return path if File.file?(path)
 
   File.join('vendor', 'cacert.pem.mozilla')
@@ -25,32 +25,33 @@ def cert_file_path
   cert_file_path = cert_tempfile.path
 end
 
+unless Gem.win_platform?
+  # HACK: extract temp libraries to use with ffi
+  # Wrapper for FFI.map_library_name method
+  require 'ffi'
+  require 'pathname'
 
-# HACK: extract temp libraries to use with ffi
-# Wrapper for FFI.map_library_name method
-require 'ffi'
-require 'pathname'
+  # https://github.com/pmq20/ruby-packer/blob/master/lib/compiler/constants.rb#L10
+  COMPILER_MEMFS_LIB_CACHE = Pathname.new(Dir.mktmpdir)
+  at_exit { FileUtils.remove_dir(COMPILER_MEMFS_LIB_CACHE.to_path, true) }
 
-# https://github.com/pmq20/ruby-packer/blob/master/lib/compiler/constants.rb#L10
-COMPILER_MEMFS_LIB_CACHE = Pathname.new(Dir.mktmpdir)
-at_exit { FileUtils.remove_dir(COMPILER_MEMFS_LIB_CACHE.to_path, true) }
+  module FFI
+    # https://stackoverflow.com/questions/29907157/how-to-alias-a-class-method-in-rails-model/29907207
+    self.singleton_class.send(:alias_method, :map_library_name_orig, :map_library_name)
 
-module FFI
-  # https://stackoverflow.com/questions/29907157/how-to-alias-a-class-method-in-rails-model/29907207
-  self.singleton_class.send(:alias_method, :map_library_name_orig, :map_library_name)
+    # http://tech.tulentsev.com/2012/02/ruby-how-to-override-class-method-with-a-module/
+    def self.map_library_name(lib)
+      if lib.start_with? COMPILER_MEMFS
+        memfs_extracted_lib = COMPILER_MEMFS_LIB_CACHE + File.basename(lib)
+        FileUtils.cp lib, memfs_extracted_lib unless memfs_extracted_lib.exist?
+        lib = memfs_extracted_lib.to_path
+      end
 
-  # http://tech.tulentsev.com/2012/02/ruby-how-to-override-class-method-with-a-module/
-  def self.map_library_name(lib)
-    if lib.start_with? COMPILER_MEMFS
-      memfs_extracted_lib = COMPILER_MEMFS_LIB_CACHE + File.basename(lib)
-      FileUtils.cp lib, memfs_extracted_lib unless memfs_extracted_lib.exist?
-      lib = memfs_extracted_lib.to_path
+      map_library_name_orig(lib)
     end
-
-    map_library_name_orig(lib)
   end
+  # END of HACK
 end
-# END of HACK
 
 cert_file_path = nil
 DEBUG = ENV['DEBUG']
