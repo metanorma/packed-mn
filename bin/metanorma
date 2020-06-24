@@ -25,15 +25,23 @@ def cert_file_path
   cert_file_path = cert_tempfile.path
 end
 
-unless Gem.win_platform?
+unless Gem.win_platform? # because on windows we use ocra
+  # https://github.com/pmq20/ruby-packer/blob/master/lib/compiler/constants.rb#L10
+  COMPILER_MEMFS_LIB_CACHE = Pathname.new(Dir.mktmpdir)
+  at_exit { FileUtils.remove_dir(COMPILER_MEMFS_LIB_CACHE.to_path, true) }
+
+  def extract_memfs(file)
+    return file unless file.start_with? COMPILER_MEMFS
+
+    memfs_extracted_lib = COMPILER_MEMFS_LIB_CACHE + File.basename(file)
+    FileUtils.cp file, memfs_extracted_lib unless memfs_extracted_lib.exist?
+    memfs_extracted_lib.to_path
+  end
+
   # HACK: extract temp libraries to use with ffi
   # Wrapper for FFI.map_library_name method
   require 'ffi'
   require 'pathname'
-
-  # https://github.com/pmq20/ruby-packer/blob/master/lib/compiler/constants.rb#L10
-  COMPILER_MEMFS_LIB_CACHE = Pathname.new(Dir.mktmpdir)
-  at_exit { FileUtils.remove_dir(COMPILER_MEMFS_LIB_CACHE.to_path, true) }
 
   module FFI
     # https://stackoverflow.com/questions/29907157/how-to-alias-a-class-method-in-rails-model/29907207
@@ -41,15 +49,29 @@ unless Gem.win_platform?
 
     # http://tech.tulentsev.com/2012/02/ruby-how-to-override-class-method-with-a-module/
     def self.map_library_name(lib)
-      if lib.start_with? COMPILER_MEMFS
-        memfs_extracted_lib = COMPILER_MEMFS_LIB_CACHE + File.basename(lib)
-        FileUtils.cp lib, memfs_extracted_lib unless memfs_extracted_lib.exist?
-        lib = memfs_extracted_lib.to_path
-      end
-
-      map_library_name_orig(lib)
+      map_library_name_orig(extract_memfs(lib))
     end
   end
+  # END of HACK
+
+  # HACK unpack jing jar
+  require 'jing'
+  require 'optout'
+
+  class Jing
+    def self.option_builder
+      @@option_builder
+    end
+  end
+
+  class Optout
+    def []=(name, option)
+      @options[name] = option
+    end
+  end
+
+  Jing.option_builder[:jar] = nil
+  Jing.option_builder.on :jar, "-jar", Optout::File.exists, :default => extract_memfs(Jing::DEFAULT_JAR)
   # END of HACK
 end
 

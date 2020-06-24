@@ -21,7 +21,8 @@ build/Gemfile.lock: build/Gemfile _build
 
 build/metanorma.exe: build/cacert.pem.mozilla build/metanorma build/Gemfile build/Gemfile.lock
 	gem install ocra
-	pushd build & ocra --verbose --console --debug --gem-full=ruby-jing --add-all-core --gemfile Gemfile metanorma cacert.pem.mozilla & popd
+	pushd build & ocra --verbose --console --gem-full --add-all-core --gemfile Gemfile metanorma cacert.pem.mozilla & popd
+	gem uninstall metanorma-cli
 
 build: build/metanorma.exe
 
@@ -37,7 +38,7 @@ test: build/mparallel.exe
 test-flavor:
 	del build\metanorma
 	if not exist $(shell pwd)\build\$(TEST_FLAVOR) git clone --recurse-submodules https://$(GITHUB_CREDENTIALS)@github.com/metanorma/mn-samples-$(TEST_FLAVOR) build/$(TEST_FLAVOR)
-	set PATH=%cd%\build;$(PATH) & $(MAKE) all publish -C build/$(TEST_FLAVOR) -f Makefile.win SHELL=cmd SKIP_BUNDLE=true
+	set PATH=%cd%\build;$(PATH) & $(MAKE) all -C build/$(TEST_FLAVOR) -f Makefile.win SHELL=cmd SKIP_BUNDLE=true
 
 clean:
 	rmdir /q /s $(shell pwd)\build & mkdir $(shell pwd)\build
