@@ -28,13 +28,19 @@ end
 unless Gem.win_platform? # because on windows we use ocra
   # https://github.com/pmq20/ruby-packer/blob/master/lib/compiler/constants.rb#L10
   COMPILER_MEMFS_LIB_CACHE = Pathname.new(Dir.mktmpdir)
-  at_exit { FileUtils.remove_dir(COMPILER_MEMFS_LIB_CACHE.to_path, true) }
+  at_exit {
+    puts "<><><><><><>  drop #{COMPILER_MEMFS_LIB_CACHE}"
+    FileUtils.remove_dir(COMPILER_MEMFS_LIB_CACHE.to_path, true)
+  }
 
   def extract_memfs(file)
     return file unless file.start_with? COMPILER_MEMFS
 
     memfs_extracted_lib = COMPILER_MEMFS_LIB_CACHE + File.basename(file)
     FileUtils.cp file, memfs_extracted_lib unless memfs_extracted_lib.exist?
+
+    puts "<><><><><><> #{file} extracted to #{memfs_extracted_lib}"
+
     memfs_extracted_lib.to_path
   end
 
