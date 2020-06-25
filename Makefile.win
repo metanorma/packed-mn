@@ -33,7 +33,7 @@ build/mparallel.exe:
 
 test: build/mparallel.exe
 	gem install relaton-cli
-	build/mparallel.exe --trace --logfile=parallel.log --pattern="make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR={{0}}"  iso : cc : gb : iec : itu : ogc : un : iho : nist
+	build/mparallel.exe --trace --logfile=parallel.log --pattern="make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR={{0}}" : iso : cc : gb : iec : itu : ogc : un : iho : nist
 
 test-flavor:
 	del build\metanorma

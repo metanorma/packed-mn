@@ -131,7 +131,17 @@ jobs:
         GITHUB_CREDENTIALS: "metanorma-ci:${{ secrets.METANORMA_CI_PAT_TOKEN }}"
       shell: cmd
       run: |
-        make -f Makefile.win test SHELL=cmd
+        :: for some reason mparallel doesn't work on GitHub Actions
+        :: make -f Makefile.win test SHELL=cmd
+        make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=iso
+        make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=cc
+        make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=gb
+        make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=iec
+        make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=itu
+        make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=ogc
+        make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=un
+        make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=iho
+        make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=nist
     - name: Copy release binary
       run: cp build/metanorma.exe metanorma-windows-x64.exe
     - name: Release binary

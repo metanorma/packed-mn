@@ -62,16 +62,30 @@ unless Gem.win_platform? # because on windows we use ocra
     def self.option_builder
       @@option_builder
     end
-  end
 
-  class Optout
-    def []=(name, option)
-      @options[name] = option
+    def validate(xml)
+      @options[:xmlfile] = extract_memfs(xml)
+      @options[:schema] = extract_memfs(@options[:schema])
+
+      out = execute(@options)
+      return [] if $?.success? and out.empty?
+      errors = parse_output(out)
+      raise ExecutionError, out if errors.none? # There must have been a problem that was not schema related
+      errors
     end
   end
 
-  Jing.option_builder[:jar] = nil
-  Jing.option_builder.on :jar, "-jar", Optout::File.exists, :default => extract_memfs(Jing::DEFAULT_JAR)
+  class Optout
+    def []=(name, value)
+      @options[name] = value
+    end
+  end
+
+  Jing.option_builder[:jar] = Optout::Option.create(:jar, "-jar", 
+    :index => 1,
+    :validator => Optout::File.exists,
+    :default => extract_memfs(Jing::DEFAULT_JAR)
+  )
   # END of HACK
 end
 
