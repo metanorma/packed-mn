@@ -4,6 +4,8 @@ source 'https://rubygems.org'
 
 git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 
+gem 'iso-639', '<= 0.2.10' # https://github.com/metanorma/packed-mn/issues/26
+
 gem 'metanorma-mpfd'
 gem 'metanorma-rsd'
 
