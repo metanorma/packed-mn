@@ -40,10 +40,8 @@ unless Gem.win_platform? # because on windows we use ocra
       if wild
         files = Dir.glob("#{File.dirname(file)}/*#{File.extname(file)}")
         FileUtils.cp_r files, COMPILER_MEMFS_LIB_CACHE
-        puts "<><><><><><> copy #{files} files to #{COMPILER_MEMFS_LIB_CACHE}"
       else
         FileUtils.cp file, memfs_extracted_file
-        puts "<><><><><><> copy #{file} file to #{memfs_extracted_file}"
       end
     end
 

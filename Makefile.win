@@ -21,7 +21,7 @@ build/Gemfile.lock: build/Gemfile _build
 
 build/metanorma.exe: build/cacert.pem.mozilla build/metanorma build/Gemfile build/Gemfile.lock
 	gem install ocra
-	pushd build & ocra --verbose --console --gem-full --add-all-core --gemfile Gemfile metanorma cacert.pem.mozilla & popd
+	pushd build & ocra --verbose --console --add-all-core --gemfile Gemfile --no-dep-run --gem-full metanorma cacert.pem.mozilla & popd
 	gem uninstall metanorma-cli
 
 build: build/metanorma.exe
