@@ -4,16 +4,14 @@ source 'https://rubygems.org'
 
 git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 
-gem 'metanorma-mpfd'
-gem 'metanorma-rsd'
+gem 'iso-639', '<= 0.2.10' # https://github.com/metanorma/packed-mn/issues/26
 
-gem 'ruby-jing',
-    git: 'https://github.com/metanorma/ruby-jing.git',
-    ref: 'c28d0204766b502c2239799d2e2605c6d7d7778e'
+gem 'metanorma-mpfa'
+gem 'metanorma-ribose'
 
 group :development do
   gem 'byebug'
   gem 'rubocop'
 end
 
-gem "metanorma-cli", "= 1.2.13"
+gem "metanorma-cli", "= 1.3.0"
