@@ -26,6 +26,7 @@ jobs:
       env:
         GITHUB_CREDENTIALS: "metanorma-ci:${{ secrets.METANORMA_CI_PAT_TOKEN }}"
       run: |
+        build/metanorma setup --agree-to-terms
         make test
     - uses: actions/upload-artifact@v2
       if: ${{ always() }}
@@ -83,6 +84,7 @@ jobs:
       env:
         GITHUB_CREDENTIALS: "metanorma-ci:${{ secrets.METANORMA_CI_PAT_TOKEN }}"
       run: |
+        build/metanorma setup --agree-to-terms
         make test
     - uses: actions/upload-artifact@v2
       if: ${{ always() }}
@@ -135,6 +137,7 @@ jobs:
       run: |
         :: for some reason mparallel doesn't work on GitHub Actions
         :: make -f Makefile.win test SHELL=cmd
+        build\metanorma.exe setup --agree-to-terms
         make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=iso
         make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=cc
         make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=gb
