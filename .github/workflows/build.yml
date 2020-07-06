@@ -24,7 +24,6 @@ jobs:
       env:
         GITHUB_CREDENTIALS: "metanorma-ci:${{ secrets.METANORMA_CI_PAT_TOKEN }}"
       run: |
-        sudo gem install relaton-cli
         make test
     - uses: actions/upload-artifact@v2
       if: ${{ always() }}
@@ -82,7 +81,6 @@ jobs:
       env:
         GITHUB_CREDENTIALS: "metanorma-ci:${{ secrets.METANORMA_CI_PAT_TOKEN }}"
       run: |
-        gem install relaton-cli
         make test
     - uses: actions/upload-artifact@v2
       if: ${{ always() }}
@@ -116,32 +114,40 @@ jobs:
       run: gem -v
     - name: Check swap
       run: systeminfo
-    - name: Install gems
-      working-directory: .\ocra\
-      run:
-        bundle install
+    - name: Install tools
+      uses: nick-invision/retry@v1
+      with:
+        polling_interval_seconds: 5
+        timeout_minutes: 5
+        max_attempts: 3
+        command: choco install --no-progress yq make gnuwin32-coreutils.install gzip wget git
+    - name: Bundle install
+      run: bundle install
     - name: Run build
-      working-directory: .\ocra\
       shell: cmd
-      run:
-        build.bat
-
-    # - name: Install dependencies
-    #   run: brew install squashfs
-    # - name: Download and install rubyc
-    #   run: curl -L http://enclose.io/rubyc/rubyc-darwin-x64.gz | gunzip > rubyc && chmod +x rubyc
-    # - name: run build
-    #   run: make build
-    # - name: Test created binary on sample file
-    #   run: ./build/metanorma --type iso -x html ./sources/iso/iso-rice-en.adoc
-    # - name: Copy release binary
-    #   run: cp build/metanorma metanorma-windows-x64
-    # - name: Set release binary permissions
-    #   run: chmod a+x metanorma-windows-x64
-    # - name: Release binary
-    #   uses: softprops/action-gh-release@v1
-    #   if: startsWith(github.ref, 'refs/tags/')
-    #   with:
-    #     files: metanorma-windows-x64
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: make -f Makefile.win build SHELL=cmd
+    - name: Test created binary on sample file
+      env:
+        GITHUB_CREDENTIALS: "metanorma-ci:${{ secrets.METANORMA_CI_PAT_TOKEN }}"
+      shell: cmd
+      run: |
+        :: for some reason mparallel doesn't work on GitHub Actions
+        :: make -f Makefile.win test SHELL=cmd
+        make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=iso
+        make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=cc
+        make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=gb
+        make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=iec
+        make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=itu
+        make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=ogc
+        make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=un
+        make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=iho
+        make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=nist
+    - name: Copy release binary
+      run: cp build/metanorma.exe metanorma-windows-x64.exe
+    - name: Release binary
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        files: metanorma-windows-x64.exe
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

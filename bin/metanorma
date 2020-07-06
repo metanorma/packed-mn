@@ -11,9 +11,9 @@ require 'tempfile'
 COMPILER_MEMFS = '/__enclose_io_memfs__'
 
 def determine_cert_path
-  path = "#{COMPILER_MEMFS}/local/vendor/cacert.pem.mozilla"
+  return "#{File.expand_path(File.dirname(__FILE__))}/cacert.pem.mozilla" if Gem.win_platform?
 
-  return "D:#{path}" if Gem.win_platform?
+  path = "#{COMPILER_MEMFS}/local/vendor/cacert.pem.mozilla"
   return path if File.file?(path)
 
   File.join('vendor', 'cacert.pem.mozilla')
@@ -25,32 +25,79 @@ def cert_file_path
   cert_file_path = cert_tempfile.path
 end
 
+unless Gem.win_platform? # because on windows we use ocra
+  # https://github.com/pmq20/ruby-packer/blob/master/lib/compiler/constants.rb#L10
+  COMPILER_MEMFS_LIB_CACHE = Pathname.new(Dir.mktmpdir)
+  at_exit {
+    FileUtils.remove_dir(COMPILER_MEMFS_LIB_CACHE.to_path, true)
+  }
 
-# HACK: extract temp libraries to use with ffi
-# Wrapper for FFI.map_library_name method
-require 'ffi'
-require 'pathname'
+  def extract_memfs(file, wild=false)
+    return file unless file.start_with? COMPILER_MEMFS
 
-# https://github.com/pmq20/ruby-packer/blob/master/lib/compiler/constants.rb#L10
-COMPILER_MEMFS_LIB_CACHE = Pathname.new(Dir.mktmpdir)
-at_exit { FileUtils.remove_dir(COMPILER_MEMFS_LIB_CACHE.to_path, true) }
-
-module FFI
-  # https://stackoverflow.com/questions/29907157/how-to-alias-a-class-method-in-rails-model/29907207
-  self.singleton_class.send(:alias_method, :map_library_name_orig, :map_library_name)
-
-  # http://tech.tulentsev.com/2012/02/ruby-how-to-override-class-method-with-a-module/
-  def self.map_library_name(lib)
-    if lib.start_with? COMPILER_MEMFS
-      memfs_extracted_lib = COMPILER_MEMFS_LIB_CACHE + File.basename(lib)
-      FileUtils.cp lib, memfs_extracted_lib unless memfs_extracted_lib.exist?
-      lib = memfs_extracted_lib.to_path
+    memfs_extracted_file = COMPILER_MEMFS_LIB_CACHE + File.basename(file)
+    unless memfs_extracted_file.exist?
+      if wild
+        files = Dir.glob("#{File.dirname(file)}/*#{File.extname(file)}")
+        FileUtils.cp_r files, COMPILER_MEMFS_LIB_CACHE
+      else
+        FileUtils.cp file, memfs_extracted_file
+      end
     end
 
-    map_library_name_orig(lib)
+    memfs_extracted_file.to_path
   end
+
+  # HACK: extract temp libraries to use with ffi
+  # Wrapper for FFI.map_library_name method
+  require 'ffi'
+  require 'pathname'
+
+  module FFI
+    # https://stackoverflow.com/questions/29907157/how-to-alias-a-class-method-in-rails-model/29907207
+    self.singleton_class.send(:alias_method, :map_library_name_orig, :map_library_name)
+
+    # http://tech.tulentsev.com/2012/02/ruby-how-to-override-class-method-with-a-module/
+    def self.map_library_name(lib)
+      map_library_name_orig(extract_memfs(lib))
+    end
+  end
+  # END of HACK
+
+  # HACK unpack jing jar
+  require 'jing'
+  require 'optout'
+
+  class Jing
+    def self.option_builder
+      @@option_builder
+    end
+
+    def validate(xml)
+      @options[:xmlfile] = extract_memfs(xml)
+      @options[:schema] = extract_memfs(@options[:schema], true)
+
+      out = execute(@options)
+      return [] if $?.success? and out.empty?
+      errors = parse_output(out)
+      raise ExecutionError, out if errors.none? # There must have been a problem that was not schema related
+      errors
+    end
+  end
+
+  class Optout
+    def []=(name, value)
+      @options[name] = value
+    end
+  end
+
+  Jing.option_builder[:jar] = Optout::Option.create(:jar, "-jar", 
+    :index => 1,
+    :validator => Optout::File.exists,
+    :default => extract_memfs(Jing::DEFAULT_JAR)
+  )
+  # END of HACK
 end
-# END of HACK
 
 cert_file_path = nil
 DEBUG = ENV['DEBUG']
@@ -74,24 +121,24 @@ end
 # explicitly load all dependent gems
 # ruby packer cannot use gem load path correctly.
 require 'isodoc'
+require 'metanorma-iso'
+require 'metanorma-standoc'
 require 'metanorma-generic'
 require 'metanorma-csa'
-require 'metanorma-csd'
+require 'metanorma-cc'
 require 'metanorma-gb'
 require 'metanorma-iec'
 require 'metanorma-ietf'
 require 'metanorma-itu'
-require 'metanorma-m3d'
-require 'metanorma-mpfd'
+require 'metanorma-m3aawg'
 require 'metanorma-nist'
 require 'metanorma-ogc'
-require 'metanorma-rsd'
-require 'metanorma-standoc'
+require 'metanorma-ribose' unless Gem.win_platform? # workaround for ocra
+require 'metanorma-mpfa' unless Gem.win_platform? # workaround for ocra
 require 'metanorma-un'
 require 'metanorma'
 require 'nokogiri'
 require 'git'
-require 'metanorma-iso'
 require 'metanorma/cli'
 require 'sassc'
 require 'thor'

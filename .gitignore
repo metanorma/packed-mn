@@ -7,3 +7,5 @@ rubyc*
 sources/*/*.doc
 sources/*/*.html
 sources/*/*.xml
+
+/parallel.log

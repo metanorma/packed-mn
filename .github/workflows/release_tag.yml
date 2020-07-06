@@ -26,11 +26,11 @@ jobs:
         ruby-version: '2.6'
     - name: Install bundler
       run: |
-        gem install bundler -v 1.15.3
+        gem install bundler
     - name: Update version
       run: |
-        bundle _1.15.3_ remove metanorma-cli
-        bundle _1.15.3_ add metanorma-cli -v ${METANORMA_CLI_VERSION}
+        bundle remove metanorma-cli
+        bundle add metanorma-cli -v ${METANORMA_CLI_VERSION}
         bundle install --deployment
     - name: Push commit and tag
       run: |
