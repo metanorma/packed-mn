@@ -101,6 +101,7 @@ unless Gem.win_platform? # because on windows we use ocra
   # HACK unpack mn2pdf and mn2sts jar
   require 'mn2pdf'
   module Mn2pdf
+    remove_const('MN2PDF_JAR_PATH')
     MN2PDF_JAR_PATH = extract_memfs(File.join(Gem.loaded_specs['mn2pdf'].full_gem_path, 'bin', 'mn2pdf.jar'))
 
     self.singleton_class.send(:alias_method, :convert_orig, :convert)
@@ -112,6 +113,7 @@ unless Gem.win_platform? # because on windows we use ocra
 
   require 'mn2sts'
   module Mn2sts
+    remove_const('MN2STS_JAR_PATH')
     MN2STS_JAR_PATH = extract_memfs(File.join(Gem.loaded_specs['mn2sts'].full_gem_path, 'bin', 'mn2sts.jar'))
 
     self.singleton_class.send(:alias_method, :convert_orig, :convert)
