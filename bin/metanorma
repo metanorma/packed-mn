@@ -32,14 +32,14 @@ unless Gem.win_platform? # because on windows we use ocra
     FileUtils.remove_dir(COMPILER_MEMFS_LIB_CACHE.to_path, true)
   }
 
-  def extract_memfs(file, wild=false)
+  def extract_memfs(file, wild=false, extract_path=COMPILER_MEMFS_LIB_CACHE)
     return file unless file.start_with? COMPILER_MEMFS
 
-    memfs_extracted_file = COMPILER_MEMFS_LIB_CACHE + File.basename(file)
+    memfs_extracted_file = extract_path + File.basename(file)
     unless memfs_extracted_file.exist?
       if wild
         files = Dir.glob("#{File.dirname(file)}/*#{File.extname(file)}")
-        FileUtils.cp_r files, COMPILER_MEMFS_LIB_CACHE
+        FileUtils.cp_r files, extract_path
       else
         FileUtils.cp file, memfs_extracted_file
       end
@@ -91,11 +91,43 @@ unless Gem.win_platform? # because on windows we use ocra
     end
   end
 
-  Jing.option_builder[:jar] = Optout::Option.create(:jar, "-jar", 
+  Jing.option_builder[:jar] = Optout::Option.create(:jar, '-jar',
     :index => 1,
     :validator => Optout::File.exists,
     :default => extract_memfs(Jing::DEFAULT_JAR)
   )
+  # END of HACK
+
+  # HACK unpack mn2pdf and mn2sts jar
+  require 'mn2pdf'
+  module Mn2pdf
+    MN2PDF_JAR_PATH = extract_memfs(File.join(Gem.loaded_specs['mn2pdf'].full_gem_path, 'bin', 'mn2pdf.jar'))
+
+    self.singleton_class.send(:alias_method, :convert_orig, :convert)
+
+    def self.convert(url_path, output_path, xsl_stylesheet)
+      convert_orig(extract_memfs(url_path), output_path, extract_memfs(xsl_stylesheet))
+    end
+  end
+
+  require 'mn2sts'
+  module Mn2sts
+    MN2STS_JAR_PATH = extract_memfs(File.join(Gem.loaded_specs['mn2sts'].full_gem_path, 'bin', 'mn2sts.jar'))
+
+    self.singleton_class.send(:alias_method, :convert_orig, :convert)
+
+    def self.convert(xml_path_in, xml_path_out)
+      convert_orig(extract_memfs(xml_path_in), xml_path_out)
+    end
+  end
+  # END of HACK
+
+  # HACK unpack saasc styles
+  require 'sassc'
+  base_style = COMPILER_MEMFS_LIB_CACHE + 'base_style'
+  base_style.mkpath()
+  extract_memfs(File.join(Gem.loaded_specs['isodoc'].full_gem_path, 'lib', 'isodoc', 'base_style', '*'), true, base_style)
+  SassC.load_paths << COMPILER_MEMFS_LIB_CACHE 
   # END of HACK
 end
 
