@@ -125,11 +125,17 @@ unless Gem.win_platform? # because on windows we use ocra
   # END of HACK
 
   # HACK unpack saasc styles
-  require 'sassc'
-  base_style = COMPILER_MEMFS_LIB_CACHE + 'base_style'
-  base_style.mkpath()
-  extract_memfs(File.join(Gem.loaded_specs['isodoc'].full_gem_path, 'lib', 'isodoc', 'base_style', '*'), true, base_style)
-  SassC.load_paths << COMPILER_MEMFS_LIB_CACHE 
+  begin
+    require 'sassc'
+    base_style = COMPILER_MEMFS_LIB_CACHE + 'base_style'
+    base_style.mkpath()
+    extract_memfs(File.join(Gem.loaded_specs['isodoc'].full_gem_path, 'lib', 'isodoc', 'base_style', '*.scss'), true, base_style)
+    SassC.load_paths << COMPILER_MEMFS_LIB_CACHE
+    SassC.load_paths << base_style
+    # TODO reveisit should we load ./metanorma-$flavor/lib/isodoc/$flavor/html/*.scss
+  rescue LoadError
+    puts "Skip extra SassC.load_paths"
+  end
   # END of HACK
 end
 
@@ -174,7 +180,6 @@ require 'metanorma'
 require 'nokogiri'
 require 'git'
 require 'metanorma/cli'
-require 'sassc'
 require 'thor'
 
 # start up the CLI
