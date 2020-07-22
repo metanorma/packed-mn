@@ -14,11 +14,16 @@ case "$(uname -s)" in
     Linux*)
 		TEMP_DIR="$(mktemp -d --tmpdir="$HOME" .rubyc-build.XXXXXX)"
 		cp Gemfile* "$TEMP_DIR" && cp bin/metanorma "$TEMP_DIR" && cp -R vendor "$TEMP_DIR"
+		bundle _1.15.3_ config --local build.sassc --enable-static-stdlib
 		./rubyc --clean-tmpdir -r "$TEMP_DIR" -o ./build/metanorma "$TEMP_DIR/metanorma"
 		;;
     Darwin*)
 		TEMP_DIR="$(mktemp -d)"
 		cp Gemfile* "$TEMP_DIR" && cp bin/metanorma "$TEMP_DIR" && cp -R vendor "$TEMP_DIR"
 		env CC="clang -mmacosx-version-min=10.3" ./rubyc --clean-tmpdir -r "$TEMP_DIR" -o ./build/metanorma "$TEMP_DIR/metanorma"
+		;;
+	*)
+		echo "unsupported platform $(uname -s)"
+		exit 1
 		;;
 esac

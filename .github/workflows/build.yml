@@ -67,6 +67,8 @@ jobs:
       run: clang -v
     - name: Check clang++
       run: clang++ -v
+    - name: Check libstdc++
+      run: strings /usr/lib/x86_64-linux-gnu/libstdc++.so.6 | grep LIBCXX
     - name: Use Clang for compilation
       run: sudo update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100 && sudo update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 100
     - name: Enable swap
