@@ -1,0 +1,102 @@
+name: windows
+
+on:
+  push:
+    branches: [ master ]
+    tags: [ '*' ]
+  pull_request:
+    paths-ignore:
+      - .github/workflows/linux.yml
+      - .github/workflows/macos.yml
+      - .github/workflows/release_tag.yml
+      - Makefile
+      - bin/build.sh
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-ruby@v1
+      with:
+       ruby-version: '2.6'
+    - name: gem version
+      run: gem -v
+    - name: Check swap
+      run: systeminfo
+    - name: Install tools
+      uses: nick-invision/retry@v1
+      with:
+        polling_interval_seconds: 5
+        timeout_minutes: 5
+        max_attempts: 3
+        command: choco install --no-progress yq make gnuwin32-coreutils.install gzip wget git
+    - name: Bundle install
+      run: bundle install
+    - name: Run build
+      shell: cmd
+      run: make -f Makefile.win build SHELL=cmd
+    - uses: actions/upload-artifact@v2
+      with:
+        name: metanorma-windows
+        path: build/metanorma.exe
+
+  test:
+    runs-on: windows-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/download-artifact@v2
+        with:
+          name: metanorma-windows
+          path: build
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: '2.6'
+      - name: Install tools
+        uses: nick-invision/retry@v1
+        with:
+          polling_interval_seconds: 5
+          timeout_minutes: 5
+          max_attempts: 3
+          command: choco install --no-progress yq make gnuwin32-coreutils.install gzip wget git
+      - name: Test created binary on sample file
+        env:
+          GITHUB_CREDENTIALS: "metanorma-ci:${{ secrets.METANORMA_CI_PAT_TOKEN }}"
+          SKIP_BUNDLE: true
+        shell: pwsh
+        run: |
+          $job = "iso", "cc", "gb", "iec", "itu", "ogc", "un", "iho", "nist" | ForEach-Object -Parallel { make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=$_ 2>&1 > .\test_${_}.log } -ThrottleLimit 5 -AsJob
+          $job | Wait-Job | Receive-Job
+          # make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=iso
+          # make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=cc
+          # make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=gb
+          # make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=iec
+          # make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=itu
+          # make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=ogc
+          # make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=un
+          # make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=iho
+          # make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=nist
+      - uses: actions/upload-artifact@v2
+        if: ${{ always() }}
+        with:
+          name: samples_windows_logs
+          path: test_*.log
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: metanorma-windows
+          path: build
+      - name: Copy release binary
+        run: cp build/metanorma.exe metanorma-windows-x64.exe
+      - name: Release binary
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: metanorma-windows-x64.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

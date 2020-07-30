@@ -1,7 +1,7 @@
 #!make
 SHELL := /bin/bash
 
-.PHONY: build test test-flavor
+.PHONY: build test
 
 ifeq ($(OS),Windows_NT)
   PLATFORM := windows
@@ -18,12 +18,14 @@ endif
 TEST_FLAVOR ?= iso
 
 rubyc:
-	curl -L http://enclose.io/rubyc/rubyc-$(PLATFORM)-x64.gz | gunzip > rubyc && chmod +x rubyc
+	curl -L https://github.com/metanorma/ruby-packer/releases/download/v0.4.0/rubyc-$(PLATFORM)-x64 > ./rubyc && chmod +x rubyc
 
 build: build/metanorma
 
 build/metanorma: rubyc
+ifeq (,$(wildcard build/metanorma))
 	./bin/build.sh
+endif
 
 build/yq:
 	curl -L https://github.com/mikefarah/yq/releases/download/3.3.0/yq_$(PLATFORM)_amd64 --output build/yq && chmod +x build/yq
