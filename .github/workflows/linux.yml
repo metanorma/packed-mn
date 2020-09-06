@@ -94,11 +94,13 @@ jobs:
       - name: Copy release binary
         run: mv build/metanorma metanorma-linux-x64
       - name: Set release binary permissions
-        run: chmod a+x metanorma-linux-x64
+        run: |
+          chmod a+x metanorma-linux-x64
+          tar -czvf metanorma-linux-x64.tgz metanorma-linux-x64
       - name: Release binary
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: metanorma-linux-x64
+          files: metanorma-linux-x64.tgz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
