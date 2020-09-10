@@ -51,12 +51,3 @@ from the `metanorma_entry_point` Ruby script.
 
 This script loads all dependencies in order to ruby packer
 correctly link all gems and their native extensions.
-
-
-== TODO
-
-Currently, it uses 2 forks of `sassc` and `ruby-jing` gems:
-
-* SassC was patched in order to load `libsass` bindings into
-  `memfs` of executable.
-* `ruby-jing` fork skips the usage of `jing` command completely.
