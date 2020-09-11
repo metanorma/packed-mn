@@ -32,7 +32,24 @@ unless Gem.win_platform? # because on windows we use ocra
     FileUtils.remove_dir(COMPILER_MEMFS_LIB_CACHE.to_path, true)
   }
 
+  class String
+    def is_quoted
+      self.start_with?('"') && self.end_with?('"')
+    end
+
+    def unquote
+      self.chomp('"').reverse.chomp('"').reverse
+    end
+
+    def quote
+      "\"#{self}\""
+    end
+  end
+
   def extract_memfs(file, wild=false, extract_path=COMPILER_MEMFS_LIB_CACHE)
+    is_quoted = file.is_quoted
+    file = file.unquote if is_quoted
+
     return file unless file.start_with? COMPILER_MEMFS
 
     memfs_extracted_file = extract_path + File.basename(file)
@@ -45,7 +62,7 @@ unless Gem.win_platform? # because on windows we use ocra
       end
     end
 
-    memfs_extracted_file.to_path
+    is_quoted ? memfs_extracted_file.to_path.quote : memfs_extracted_file.to_path
   end
 
   # HACK: extract temp libraries to use with ffi
@@ -105,6 +122,7 @@ unless Gem.win_platform? # because on windows we use ocra
     MN2PDF_JAR_PATH = extract_memfs(File.join(Gem.loaded_specs['mn2pdf'].full_gem_path, 'bin', 'mn2pdf.jar'))
 
     self.singleton_class.send(:alias_method, :convert_orig, :convert)
+    self.singleton_class.send(:remove_method, :convert)
 
     def self.convert(url_path, output_path, xsl_stylesheet)
       convert_orig(extract_memfs(url_path), output_path, extract_memfs(xsl_stylesheet))
@@ -117,6 +135,7 @@ unless Gem.win_platform? # because on windows we use ocra
     MN2STS_JAR_PATH = extract_memfs(File.join(Gem.loaded_specs['mn2sts'].full_gem_path, 'bin', 'mn2sts.jar'))
 
     self.singleton_class.send(:alias_method, :convert_orig, :convert)
+    self.singleton_class.send(:remove_method, :convert)
 
     def self.convert(xml_path_in, xml_path_out)
       convert_orig(extract_memfs(xml_path_in), xml_path_out)
