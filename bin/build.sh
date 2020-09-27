@@ -15,6 +15,7 @@ case "$(uname -s)" in
 		TEMP_DIR="$(mktemp -d --tmpdir="$HOME" .rubyc-build.XXXXXX)"
 		cp Gemfile* "$TEMP_DIR" && cp bin/metanorma "$TEMP_DIR" && cp -R vendor "$TEMP_DIR"
 		./rubyc --make-args=-j2 --clean-tmpdir -r "$TEMP_DIR" -o ./build/metanorma "$TEMP_DIR/metanorma"
+		strip ./build/metanorma
 		;;
     Darwin*)
 		TEMP_DIR="$(mktemp -d)"
