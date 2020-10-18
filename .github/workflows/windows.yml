@@ -100,3 +100,10 @@ jobs:
           files: metanorma-windows-x64.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Trigger chocolatey-metanorma
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
+          repository: metanorma/chocolatey-metanorma
+          event-type: ${{ github.repository }}
+          client-payload: '{ "ref": "${{ github.ref }}" }'

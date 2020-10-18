@@ -104,3 +104,10 @@ jobs:
           files: metanorma-linux-x64.tgz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Trigger metanorma-snap
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
+          repository: metanorma/metanorma-snap
+          event-type: ${{ github.repository }}
+          client-payload: '{ "ref": "${{ github.ref }}" }'
