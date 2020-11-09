@@ -14,4 +14,4 @@ group :development do
   gem 'rubocop'
 end
 
-gem "metanorma-cli", "= 1.3.8"
+gem "metanorma-cli", "= 1.3.8.1pre"
