@@ -11,7 +11,6 @@ gem 'metanorma-ribose'
 
 group :development do
   gem 'byebug'
-  gem 'rubocop'
 end
 
 gem "metanorma-cli", "= 1.3.8.1pre"
