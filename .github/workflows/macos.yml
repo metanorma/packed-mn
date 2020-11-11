@@ -27,6 +27,8 @@ jobs:
       - name: Install dependencies
         run: brew install squashfs
       - name: run build
+        env:
+          DEVELOPER_DIR: /Applications/Xcode_11.7.app/Contents/Developer
         run: make build
       - uses: actions/upload-artifact@v2
         with:
