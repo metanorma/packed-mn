@@ -65,7 +65,7 @@ jobs:
           SKIP_BUNDLE: true
         shell: pwsh
         run: |
-          $job = "iso", "cc", "gb", "iec", "itu", "ogc", "un", "iho", "nist" | ForEach-Object -Parallel { make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=$_ 2>&1 > .\test_${_}.log } -ThrottleLimit 5 -AsJob
+          $job = "iso", "cc", "iec", "itu", "ogc", "un", "iho", "nist" | ForEach-Object -Parallel { make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=$_ 2>&1 > .\test_${_}.log } -ThrottleLimit 5 -AsJob
           $job | Wait-Job | Receive-Job
           # make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=iso
           # make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=cc
