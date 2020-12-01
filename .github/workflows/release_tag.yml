@@ -10,28 +10,32 @@ jobs:
     if: startsWith(github.event.client_payload.ref, 'refs/tags/v')
     steps:
     - uses: actions/checkout@v1
+
     - name: Add writable remote
       run: |
         git config --global user.name "metanorma-ci"
         git config --global user.email "metanorma-ci@users.noreply.github.com"
         git remote add github "https://metanorma-ci:${{ secrets.METANORMA_CI_PAT_TOKEN }}@github.com/$GITHUB_REPOSITORY.git"
         git pull github ${GITHUB_REF} --ff-only
+
     - name: Parse metanorma-cli version
       env:
         METANORMA_CLI_TAG: ${{ github.event.client_payload.ref }}
       run: |
-        echo "::set-env name=METANORMA_CLI_VERSION::${METANORMA_CLI_TAG#*/v}"
+        echo METANORMA_CLI_VERSION=${METANORMA_CLI_TAG#*/v} >> ${GITHUB_ENV}
+
     - uses: actions/setup-ruby@v1
       with:
         ruby-version: '2.6'
-    - name: Install bundler
-      run: |
-        gem install bundler
+
+    - run: gem install bundler
+
     - name: Update version
       run: |
         bundle remove metanorma-cli
         bundle add metanorma-cli -v ${METANORMA_CLI_VERSION}
         bundle install --deployment
+
     - name: Push commit and tag
       run: |
         git add Gemfile
