@@ -69,9 +69,7 @@ jobs:
       - name: Test created binary on sample file
         env:
           GITHUB_CREDENTIALS: "metanorma-ci:${{ secrets.METANORMA_CI_PAT_TOKEN }}"
-        run: |
-          build/metanorma setup --agree-to-terms
-          make test
+        run: make test
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}
         with:
