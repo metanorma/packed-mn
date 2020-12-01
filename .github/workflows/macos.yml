@@ -22,8 +22,11 @@ jobs:
       - uses: shogo82148/actions-setup-perl@v1
         with:
           perl-version: '5.16.2'
-      - name: Perl version
-        run: perl -v
+      - name: Version
+        run: |
+          perl -v
+          clang -v
+          $(brew --prefix llvm)/bin/clang -v
       - name: Install dependencies
         run: brew install squashfs
       - name: run build
