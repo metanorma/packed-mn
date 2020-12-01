@@ -19,7 +19,8 @@ case "$(uname -s)" in
 		;;
     Darwin*)
 		TEMP_DIR="$(mktemp -d)"
+		CLANG_PATH="$(xcodebuild -find clang)"
 		cp Gemfile* "$TEMP_DIR" && cp bin/metanorma "$TEMP_DIR" && cp -R vendor "$TEMP_DIR"
-		env CC="clang -mmacosx-version-min=10.3" ./rubyc --clean-tmpdir -r "$TEMP_DIR" -o ./build/metanorma "$TEMP_DIR/metanorma"
+		env CC="${CLANG_PATH} -mmacosx-version-min=10.3" ./rubyc --clean-tmpdir -r "$TEMP_DIR" -o ./build/metanorma "$TEMP_DIR/metanorma"
 		;;
 esac
