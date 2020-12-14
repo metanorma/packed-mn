@@ -7,7 +7,7 @@ TEST_FLAVOR ?= iso
 _build:
 	if not exist build md build
 
-build/cacert.pem.mozilla: ocra/cacert.pem.mozilla _build
+build/cacert.pem.mozilla: vendor/cacert.pem.mozilla _build
 	cp $< $@
 
 build/Gemfile: Gemfile _build
