@@ -22,16 +22,23 @@ jobs:
     - uses: shogo82148/actions-setup-perl@v1
       with:
         perl-version: '5.16.2'
-    - name: Perl version
-      run: perl -v
-    - name: Install dependencies
-      run: sudo apt-get update && sudo apt-get -y -q install squashfs-tools bison flex texinfo
-    - name: Check clang
-      run: clang -v
-    - name: Check clang++
-      run: clang++ -v
+    - run: sudo apt-get update && sudo apt-get -y -q install squashfs-tools bison flex texinfo
+    - run: sudo update-ca-certificates
     - name: Use Clang for compilation
       run: sudo update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100 && sudo update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 100
+    - name: Check versions
+      run: |
+        perl -v
+        echo "---"
+        clang -v
+        echo "---"
+        clang++ -v
+        echo "---"
+        ruby -v
+        openssl version -d
+        curl -Lks 'https://git.io/rg-ssl' | ruby
+        echo "---"
+        grep -R 'MIIDXzCCAkeg'  $(openssl version -d | cut -d \" -f2)/certs/
     - name: Enable swap
       run: sudo fallocate -l 9g /mnt/compile.swap && sudo chmod 600 /mnt/compile.swap && sudo mkswap /mnt/compile.swap && sudo swapon /mnt/compile.swap
     - name: Check swap
