@@ -18,7 +18,7 @@ endif
 TEST_FLAVOR ?= iso
 
 rubyc:
-	curl -L https://github.com/metanorma/ruby-packer/releases/download/v0.4.0/rubyc-$(PLATFORM)-x64 > ./rubyc && chmod +x rubyc
+	curl -L https://github.com/metanorma/ruby-packer/releases/download/v0.4.1/rubyc-$(PLATFORM)-x64 > ./rubyc && chmod +x rubyc
 
 build: build/metanorma
 
