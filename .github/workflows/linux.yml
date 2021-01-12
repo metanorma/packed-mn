@@ -21,9 +21,9 @@ jobs:
       with:
         ruby-version: '2.6'
     
-    - uses: shogo82148/actions-setup-perl@v1
-      with:
-        perl-version: '5.16.2'
+    # - uses: shogo82148/actions-setup-perl@v1
+    #   with:
+    #     perl-version: '5.16.2'
     
     - run: sudo apt-get update && sudo apt-get -y -q install squashfs-tools bison flex texinfo
     
