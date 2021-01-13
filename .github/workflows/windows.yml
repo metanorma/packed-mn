@@ -17,29 +17,32 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v1
+
     - uses: actions/setup-ruby@v1
       with:
-       ruby-version: '2.6'
-    - name: gem version
-      run: gem -v
-    - name: Check swap
-      run: systeminfo
-    - name: Install tools
-      uses: nick-invision/retry@v1
+        ruby-version: '2.6'
+
+    - run: gem -v
+
+    - run: systeminfo
+
+    - uses: nick-invision/retry@v1
       with:
         polling_interval_seconds: 5
         timeout_minutes: 5
         max_attempts: 3
         command: choco install --no-progress yq make gnuwin32-coreutils.install gzip wget git
-    - name: Bundle install
-      run: bundle install
-    - name: Run build
+
+    - run: bundle install
+
+    - run: make -f Makefile.win build SHELL=cmd
       shell: cmd
-      run: make -f Makefile.win build SHELL=cmd
+
     - uses: actions/upload-artifact@v2
       with:
         name: metanorma-windows
         path: build/metanorma.exe
+
   test:
     runs-on: windows-latest
     needs: build

@@ -16,23 +16,27 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v1
+
       - uses: actions/setup-ruby@v1
         with:
           ruby-version: '2.6'
+
       - uses: shogo82148/actions-setup-perl@v1
         with:
           perl-version: '5.16.2'
-      - name: Version
-        run: |
-          perl -v
-          clang -v
-          $(brew --prefix llvm)/bin/clang -v
-      - name: Install dependencies
-        run: brew install squashfs
-      - name: run build
+
+    - run: |
+        curl -Lks 'https://git.io/rg-ssl' | ruby
+        echo "perl -v: $(perl -v)"
+        echo "clang -v: $(clang -v)"
+        echo "clang++ -v: $(clang -v)"
+
+      - run: brew install squashfs
+
+      - run: make build
         env:
           DEVELOPER_DIR: /Applications/Xcode_11.7.app/Contents/Developer
-        run: make build
+
       - uses: actions/upload-artifact@v2
         with:
           name: metanorma-macos
