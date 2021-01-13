@@ -9,6 +9,8 @@ gem 'iso-639', '<= 0.2.10' # https://github.com/metanorma/packed-mn/issues/26
 gem 'metanorma-mpfa'
 gem 'metanorma-ribose'
 
+gem 'nokogiri', " ~> 1.10.1"
+
 group :development do
   gem 'byebug'
 end
