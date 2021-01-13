@@ -25,11 +25,11 @@ jobs:
         with:
           perl-version: '5.16.2'
 
-    - run: |
-        curl -Lks 'https://git.io/rg-ssl' | ruby
-        echo "perl -v: $(perl -v)"
-        echo "clang -v: $(clang -v)"
-        echo "clang++ -v: $(clang -v)"
+      - run: |
+          curl -Lks 'https://git.io/rg-ssl' | ruby
+          echo "perl -v: $(perl -v)"
+          echo "clang -v: $(clang -v)"
+          echo "clang++ -v: $(clang -v)"
 
       - run: brew install squashfs
 
