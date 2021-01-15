@@ -34,15 +34,21 @@ test: build/yq build/metanorma
 	MAKE_BASED_PROCESSORS="iso cc iec un nist"; \
 	parallel -j+0 --joblog parallel.log --eta make test-flavor TEST_FLAVOR={} "&>" test_{}.log ::: $${PROCESSORS}; \
 	parallel -j+0 --joblog parallel.log --resume-failed 'echo ---- {} ----; tail -15 test_{}.log; echo ---- --- ----; exit 1' ::: $${PROCESSORS}
-	CLONE_DIR=$(shell pwd)/build; \
-	git clone --recurse-submodules https://${GITHUB_CREDENTIALS}@github.com/metanorma/mn-samples-itu $${CLONE_DIR}/itu;
-	cd $${CLONE_DIR}/itu; ../metanorma site generate sources -c sources/collection.yml
-
 
 test-flavor: build/yq build/metanorma
 	CLONE_DIR=$(shell pwd)/build; \
 	[[ -d $${CLONE_DIR}/$(TEST_FLAVOR) ]] || git clone --recurse-submodules https://${GITHUB_CREDENTIALS}@github.com/metanorma/mn-samples-$(TEST_FLAVOR) $${CLONE_DIR}/$(TEST_FLAVOR); \
 	env PATH="$${CLONE_DIR}:$${PATH}" env SKIP_BUNDLE=true make all publish -C $${CLONE_DIR}/$(TEST_FLAVOR)
+
+test-site-gen: build/metanorma
+	MAKE_BASED_PROCESSORS="itu"; \
+	parallel -j+0 --joblog parallel.log --eta make test-flavor-site-gen TEST_FLAVOR={} "&>" test_{}.log ::: $${PROCESSORS}; \
+	parallel -j+0 --joblog parallel.log --resume-failed 'echo ---- {} ----; tail -15 test_{}.log; echo ---- --- ----; exit 1' ::: $${PROCESSORS}
+
+test-flavor-site-gen:
+	CLONE_DIR=$(shell pwd)/build; \
+	[[ -d $${CLONE_DIR}/$(TEST_FLAVOR) ]] || git clone --recurse-submodules https://${GITHUB_CREDENTIALS}@github.com/metanorma/mn-samples-$(TEST_FLAVOR) $${CLONE_DIR}/$(TEST_FLAVOR); \
+	cd $${CLONE_DIR}/$(TEST_FLAVOR) && $${CLONE_DIR}/metanorma site generate sources -c sources/collection.yml
 
 clean:
 	[ -d build ] || mkdir build; rm -rf build/* || true

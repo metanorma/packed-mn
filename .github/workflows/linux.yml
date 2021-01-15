@@ -62,24 +62,28 @@ jobs:
     needs: build
     steps:
       - uses: actions/checkout@v1
+
       - uses: actions/setup-ruby@v1
         with:
           ruby-version: '2.6'
+
       - uses: actions/download-artifact@v2
         with:
           name: metanorma-linux
           path: build
-      - name: Set permissions
-        run: chmod +x build/metanorma
-      - name: Test created binary on sample file
+
+      - run: chmod +x build/metanorma
+
+      - run: make test test-site-gen
         env:
           GITHUB_CREDENTIALS: "metanorma-ci:${{ secrets.METANORMA_CI_PAT_TOKEN }}"
-        run: make test
+
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}
         with:
           name: samples_${{ matrix.os }}_logs
           path: test_*.log
+
       - uses: actions/upload-artifact@v2
         with:
           name: samples
@@ -94,21 +98,21 @@ jobs:
         with:
           name: metanorma-linux
           path: build
-      - name: Copy release binary
-        run: mv build/metanorma metanorma-linux-x64
+
       - name: Set release binary permissions
         run: |
+          mv build/metanorma metanorma-linux-x64
           chmod a+x metanorma-linux-x64
           tar -czvf metanorma-linux-x64.tgz metanorma-linux-x64
-      - name: Release binary
-        uses: softprops/action-gh-release@v1
+
+      - uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: metanorma-linux-x64.tgz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Trigger metanorma-snap
-        uses: peter-evans/repository-dispatch@v1
+
+      - uses: peter-evans/repository-dispatch@v1
         with:
           token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
           repository: metanorma/metanorma-snap

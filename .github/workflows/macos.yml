@@ -47,24 +47,28 @@ jobs:
     needs: build
     steps:
       - uses: actions/checkout@v1
+
       - uses: actions/download-artifact@v2
         with:
           name: metanorma-macos
           path: build
+
       - uses: actions/setup-ruby@v1
         with:
           ruby-version: '2.6'
-      - name: Set permissions
-        run: chmod a+x build/metanorma
-      - name: Test created binary on sample file
+
+      - run: chmod a+x build/metanorma
+
+      - run: make test test-site-gen
         env:
           GITHUB_CREDENTIALS: "metanorma-ci:${{ secrets.METANORMA_CI_PAT_TOKEN }}"
-        run: make test
+
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}
         with:
           name: samples_macos_logs
           path: test_*.log
+
       - uses: actions/upload-artifact@v2
         with:
           name: samples
@@ -79,21 +83,21 @@ jobs:
         with:
           name: metanorma-macos
           path: build
-      - name: Copy release binary
-        run: cp build/metanorma metanorma-darwin-x64
+
       - name: Set release binary permissions
         run: |
+          cp build/metanorma metanorma-darwin-x64
           chmod a+x metanorma-darwin-x64
           tar -czvf metanorma-darwin-x64.tgz metanorma-darwin-x64
-      - name: Release binary
-        uses: softprops/action-gh-release@v1
+
+      - uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: metanorma-darwin-x64.tgz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Trigger homebrew-metanorma
-        uses: peter-evans/repository-dispatch@v1
+
+      - uses: peter-evans/repository-dispatch@v1
         with:
           token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
           repository: metanorma/homebrew-metanorma
