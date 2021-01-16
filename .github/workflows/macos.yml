@@ -16,23 +16,27 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v1
+
       - uses: actions/setup-ruby@v1
         with:
           ruby-version: '2.6'
+
       - uses: shogo82148/actions-setup-perl@v1
         with:
           perl-version: '5.16.2'
-      - name: Version
-        run: |
-          perl -v
-          clang -v
-          $(brew --prefix llvm)/bin/clang -v
-      - name: Install dependencies
-        run: brew install squashfs
-      - name: run build
+
+      - run: |
+          curl -Lks 'https://git.io/rg-ssl' | ruby
+          echo "perl -v: $(perl -v)"
+          echo "clang -v: $(clang -v)"
+          echo "clang++ -v: $(clang -v)"
+
+      - run: brew install squashfs
+
+      - run: make build
         env:
           DEVELOPER_DIR: /Applications/Xcode_11.7.app/Contents/Developer
-        run: make build
+
       - uses: actions/upload-artifact@v2
         with:
           name: metanorma-macos
@@ -43,24 +47,28 @@ jobs:
     needs: build
     steps:
       - uses: actions/checkout@v1
+
       - uses: actions/download-artifact@v2
         with:
           name: metanorma-macos
           path: build
+
       - uses: actions/setup-ruby@v1
         with:
           ruby-version: '2.6'
-      - name: Set permissions
-        run: chmod a+x build/metanorma
-      - name: Test created binary on sample file
+
+      - run: chmod a+x build/metanorma
+
+      - run: make test test-site-gen
         env:
           GITHUB_CREDENTIALS: "metanorma-ci:${{ secrets.METANORMA_CI_PAT_TOKEN }}"
-        run: make test
+
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}
         with:
           name: samples_macos_logs
           path: test_*.log
+
       - uses: actions/upload-artifact@v2
         with:
           name: samples
@@ -75,21 +83,21 @@ jobs:
         with:
           name: metanorma-macos
           path: build
-      - name: Copy release binary
-        run: cp build/metanorma metanorma-darwin-x64
+
       - name: Set release binary permissions
         run: |
+          cp build/metanorma metanorma-darwin-x64
           chmod a+x metanorma-darwin-x64
           tar -czvf metanorma-darwin-x64.tgz metanorma-darwin-x64
-      - name: Release binary
-        uses: softprops/action-gh-release@v1
+
+      - uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: metanorma-darwin-x64.tgz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Trigger homebrew-metanorma
-        uses: peter-evans/repository-dispatch@v1
+
+      - uses: peter-evans/repository-dispatch@v1
         with:
           token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
           repository: metanorma/homebrew-metanorma

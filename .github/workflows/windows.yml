@@ -17,29 +17,32 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v1
+
     - uses: actions/setup-ruby@v1
       with:
-       ruby-version: '2.6'
-    - name: gem version
-      run: gem -v
-    - name: Check swap
-      run: systeminfo
-    - name: Install tools
-      uses: nick-invision/retry@v1
+        ruby-version: '2.6'
+
+    - run: gem -v
+
+    - run: systeminfo
+
+    - uses: nick-invision/retry@v1
       with:
         polling_interval_seconds: 5
         timeout_minutes: 5
         max_attempts: 3
         command: choco install --no-progress yq make gnuwin32-coreutils.install gzip wget git
-    - name: Bundle install
-      run: bundle install
-    - name: Run build
+
+    - run: bundle install
+
+    - run: make -f Makefile.win build SHELL=cmd
       shell: cmd
-      run: make -f Makefile.win build SHELL=cmd
+
     - uses: actions/upload-artifact@v2
       with:
         name: metanorma-windows
         path: build/metanorma.exe
+
   test:
     runs-on: windows-latest
     needs: build
@@ -65,17 +68,17 @@ jobs:
           SKIP_BUNDLE: true
         shell: pwsh
         run: |
-          $job = "iso", "cc", "iec", "itu", "ogc", "un", "iho", "nist" | ForEach-Object -Parallel { make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=$_ 2>&1 > .\test_${_}.log } -ThrottleLimit 5 -AsJob
-          $job | Wait-Job | Receive-Job
-          # make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=iso
-          # make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=cc
-          # make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=gb
-          # make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=iec
-          # make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=itu
-          # make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=ogc
-          # make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=un
-          # make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=iho
-          # make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=nist
+          # $job = "iso", "cc", "iec", "un", "iho", "nist" | ForEach-Object -Parallel -ThrottleLimit 5 -AsJob {
+          #   make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=$_ 2>&1 > .\test_${_}.log
+          # }
+          # $job | Wait-Job | Receive-Job
+          make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=iso
+          make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=cc
+          make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=gb
+          make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=iec
+          make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=un
+          make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=iho
+          make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=nist
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}
         with:
