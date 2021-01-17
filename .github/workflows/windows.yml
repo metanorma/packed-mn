@@ -38,6 +38,8 @@ jobs:
     - run: make -f Makefile.win build SHELL=cmd
       shell: cmd
 
+    - run: .\\build\\metanorma.exe help
+
     - uses: actions/upload-artifact@v2
       with:
         name: metanorma-windows
