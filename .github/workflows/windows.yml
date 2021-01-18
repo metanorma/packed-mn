@@ -18,9 +18,9 @@ jobs:
     steps:
     - uses: actions/checkout@v1
 
-    - uses: actions/setup-ruby@v1
+    - uses: ruby/setup-ruby@v1
       with:
-        ruby-version: '2.6'
+        ruby-version: '2.4'
 
     - run: gem -v
 
@@ -50,26 +50,24 @@ jobs:
     needs: build
     steps:
       - uses: actions/checkout@v1
+
       - uses: actions/download-artifact@v2
         with:
           name: metanorma-windows
           path: build
-      - uses: actions/setup-ruby@v1
+
+      - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '2.6'
-      - name: Install tools
-        uses: nick-invision/retry@v1
+          ruby-version: '2.4'
+
+      - uses: nick-invision/retry@v1
         with:
           polling_interval_seconds: 5
           timeout_minutes: 5
           max_attempts: 3
           command: choco install --no-progress yq make gnuwin32-coreutils.install gzip wget git
-      - name: Test created binary on sample file
-        env:
-          GITHUB_CREDENTIALS: "metanorma-ci:${{ secrets.METANORMA_CI_PAT_TOKEN }}"
-          SKIP_BUNDLE: true
-        shell: pwsh
-        run: |
+
+      - run: |
           # $job = "iso", "cc", "iec", "un", "iho", "nist" | ForEach-Object -Parallel -ThrottleLimit 5 -AsJob {
           #   make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=$_ 2>&1 > .\test_${_}.log
           # }
@@ -81,8 +79,13 @@ jobs:
           make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=un
           make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=iho
           make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=nist
-      - uses: actions/upload-artifact@v2
-        if: ${{ always() }}
+        env:
+          GITHUB_CREDENTIALS: "metanorma-ci:${{ secrets.METANORMA_CI_PAT_TOKEN }}"
+          SKIP_BUNDLE: true
+        shell: pwsh
+
+      - if: ${{ always() }}
+        uses: actions/upload-artifact@v2
         with:
           name: samples_windows_logs
           path: test_*.log
@@ -96,15 +99,16 @@ jobs:
         with:
           name: metanorma-windows
           path: build
-      - name: Copy release binary
-        run: cp build/metanorma.exe metanorma-windows-x64.exe
-      - name: Release binary
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          files: metanorma-windows-x64.exe
+
+      - run: cp build/metanorma.exe metanorma-windows-x64.exe
+
+      - if: startsWith(github.ref, 'refs/tags/')
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v1
+        with:
+          files: metanorma-windows-x64.exe
+
       - name: Trigger chocolatey-metanorma
         uses: peter-evans/repository-dispatch@v1
         with:
