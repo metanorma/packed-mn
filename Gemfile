@@ -9,11 +9,6 @@ gem "iso-639", "<= 0.2.10" # https://github.com/metanorma/packed-mn/issues/26
 gem "metanorma-mpfa"
 gem "metanorma-ribose"
 
-# ruby 2.4 support
-gem "liquid", "~> 4"
-gem "nokogiri", "~> 1.10.1"
-gem "ttfunk", "= 1.6.2.1"
-
 group :development do
   gem "byebug"
 end
