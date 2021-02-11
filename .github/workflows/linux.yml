@@ -17,9 +17,9 @@ jobs:
     steps:
     - uses: actions/checkout@v1
 
-    - uses: actions/setup-ruby@v1
+    - uses: ruby/setup-ruby@v1
       with:
-        ruby-version: '2.6'
+        ruby-version: '2.4.1'
 
     - run: sudo apt-get update && sudo apt-get -y -q install squashfs-tools bison flex texinfo
 
@@ -62,10 +62,6 @@ jobs:
     needs: build
     steps:
       - uses: actions/checkout@v1
-
-      - uses: actions/setup-ruby@v1
-        with:
-          ruby-version: '2.6'
 
       - uses: actions/download-artifact@v2
         with:

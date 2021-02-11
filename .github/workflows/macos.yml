@@ -17,9 +17,9 @@ jobs:
     steps:
       - uses: actions/checkout@v1
 
-      - uses: actions/setup-ruby@v1
+      - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '2.6'
+          ruby-version: '2.4.1'
 
       - uses: shogo82148/actions-setup-perl@v1
         with:
@@ -52,10 +52,6 @@ jobs:
         with:
           name: metanorma-macos
           path: build
-
-      - uses: actions/setup-ruby@v1
-        with:
-          ruby-version: '2.6'
 
       - run: chmod a+x build/metanorma
 

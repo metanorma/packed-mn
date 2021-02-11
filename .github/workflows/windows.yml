@@ -14,7 +14,7 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: windows-2019
     steps:
     - uses: actions/checkout@v1
 
@@ -44,7 +44,7 @@ jobs:
         path: build/metanorma.exe
 
   test:
-    runs-on: windows-latest
+    runs-on: windows-2019
     needs: build
     steps:
       - uses: actions/checkout@v1
