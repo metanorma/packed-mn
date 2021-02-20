@@ -1,32 +1,28 @@
 SHELL := cmd
 
-.PHONY: build
-
 TEST_FLAVOR ?= iso
 
-_build:
+build:
 	if not exist build md build
 
-build/cacert.pem.mozilla: ocra/cacert.pem.mozilla _build
+build/cacert.pem.mozilla: ocra/cacert.pem.mozilla build
 	cp $< $@
 
-build/Gemfile: Gemfile _build
+build/Gemfile: Gemfile build
 	cp $< $@
 
-build/metanorma: bin/metanorma _build
+build/metanorma: bin/metanorma build
 	cp $< $@
 
-build/Gemfile.lock: build/Gemfile _build
+build/Gemfile.lock: build/Gemfile build
 	pushd build & bundle install & popd
 
 build/metanorma.exe: build/cacert.pem.mozilla build/metanorma build/Gemfile build/Gemfile.lock
 ifeq (,$(wildcard build/metanorma.exe))
 	gem install ocra
-	pushd build & ocra --gem-full --add-all-core --gemfile Gemfile metanorma cacert.pem.mozilla & popd
+	pushd build & ocra --gem-full --add-all-core --dll ruby_builtin_dlls/libssp-0.dll --gemfile Gemfile metanorma cacert.pem.mozilla & popd
 	gem uninstall metanorma-cli
 endif
-
-build: build/metanorma.exe
 
 build/mparallel.exe:
 	wget https://github.com/lordmulder/MParallel/releases/download/1.0.4/mparallel.2016-06-08.bin-win64.zip -O $(TEMP)/mparallel.zip
@@ -37,10 +33,10 @@ test: build/mparallel.exe
 	gem install relaton-cli
 	build/mparallel.exe --trace --logfile=parallel.log --pattern="make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR={{0}}" : iso : cc : gb : iec : un : iho : nist
 
-test-flavor: build/metanorma.exe
+test-flavor:
 	del build\metanorma
 	if not exist $(shell pwd)\build\$(TEST_FLAVOR) git clone --recurse-submodules https://$(GITHUB_CREDENTIALS)@github.com/metanorma/mn-samples-$(TEST_FLAVOR) build/$(TEST_FLAVOR)
 	set PATH=%cd%\build;$(PATH) & $(MAKE) all -C build/$(TEST_FLAVOR) -f Makefile.win SHELL=cmd SKIP_BUNDLE=true
 
 clean:
-	rmdir /q /s $(shell pwd)\build & mkdir $(shell pwd)\build
+	rmdir /q /s build
