@@ -87,7 +87,7 @@ jobs:
           & ${env:ChocolateyInstall}\bin\make.exe -f Makefile.win test-flavor SHELL=cmd
         env:
           GITHUB_CREDENTIALS: "metanorma-ci:${{ secrets.METANORMA_CI_PAT_TOKEN }}"
-          TEST_FLAVOR=${{ matrix.mn-proc }}
+          TEST_FLAVOR: ${{ matrix.mn-proc }}
 
       - if: ${{ always() }}
         uses: actions/upload-artifact@v2
