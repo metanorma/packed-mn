@@ -124,8 +124,8 @@ unless Gem.win_platform? # because on windows we use ocra
     self.singleton_class.send(:alias_method, :convert_orig, :convert)
     self.singleton_class.send(:remove_method, :convert)
 
-    def self.convert(url_path, output_path, xsl_stylesheet)
-      convert_orig(extract_memfs(url_path), output_path, extract_memfs(xsl_stylesheet))
+    def self.convert(url_path, output_path, xsl_stylesheet, options)
+      convert_orig(extract_memfs(url_path), output_path, extract_memfs(xsl_stylesheet), options)
     end
   end
 
