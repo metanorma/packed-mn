@@ -31,12 +31,11 @@ build/mparallel.exe:
 
 test: build/mparallel.exe
 	gem install relaton-cli
-	build/mparallel.exe --trace --logfile=parallel.log --pattern="make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR={{0}}" : iso : cc : gb : iec : un : iho : nist
+	build/mparallel.exe --trace --logfile=parallel.log --pattern="make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR={{0}}" : iso : cc : iec : un : iho : nist
 
 test-flavor:
 	del build\metanorma
-	if not exist $(shell pwd)\build\$(TEST_FLAVOR) git clone --recurse-submodules https://$(GITHUB_CREDENTIALS)@github.com/metanorma/mn-samples-$(TEST_FLAVOR) build/$(TEST_FLAVOR)
-	set PATH=%cd%\build;$(PATH) & $(MAKE) all -C build/$(TEST_FLAVOR) -f Makefile.win SHELL=cmd SKIP_BUNDLE=true
+	if not exist build\$(TEST_FLAVOR) git clone --recurse-submodules https://${GITHUB_CREDENTIALS}@github.com/metanorma/mn-samples-$(TEST_FLAVOR) %cd%\build\metanorma site generate build/$(TEST_FLAVOR) -c build/$(TEST_FLAVOR)/metanorma.yml --agree-to-terms
 
 clean:
 	rmdir /q /s build
