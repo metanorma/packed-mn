@@ -55,7 +55,7 @@ jobs:
 
       - run: chmod a+x build/metanorma
 
-      - run: make test test-site-gen
+      - run: make test
         env:
           GITHUB_CREDENTIALS: "metanorma-ci:${{ secrets.METANORMA_CI_PAT_TOKEN }}"
 

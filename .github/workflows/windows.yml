@@ -47,6 +47,24 @@ jobs:
 
   test:
     runs-on: windows-2019
+    strategy:
+      fail-fast: false
+      matrix:
+        mn-proc:
+          - iso
+          - cc
+          - un
+          - iec
+          # - iho
+          - nist
+          # - itu
+          # - ogc
+          - m3aawg
+          - mpfa
+          - jcgm
+          - csa
+          - ribose
+          # - bipm
     needs: build
     steps:
       - uses: actions/checkout@v1
@@ -63,27 +81,13 @@ jobs:
           polling_interval_seconds: 5
           timeout_minutes: 5
           max_attempts: 3
-          command: choco install --no-progress yq make gnuwin32-coreutils.install gzip wget unzip git
-
-      - uses: nick-invision/retry@v1
-        with:
-          polling_interval_seconds: 5
-          timeout_minutes: 5
-          max_attempts: 3
-          command: choco install --no-progress yq --version 3.4.1 --allow-downgrade
+          command: choco install --no-progress make
 
       - run: |
-          & gem install relaton-cli
-          & ${env:ChocolateyInstall}\bin\make.exe -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=cc
-          & ${env:ChocolateyInstall}\bin\make.exe -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=iso
-          & ${env:ChocolateyInstall}\bin\make.exe -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=gb
-          & ${env:ChocolateyInstall}\bin\make.exe -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=iec
-          & ${env:ChocolateyInstall}\bin\make.exe -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=un
-          & ${env:ChocolateyInstall}\bin\make.exe -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=iho
-          & ${env:ChocolateyInstall}\bin\make.exe -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR=nist
+          & ${env:ChocolateyInstall}\bin\make.exe -f Makefile.win test-flavor SHELL=cmd
         env:
           GITHUB_CREDENTIALS: "metanorma-ci:${{ secrets.METANORMA_CI_PAT_TOKEN }}"
-          SKIP_BUNDLE: true
+          TEST_FLAVOR: ${{ matrix.mn-proc }}
 
       - if: ${{ always() }}
         uses: actions/upload-artifact@v2
