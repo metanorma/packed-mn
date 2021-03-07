@@ -16,6 +16,7 @@ else
 endif
 
 TEST_FLAVOR ?= iso
+TEST_PROCESSORS="iso cc iec un nist m3aawg mpfa jcgm csa ribose bipm" # ietf itu ogc iho - broken at the moment
 
 rubyc:
 	curl -L https://github.com/metanorma/ruby-packer/releases/download/v0.4.1/rubyc-$(PLATFORM)-x64 > ./rubyc && chmod +x rubyc
@@ -28,10 +29,8 @@ ifeq (,$(wildcard build/metanorma))
 endif
 
 test: build/metanorma 
-	# ietf itu ogc iho - broken at the moment
-	MAKE_BASED_PROCESSORS="iso cc iec un nist m3aawg mpfa jcgm csa ribose bipm"; \
-	parallel -j+0 --joblog parallel.log --eta make test-flavor TEST_FLAVOR={} "&>" test_{}.log ::: $${PROCESSORS}; \
-	parallel -j+0 --joblog parallel.log --resume-failed 'echo ---- {} ----; tail -15 test_{}.log; echo ---- --- ----; exit 1' ::: $${PROCESSORS}
+	parallel -j+0 --joblog parallel.log --eta make test-flavor TEST_FLAVOR={} "&>" test_{}.log ::: $(TEST_PROCESSORS); \
+	parallel -j+0 --joblog parallel.log --resume-failed 'echo ---- {} ----; tail -15 test_{}.log; echo ---- --- ----; exit 1' ::: $(TEST_PROCESSORS)
 
 test-flavor: build/metanorma
 	CLONE_DIR=$(shell pwd)/build; \

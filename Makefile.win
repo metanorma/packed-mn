@@ -1,6 +1,7 @@
 SHELL := cmd
 
 TEST_FLAVOR ?= iso
+TEST_PROCESSORS = "iso cc un iec nist m3aawg mpfa jcgm csa ribose" # - iho itu ogc bipm
 
 build:
 	if not exist build md build
@@ -31,7 +32,7 @@ build/mparallel.exe:
 
 test: build/mparallel.exe
 	gem install relaton-cli
-	build/mparallel.exe --trace --logfile=parallel.log --pattern="make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR={{0}}" : iso : cc : iec : un : iho : nist
+	build/mparallel.exe --trace --logfile=parallel.log --pattern="make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR={{0}} > test_{{0}}.log 2>&1" $(subst , : ,$(TEST_PROCESSORS))
 
 test-flavor:
 	del build\metanorma
