@@ -16,7 +16,7 @@ else
 endif
 
 TEST_FLAVOR ?= iso
-TEST_PROCESSORS="iso cc iec un nist m3aawg mpfa jcgm csa ribose bipm" # ietf itu ogc iho - broken at the moment
+TEST_PROCESSORS ?= iso cc iec un nist m3aawg mpfa jcgm csa ribose bipm # ietf itu ogc iho - broken at the moment
 
 rubyc:
 	curl -L https://github.com/metanorma/ruby-packer/releases/download/v0.4.1/rubyc-$(PLATFORM)-x64 > ./rubyc && chmod +x rubyc
