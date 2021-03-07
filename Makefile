@@ -1,7 +1,7 @@
 #!make
 SHELL := /bin/bash
 
-.PHONY: build test
+.PHONY: build test png2ico
 
 ifeq ($(OS),Windows_NT)
   PLATFORM := windows
@@ -39,3 +39,6 @@ test-flavor: build/metanorma
 
 clean:
 	[ -d build ] || mkdir build; rm -rf build/* || true
+
+png2ico:
+	convert ocra/icon.png -define icon:auto-resize="256,128,96,64,48,32,16" ocra/metanorma.ico

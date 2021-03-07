@@ -6,13 +6,13 @@ TEST_PROCESSORS = "iso cc un iec nist m3aawg mpfa jcgm csa ribose" # - iho itu o
 build:
 	if not exist build md build
 
-build/cacert.pem.mozilla: ocra/cacert.pem.mozilla build
+build/%: ocra/% | build
 	cp $< $@
 
-build/Gemfile: Gemfile build
+build/Gemfile: Gemfile | build
 	cp $< $@
 
-build/metanorma: bin/metanorma build
+build/metanorma: bin/metanorma | build
 	cp $< $@
 
 build/Gemfile.lock: build/Gemfile build
@@ -21,7 +21,7 @@ build/Gemfile.lock: build/Gemfile build
 build/metanorma.exe: build/cacert.pem.mozilla build/metanorma build/Gemfile build/Gemfile.lock
 ifeq (,$(wildcard build/metanorma.exe))
 	gem install ocra
-	pushd build & ocra --gem-full --add-all-core --dll ruby_builtin_dlls/libssp-0.dll --gemfile Gemfile metanorma cacert.pem.mozilla & popd
+	pushd build & ocra --console --gem-full --add-all-core --icon metanorma.ico --dll ruby_builtin_dlls/libssp-0.dll --gemfile Gemfile metanorma cacert.pem.mozilla & popd
 	gem uninstall metanorma-cli
 endif
 
