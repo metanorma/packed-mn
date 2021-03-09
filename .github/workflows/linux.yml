@@ -82,8 +82,8 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
-          name: samples
-          path: build/**/published/*
+          name: site
+          path: site/**
 
   release:
     if: startsWith(github.ref, 'refs/tags/')

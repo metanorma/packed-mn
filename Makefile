@@ -36,7 +36,7 @@ test: $(BUILD_DIR)/metanorma
 
 test-flavor: build/metanorma
 	[ -d $(BUILD_DIR)/$(TEST_FLAVOR) ] || git clone --recurse-submodules https://${GITHUB_CREDENTIALS}@github.com/metanorma/mn-samples-$(TEST_FLAVOR) $(BUILD_DIR)/$(TEST_FLAVOR); \
-	$(BUILD_DIR)/metanorma site generate $(BUILD_DIR)/$(TEST_FLAVOR) -c $(BUILD_DIR)/$(TEST_FLAVOR)/metanorma.yml --agree-to-terms
+	$(BUILD_DIR)/metanorma site generate $(BUILD_DIR)/$(TEST_FLAVOR) -c $(BUILD_DIR)/$(TEST_FLAVOR)/metanorma.yml -o site/$(TEST_FLAVOR) --agree-to-terms
 
 clean:
 	[ -d $(BUILD_DIR) ] || mkdir $(BUILD_DIR); rm -rf $(BUILD_DIR)/* || true

@@ -36,7 +36,7 @@ test: build/mparallel.exe
 
 test-flavor:
 	del build\metanorma
-	if not exist build\$(TEST_FLAVOR) git clone --recurse-submodules https://${GITHUB_CREDENTIALS}@github.com/metanorma/mn-samples-$(TEST_FLAVOR) %cd%\build\metanorma site generate build/$(TEST_FLAVOR) -c build/$(TEST_FLAVOR)/metanorma.yml --agree-to-terms
+	if not exist build\$(TEST_FLAVOR) git clone --recurse-submodules https://${GITHUB_CREDENTIALS}@github.com/metanorma/mn-samples-$(TEST_FLAVOR) %cd%\build\metanorma site generate build/$(TEST_FLAVOR) -c build/$(TEST_FLAVOR)/metanorma.yml -o site/$(TEST_FLAVOR) --agree-to-terms
 
 clean:
 	rmdir /q /s build

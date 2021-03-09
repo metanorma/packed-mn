@@ -1,11 +1,5 @@
-.tmp.xml
-relaton
-build
-project-temp
-rubyc
-rubyc*
-sources/*/*.doc
-sources/*/*.html
-sources/*/*.xml
-
+/build
+/rubyc*
 /parallel.log
+/relaton
+/site
