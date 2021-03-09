@@ -18,27 +18,28 @@ endif
 TEST_FLAVOR ?= iso
 TEST_PROCESSORS ?= iso cc iec un nist m3aawg mpfa jcgm csa ribose bipm # ietf itu ogc iho - broken at the moment
 
+BUILD_DIR := build
+
 rubyc:
 	curl -L https://github.com/metanorma/ruby-packer/releases/download/v0.4.1/rubyc-$(PLATFORM)-x64 > ./rubyc && chmod +x rubyc
 
-build: build/metanorma
+build: $(BUILD_DIR)/metanorma
 
-build/metanorma: rubyc
-ifeq (,$(wildcard build/metanorma))
+$(BUILD_DIR)/metanorma: rubyc
+ifeq (,$(wildcard $(BUILD_DIR)/metanorma))
 	./bin/build.sh
 endif
 
-test: build/metanorma 
+test: $(BUILD_DIR)/metanorma
 	parallel -j+0 --joblog parallel.log --eta make test-flavor TEST_FLAVOR={} "&>" test_{}.log ::: $(TEST_PROCESSORS); \
 	parallel -j+0 --joblog parallel.log --resume-failed 'echo ---- {} ----; tail -15 test_{}.log; echo ---- --- ----; exit 1' ::: $(TEST_PROCESSORS)
 
 test-flavor: build/metanorma
-	CLONE_DIR=$(shell pwd)/build; \
-	[[ -d $${CLONE_DIR}/$(TEST_FLAVOR) ]] || git clone --recurse-submodules https://${GITHUB_CREDENTIALS}@github.com/metanorma/mn-samples-$(TEST_FLAVOR) $${CLONE_DIR}/$(TEST_FLAVOR); \
-	$${CLONE_DIR}/metanorma site generate $${CLONE_DIR}/$(TEST_FLAVOR) -c $${CLONE_DIR}/$(TEST_FLAVOR)/metanorma.yml --agree-to-terms
+	[ -d $(BUILD_DIR)/$(TEST_FLAVOR) ] || git clone --recurse-submodules https://${GITHUB_CREDENTIALS}@github.com/metanorma/mn-samples-$(TEST_FLAVOR) $(BUILD_DIR)/$(TEST_FLAVOR); \
+	$(BUILD_DIR)/metanorma site generate $(BUILD_DIR)/$(TEST_FLAVOR) -c $(BUILD_DIR)/$(TEST_FLAVOR)/metanorma.yml --agree-to-terms
 
 clean:
-	[ -d build ] || mkdir build; rm -rf build/* || true
+	[ -d $(BUILD_DIR) ] || mkdir $(BUILD_DIR); rm -rf $(BUILD_DIR)/* || true
 
 png2ico:
 	convert ocra/icon.png -define icon:auto-resize="256,128,96,64,48,32,16" ocra/metanorma.ico
