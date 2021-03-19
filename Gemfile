@@ -11,6 +11,7 @@ gem "metanorma-ribose"
 
 gem "ffi"
 gem "rake"
+gem "seven_zip_ruby"
 
 group :development do
   gem "byebug"
