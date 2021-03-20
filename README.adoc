@@ -36,16 +36,28 @@ Our goal is to make installation quick and dependable for our users.
 
 == Usage
 
-=== Compile executable (only macOS supported for now)
+=== Compile executable
+
+For macOS / Linux:
 
 [source,sh]
 ----
 $: make build
 ----
 
+For Windows:
+
+[source,batch]
+----
+$: make -f Makefile.win build
+----
+
 This will clear `build/` folder files and compile a new version
 from the `metanorma_entry_point` Ruby script.
 
+=== Icon file for windows
+
+Icon can be updated with `make png2ico` with use `imagemagick` under the hood
 
 == metanorma_entry_point
 
