@@ -10,6 +10,7 @@ gem "metanorma-mpfa"
 gem "metanorma-ribose"
 
 gem "ffi"
+gem "fontist"
 gem "rake"
 gem "seven_zip_ruby"
 

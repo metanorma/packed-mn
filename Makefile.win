@@ -26,7 +26,7 @@ ifeq (,$(wildcard build/metanorma.exe))
 endif
 
 build/mparallel.exe:
-	wget https://github.com/lordmulder/MParallel/releases/download/1.0.4/mparallel.2016-06-08.bin-win64.zip -O $(TEMP)/mparallel.zip
+	curl -L https://github.com/lordmulder/MParallel/releases/download/1.0.4/mparallel.2016-06-08.bin-win64.zip > $(TEMP)/mparallel.zip
 	unzip $(TEMP)/mparallel.zip MParallel.exe
 	mv MParallel.exe build/mparallel.exe
 

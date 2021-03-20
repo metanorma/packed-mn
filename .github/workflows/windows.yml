@@ -55,16 +55,16 @@ jobs:
           - cc
           - un
           - iec
-          # - iho
+          - iho
           - nist
-          # - itu
-          # - ogc
+          - itu
+          - ogc
           - m3aawg
           - mpfa
           - jcgm
           - csa
           - ribose
-          # - bipm
+          - bipm
     needs: build
     steps:
       - uses: actions/checkout@v1
