@@ -9,8 +9,9 @@ gem "iso-639", "<= 0.2.10" # https://github.com/metanorma/packed-mn/issues/26
 gem "metanorma-mpfa"
 gem "metanorma-ribose"
 
+gem "fontist" if Gem.win_platform?
+
 gem "ffi"
-gem "fontist"
 gem "rake"
 gem "seven_zip_ruby"
 
