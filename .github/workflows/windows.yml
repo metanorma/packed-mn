@@ -57,8 +57,9 @@ jobs:
           - iec
           - iho
           - nist
-          - itu
-          - ogc
+          # - ietf # wait for release of https://github.com/metanorma/metanorma-ietf/commit/ca75ea3
+          # - itu  # ???
+          # - ogc  # https://github.com/metanorma/mn-samples-ogc/issues/119
           - m3aawg
           - mpfa
           - jcgm

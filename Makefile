@@ -16,7 +16,10 @@ else
 endif
 
 TEST_FLAVOR ?= iso
-TEST_PROCESSORS ?= iso cc iec un nist m3aawg mpfa jcgm csa ribose bipm ietf itu ogc iho
+TEST_PROCESSORS ?= iso cc iec un nist m3aawg mpfa jcgm csa ribose bipm iho
+# ietf - wait for release of https://github.com/metanorma/metanorma-ietf/commit/ca75ea3
+# itu  - ???
+# ogc  - https://github.com/metanorma/mn-samples-ogc/issues/119
 
 BUILD_DIR := build
 
