@@ -90,12 +90,6 @@ jobs:
           GITHUB_CREDENTIALS: "metanorma-ci:${{ secrets.METANORMA_CI_PAT_TOKEN }}"
           TEST_FLAVOR: ${{ matrix.mn-proc }}
 
-      - if: ${{ always() }}
-        uses: actions/upload-artifact@v2
-        with:
-          name: samples_windows_logs
-          path: test_*.log
-
       - uses: actions/upload-artifact@v2
         with:
           name: site
