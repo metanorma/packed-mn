@@ -31,7 +31,9 @@ jobs:
           echo "clang -v: $(clang -v)"
           echo "clang++ -v: $(clang -v)"
 
-      - run: brew install squashfs
+      - run: |
+          brew install squashfs
+          brew install shared-mime-info
 
       - run: make build
         env:
@@ -54,6 +56,8 @@ jobs:
           path: build
 
       - run: chmod a+x build/metanorma
+
+      - run: brew install shared-mime-info
 
       - run: make test
         env:
