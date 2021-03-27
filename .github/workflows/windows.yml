@@ -24,6 +24,7 @@ jobs:
     - uses: ruby/setup-ruby@v1
       with:
         ruby-version: '2.6'
+        bundler-cache: true
 
     - run: gem -v
 
@@ -35,8 +36,6 @@ jobs:
         timeout_minutes: 5
         max_attempts: 3
         command: choco install --no-progress make gnuwin32-coreutils.install gzip wget git
-
-    - run: bundle install
 
     - run: "%ChocolateyInstall%\\bin\\make -f Makefile.win build build/metanorma.exe SHELL=cmd"
       shell: cmd

@@ -4,12 +4,6 @@ set -eu
 
 [ -d build ] || mkdir build; rm -rf build/* || true
 
-gem install bundler -v 2.2.3
-bundle _2.2.3_ install
-echo "-- Gemfile.lock --"
-cat Gemfile.lock
-echo "-- ------------ --"
-
 case "$(uname -s)" in
     Linux*)
 		TEMP_DIR="$(mktemp -d --tmpdir="$HOME" .rubyc-build.XXXXXX)"

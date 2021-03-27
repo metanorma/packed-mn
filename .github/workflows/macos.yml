@@ -17,9 +17,12 @@ jobs:
     steps:
       - uses: actions/checkout@v1
 
+      - run: brew install shared-mime-info
+
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: '2.6'
+          bundler-cache: true
 
       - uses: shogo82148/actions-setup-perl@v1
         with:
@@ -31,9 +34,7 @@ jobs:
           echo "clang -v: $(clang -v)"
           echo "clang++ -v: $(clang -v)"
 
-      - run: |
-          brew install squashfs
-          brew install shared-mime-info
+      - run: brew install squashfs
 
       - run: make build
         env:
