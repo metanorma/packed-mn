@@ -12,6 +12,9 @@ on:
       - Makefile
       - bin/build.sh
 
+env:
+  FREEDESKTOP_MIME_TYPES_PATH: ${{ github.workspace }}/ocra/freedesktop.org.xml
+
 jobs:
   build:
     runs-on: windows-2019
