@@ -26,7 +26,8 @@ jobs:
 
     - uses: ruby/setup-ruby@v1
       with:
-        ruby-version: '2.4.1'
+        ruby-version: 2.4.1
+        bundler: 2.2.3
 
     - run: gem install bundler
 
@@ -38,7 +39,7 @@ jobs:
 
     - name: Push commit and tag
       run: |
-        git add Gemfile Gemfile.lock
+        git add Gemfile
         git commit -m "Bump version to ${METANORMA_CLI_VERSION}"
         git tag v${METANORMA_CLI_VERSION}
         git push github HEAD:${GITHUB_REF} --tags
