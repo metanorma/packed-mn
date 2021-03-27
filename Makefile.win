@@ -15,15 +15,10 @@ build/Gemfile: Gemfile | build
 build/metanorma: bin/metanorma | build
 	cp $< $@
 
-build/Gemfile.lock: build/Gemfile build
-	pushd build & bundle install & popd
-
-build/metanorma.exe: build/cacert.pem.mozilla build/metanorma.ico build/metanorma build/Gemfile.lock
+build/metanorma.exe: build/cacert.pem.mozilla build/metanorma.ico build/metanorma
 ifeq (,$(wildcard build/metanorma.exe))
 	gem install ocra
 	pushd build & ocra --console --gem-full --add-all-core --icon metanorma.ico --dll ruby_builtin_dlls/libssp-0.dll --gemfile Gemfile metanorma cacert.pem.mozilla & popd
-	gem uninstall metanorma-cli
-	del build\metanorma
 endif
 
 build/mparallel.exe:
@@ -35,7 +30,7 @@ test: build/mparallel.exe
 	build/mparallel.exe --trace --logfile=parallel.log --pattern="make -f Makefile.win test-flavor SHELL=cmd TEST_FLAVOR={{0}} > test_{{0}}.log 2>&1" $(subst , : ,$(TEST_PROCESSORS))
 
 test-flavor:
-	if not exist build\$(TEST_FLAVOR) git clone --recurse-submodules https://${GITHUB_CREDENTIALS}@github.com/metanorma/mn-samples-$(TEST_FLAVOR) build/$(TEST_FLAVOR) & %cd%\build\metanorma site generate build/$(TEST_FLAVOR) -c build/$(TEST_FLAVOR)/metanorma.yml -o site/$(TEST_FLAVOR) --agree-to-terms
+	if not exist build\$(TEST_FLAVOR) git clone --recurse-submodules https://${GITHUB_CREDENTIALS}@github.com/metanorma/mn-samples-$(TEST_FLAVOR) build/$(TEST_FLAVOR) & %cd%\build\metanorma.exe site generate build/$(TEST_FLAVOR) -c build/$(TEST_FLAVOR)/metanorma.yml -o site/$(TEST_FLAVOR) --agree-to-terms
 
 clean:
 	rmdir /q /s build

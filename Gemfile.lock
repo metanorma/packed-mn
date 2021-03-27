@@ -383,7 +383,7 @@ GEM
     thor (1.0.1)
     thread_safe (0.3.6)
     tokenizer (0.3.0)
-    ttfunk (1.7.0)
+    ttfunk (1.6.2.1)
     twitter_cldr (6.6.0)
       camertron-eprun
       cldr-plurals-runtime-rb (~> 1.1)
