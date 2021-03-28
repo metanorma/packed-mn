@@ -1,6 +1,8 @@
 = Metanorma-CLI single executable binary
 
-image:https://github.com/metanorma/packed-mn/workflows/compile/badge.svg["Build Status", link="https://github.com/metanorma/packed-mn/actions?workflow=compile"]
+image:https://github.com/metanorma/packed-mn/workflows/linux/badge.svg["Build Status", link="https://github.com/metanorma/packed-mn/actions?workflow=linux"]
+image:https://github.com/metanorma/packed-mn/workflows/macos/badge.svg["Build Status", link="https://github.com/metanorma/packed-mn/actions?workflow=macos"]
+image:https://github.com/metanorma/packed-mn/workflows/windows/badge.svg["Build Status", link="https://github.com/metanorma/packed-mn/actions?workflow=windows"]
 
 
 == Purpose
