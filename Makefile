@@ -16,7 +16,7 @@ else
 endif
 
 TEST_FLAVOR ?= iso
-TEST_PROCESSORS ?= iso cc iec un nist m3aawg mpfa jcgm csa ribose bipm iho
+TEST_PROCESSORS ?= iso cc iec un nist m3aawg mpfa jcgm csa ribose bipm iho itu
 # ietf - wait for release of https://github.com/metanorma/metanorma-ietf/commit/ca75ea3
 # itu  - https://github.com/relaton/relaton-bib/issues/44
 # ogc  - https://github.com/metanorma/mn-samples-ogc/issues/119
