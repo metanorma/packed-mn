@@ -12,6 +12,9 @@ build/%: ocra/% | build
 build/Gemfile: Gemfile | build
 	cp $< $@
 
+Gemfile.lock: Gemfile
+	bundle install --no-deployment
+
 build/Gemfile.lock: Gemfile.lock | build
 	cp $< $@
 
@@ -20,7 +23,7 @@ build/metanorma: bin/metanorma | build
 
 build/metanorma.exe: build/cacert.pem.mozilla build/metanorma.ico build/metanorma build/Gemfile build/Gemfile.lock
 ifeq (,$(wildcard build/metanorma.exe))
-	pushd build & ocra --console --gem-full --add-all-core --icon metanorma.ico --dll ruby_builtin_dlls/libssp-0.dll --gemfile Gemfile metanorma cacert.pem.mozilla & popd
+	pushd build & bundle exec ruby $(shell bundle show ocra)/bin/ocra --console --gem-full --add-all-core --icon metanorma.ico --dll ruby_builtin_dlls/libssp-0.dll --gemfile Gemfile metanorma cacert.pem.mozilla & popd
 endif
 
 build/mparallel.exe:
