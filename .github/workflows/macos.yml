@@ -17,9 +17,13 @@ jobs:
     steps:
       - uses: actions/checkout@v1
 
+      - run: brew install shared-mime-info
+
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '2.4.1'
+          ruby-version: 2.4.1
+          bundler: 2.2.3
+          bundler-cache: true
 
       - uses: shogo82148/actions-setup-perl@v1
         with:
@@ -54,6 +58,8 @@ jobs:
           path: build
 
       - run: chmod a+x build/metanorma
+
+      - run: brew install shared-mime-info
 
       - run: make test
         env:

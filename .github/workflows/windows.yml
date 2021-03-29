@@ -12,6 +12,9 @@ on:
       - Makefile
       - bin/build.sh
 
+env:
+  FREEDESKTOP_MIME_TYPES_PATH: ${{ github.workspace }}/ocra/freedesktop.org.xml
+
 jobs:
   build:
     runs-on: windows-2019
@@ -20,7 +23,9 @@ jobs:
 
     - uses: ruby/setup-ruby@v1
       with:
-        ruby-version: '2.4'
+        ruby-version: 2.4
+
+    - run: bundle install
 
     - run: gem -v
 
@@ -32,8 +37,6 @@ jobs:
         timeout_minutes: 5
         max_attempts: 3
         command: choco install --no-progress make gnuwin32-coreutils.install gzip wget git
-
-    - run: bundle install
 
     - run: "%ChocolateyInstall%\\bin\\make -f Makefile.win build build/metanorma.exe SHELL=cmd"
       shell: cmd

@@ -19,7 +19,9 @@ jobs:
 
     - uses: ruby/setup-ruby@v1
       with:
-        ruby-version: '2.4.1'
+        ruby-version: 2.4.1
+        bundler: 2.2.3
+        bundler-cache: true
 
     - run: sudo apt-get update && sudo apt-get -y -q install squashfs-tools bison flex texinfo
 
