@@ -21,6 +21,8 @@ jobs:
     steps:
     - uses: actions/checkout@v1
 
+    - run: Remove-Item -Path .\Gemfile.lock
+
     - uses: ruby/setup-ruby@v1
       with:
         ruby-version: 2.4
