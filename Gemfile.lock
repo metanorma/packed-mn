@@ -408,13 +408,10 @@ PLATFORMS
 
 DEPENDENCIES
   byebug
-  ffi
   iso-639 (<= 0.2.10)
   metanorma-cli (= 1.4.7)
   metanorma-mpfa
   metanorma-ribose
-  rake
-  seven_zip_ruby
 
 BUNDLED WITH
    2.2.3
