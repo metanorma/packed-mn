@@ -48,6 +48,25 @@ jobs:
 
   test:
     runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        mn-proc:
+          - iso
+          - cc
+          - un
+          - iec
+          - iho
+          - nist
+          # - ietf # wait for release of https://github.com/metanorma/metanorma-ietf/commit/ca75ea3
+          # - itu  # https://github.com/relaton/relaton-bib/issues/44
+          # - ogc  # https://github.com/metanorma/mn-samples-ogc/issues/119
+          - m3aawg
+          - mpfa
+          - jcgm
+          - csa
+          - ribose
+          - bipm
     needs: build
     steps:
       - uses: actions/checkout@v1
@@ -59,21 +78,14 @@ jobs:
 
       - run: chmod a+x build/metanorma
 
-      - run: brew install shared-mime-info
-
-      - run: make test
+      - run: make test-flavor
         env:
           GITHUB_CREDENTIALS: "metanorma-ci:${{ secrets.METANORMA_CI_PAT_TOKEN }}"
-
-      - uses: actions/upload-artifact@v2
-        if: ${{ always() }}
-        with:
-          name: samples_macos_logs
-          path: test_*.log
+          TEST_FLAVOR: ${{ matrix.mn-proc }}
 
       - uses: actions/upload-artifact@v2
         with:
-          name: site
+          name: site-${{ matrix.mn-proc }}
           path: site/**
 
   release:

@@ -56,11 +56,11 @@ jobs:
         path: build/metanorma
 
   test:
-    runs-on: ${{ matrix.os }} - ${{ matrix.mn-proc }}
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ ubuntu-16.04, ubuntu-18.04, ubuntu-20.04 ]
+        os: [ ubuntu-20.04 ] # ubuntu-16.04, ubuntu-18.04,
         mn-proc:
           - iso
           - cc
