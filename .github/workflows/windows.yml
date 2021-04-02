@@ -97,7 +97,7 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
-          name: site
+          name: site-${{ matrix.mn-proc }}
           path: site/**
 
   release:

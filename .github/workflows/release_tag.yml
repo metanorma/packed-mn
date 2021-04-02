@@ -35,7 +35,7 @@ jobs:
       run: |
         bundle remove metanorma-cli
         bundle add metanorma-cli -v ${METANORMA_CLI_VERSION}
-        bundle install --deployment
+        bundle update --all
 
     - name: Push commit and tag
       run: |

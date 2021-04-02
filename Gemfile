@@ -10,7 +10,7 @@ gem "metanorma-mpfa"
 gem "metanorma-ribose"
 
 if Gem.win_platform?
-  gem "fontist" 
+  gem "fontist"
   gem "ffi"
   gem "rake"
   gem "seven_zip_ruby"
