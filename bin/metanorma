@@ -50,16 +50,16 @@ unless Gem.win_platform? # because on windows we use ocra
     is_quoted = file.is_quoted
     file = file.unquote if is_quoted
 
-    return file unless file.start_with? COMPILER_MEMFS
+    return file unless File.exist?(file) && file.start_with?(COMPILER_MEMFS)
 
     memfs_extracted_file = extract_path + File.basename(file)
     unless memfs_extracted_file.exist?
-      if wild
-        files = Dir.glob("#{File.dirname(file)}/*#{File.extname(file)}")
-        FileUtils.cp_r files, extract_path
+      files = if wild
+        Dir.glob("#{File.dirname(file)}/*#{File.extname(file)}")
       else
-        FileUtils.cp file, memfs_extracted_file
+        [file]
       end
+      FileUtils.cp_r files, extract_path
     end
 
     is_quoted ? memfs_extracted_file.to_path.quote : memfs_extracted_file.to_path
