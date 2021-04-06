@@ -16,9 +16,8 @@ else
 endif
 
 TEST_FLAVOR ?= iso
-TEST_PROCESSORS ?= iso cc iec un nist m3aawg mpfa jcgm csa ribose bipm iho
+TEST_PROCESSORS ?= iso cc iec un nist m3aawg mpfa jcgm csa ribose bipm iho itu
 # ietf - wait for release of https://github.com/metanorma/metanorma-ietf/commit/ca75ea3
-# itu  - https://github.com/relaton/relaton-bib/issues/44
 # ogc  - https://github.com/metanorma/mn-samples-ogc/issues/119
 
 BUILD_DIR := build
@@ -29,9 +28,7 @@ rubyc:
 build: $(BUILD_DIR)/metanorma
 
 $(BUILD_DIR)/metanorma: rubyc
-ifeq (,$(wildcard $(BUILD_DIR)/metanorma))
-	./bin/build.sh
-endif
+	./bin/build.sh $(BUILD_DIR)
 
 test: $(BUILD_DIR)/metanorma
 	parallel -j+0 --joblog parallel.log --eta make test-flavor TEST_FLAVOR={} "&>" test_{}.log ::: $(TEST_PROCESSORS); \
