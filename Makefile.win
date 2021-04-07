@@ -21,7 +21,7 @@ build/metanorma: bin/metanorma | build
 build/metanorma.exe: build/cacert.pem.mozilla build/metanorma.ico build/metanorma build/Gemfile.lock
 ifeq (,$(wildcard build/metanorma.exe))
 	gem install ocra
-	pushd build & ocra --console --gem-full --icon metanorma.ico --dll ruby_builtin_dlls/libssp-0.dll --gemfile Gemfile metanorma cacert.pem.mozilla & popd
+	pushd build & ocra --console --add-all-core --gem-full --icon metanorma.ico --dll ruby_builtin_dlls/libssp-0.dll --gemfile Gemfile metanorma cacert.pem.mozilla & popd
 endif
 
 build/mparallel.exe:

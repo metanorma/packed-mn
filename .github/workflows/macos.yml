@@ -58,15 +58,15 @@ jobs:
           - iec
           - iho
           - nist
-          # - ietf # wait for release of https://github.com/metanorma/metanorma-ietf/commit/ca75ea3
-          # - itu  # https://github.com/relaton/relaton-bib/issues/44
-          # - ogc  # https://github.com/metanorma/mn-samples-ogc/issues/119
+          - itu
           - m3aawg
           - mpfa
           - jcgm
           - csa
           - ribose
           - bipm
+          # - ietf # wait for release of https://github.com/metanorma/metanorma-ietf/commit/ca75ea3
+          # - ogc  # https://github.com/metanorma/mn-samples-ogc/issues/119
     needs: build
     steps:
       - uses: actions/checkout@v1

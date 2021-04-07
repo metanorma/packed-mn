@@ -35,11 +35,11 @@ jobs:
       run: |
         bundle remove metanorma-cli
         bundle add metanorma-cli -v ${METANORMA_CLI_VERSION}
-        bundle update --all
+        bundle install
 
     - name: Push commit and tag
       run: |
-        git add Gemfile Gemfile.lock
+        git add Gemfile
         git commit -m "Bump version to ${METANORMA_CLI_VERSION}"
         git tag v${METANORMA_CLI_VERSION}
         git push github HEAD:${GITHUB_REF} --tags
