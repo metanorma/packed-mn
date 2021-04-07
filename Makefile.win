@@ -12,13 +12,13 @@ build/%: ocra/% | build
 build/Gemfile: Gemfile | build
 	cp $< $@
 
-build/Gemfile.lock: build/Gemfile | build
-	pushd build & bundle install & popd
+build/Gemfile.lock: Gemfile.lock | build
+	cp $< $@
 
 build/metanorma: bin/metanorma | build
 	cp $< $@
 
-build/metanorma.exe: build/cacert.pem.mozilla build/metanorma.ico build/metanorma build/Gemfile.lock
+build/metanorma.exe: build/cacert.pem.mozilla build/metanorma.ico build/metanorma build/Gemfile.lock build/Gemfile
 ifeq (,$(wildcard build/metanorma.exe))
 	gem install ocra
 	pushd build & ocra --console --add-all-core --gem-full --icon metanorma.ico --dll ruby_builtin_dlls/libssp-0.dll --gemfile Gemfile metanorma cacert.pem.mozilla & popd
