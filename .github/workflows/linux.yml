@@ -43,7 +43,7 @@ jobs:
         sudo swapon /mnt/compile.swap
         sudo swapon --all --verbose
 
-    - run: make build
+    - run: make build/metanorma
       timeout-minutes: 180
       # https://trac.sagemath.org/ticket/19762
       env:
@@ -57,11 +57,27 @@ jobs:
 
   test:
     runs-on: ${{ matrix.os }}
+    needs: build
     strategy:
       fail-fast: false
       matrix:
         os: [ ubuntu-16.04, ubuntu-18.04, ubuntu-20.04 ]
-    needs: build
+        mn-proc:
+          - iso
+          - cc
+          - un
+          - iec
+          - iho
+          - nist
+          - itu
+          - m3aawg
+          - mpfa
+          - jcgm
+          - csa
+          - ribose
+          - bipm
+          # - ietf # wait for release of https://github.com/metanorma/metanorma-ietf/commit/ca75ea3
+          # - ogc  # https://github.com/metanorma/mn-samples-ogc/issues/119
     steps:
       - uses: actions/checkout@v1
 
@@ -72,15 +88,10 @@ jobs:
 
       - run: chmod +x build/metanorma
 
-      - run: make test
+      - run: make test-flavor
         env:
           GITHUB_CREDENTIALS: "metanorma-ci:${{ secrets.METANORMA_CI_PAT_TOKEN }}"
-
-      - uses: actions/upload-artifact@v2
-        if: ${{ always() }}
-        with:
-          name: samples_${{ matrix.os }}_logs
-          path: test_*.log
+          TEST_FLAVOR: ${{ matrix.mn-proc }}
 
       - uses: actions/upload-artifact@v2
         with:

@@ -24,12 +24,11 @@ jobs:
     - uses: ruby/setup-ruby@v1
       with:
         ruby-version: 2.4
+        bundler-cache: true
 
-    - run: bundle install
-
-    - run: gem -v
-
-    - run: systeminfo
+    - run: |
+        gem -v
+        systeminfo
 
     - uses: nick-invision/retry@v1
       with:
@@ -38,7 +37,8 @@ jobs:
         max_attempts: 3
         command: choco install --no-progress make gnuwin32-coreutils.install gzip wget git
 
-    - run: "%ChocolateyInstall%\\bin\\make -f Makefile.win build build/metanorma.exe SHELL=cmd"
+    - run: |
+        %ChocolateyInstall%\bin\make -f Makefile.win build build/metanorma.exe SHELL=cmd
       shell: cmd
 
     - run: .\\build\\metanorma.exe help
@@ -50,6 +50,7 @@ jobs:
 
   test:
     runs-on: windows-2019
+    needs: build
     strategy:
       fail-fast: false
       matrix:
@@ -60,16 +61,15 @@ jobs:
           - iec
           - iho
           - nist
-          # - ietf # wait for release of https://github.com/metanorma/metanorma-ietf/commit/ca75ea3
-          # - itu  # https://github.com/relaton/relaton-bib/issues/44
-          # - ogc  # https://github.com/metanorma/mn-samples-ogc/issues/119
+          - itu
           - m3aawg
           - mpfa
           - jcgm
           - csa
           - ribose
           - bipm
-    needs: build
+          # - ietf # wait for release of https://github.com/metanorma/metanorma-ietf/commit/ca75ea3
+          # - ogc  # https://github.com/metanorma/mn-samples-ogc/issues/119
     steps:
       - uses: actions/checkout@v1
 
@@ -88,7 +88,8 @@ jobs:
           command: choco install --no-progress make
 
       - run: |
-          & ${env:ChocolateyInstall}\bin\make.exe -f Makefile.win test-flavor SHELL=cmd
+          %ChocolateyInstall%\bin\make -f Makefile.win test-flavor SHELL=cmd
+        shell: cmd
         env:
           GITHUB_CREDENTIALS: "metanorma-ci:${{ secrets.METANORMA_CI_PAT_TOKEN }}"
           TEST_FLAVOR: ${{ matrix.mn-proc }}
