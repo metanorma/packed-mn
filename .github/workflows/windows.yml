@@ -12,9 +12,6 @@ on:
       - Makefile
       - bin/build.sh
 
-env:
-  FREEDESKTOP_MIME_TYPES_PATH: ${{ github.workspace }}/ocra/freedesktop.org.xml
-
 jobs:
   build:
     runs-on: windows-2019
@@ -38,10 +35,9 @@ jobs:
         command: choco install --no-progress make gnuwin32-coreutils.install gzip wget git
 
     - run: |
-        %ChocolateyInstall%\bin\make -f Makefile.win build build/metanorma.exe SHELL=cmd
-      shell: cmd
+        & ${env:ChocolateyInstall}\bin\make.exe -f Makefile.win build build/metanorma.exe SHELL=cmd
 
-    - run: .\\build\\metanorma.exe help
+    - run: .\build\metanorma.exe help
 
     - uses: actions/upload-artifact@v2
       with:
@@ -78,8 +74,6 @@ jobs:
           name: metanorma-windows
           path: build
 
-      - run: .\build\metanorma.exe help
-
       - uses: nick-invision/retry@v1
         with:
           polling_interval_seconds: 5
@@ -88,8 +82,7 @@ jobs:
           command: choco install --no-progress make
 
       - run: |
-          %ChocolateyInstall%\bin\make -f Makefile.win test-flavor SHELL=cmd
-        shell: cmd
+          & ${env:ChocolateyInstall}\bin\make.exe -f Makefile.win test-flavor SHELL=cmd
         env:
           GITHUB_CREDENTIALS: "metanorma-ci:${{ secrets.METANORMA_CI_PAT_TOKEN }}"
           TEST_FLAVOR: ${{ matrix.mn-proc }}
