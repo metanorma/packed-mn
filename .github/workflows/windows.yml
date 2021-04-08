@@ -18,18 +18,15 @@ jobs:
     steps:
     - uses: actions/checkout@v1
 
-    - uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: 2.7
-
-    - run: |
-        gem install bundler
-        bundle install
-        gem install ocra
-
     - run: |
         gem -v
         systeminfo
+
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 2.4
+
+    - run: bundle install
 
     - uses: nick-invision/retry@v1
       with:
@@ -39,7 +36,8 @@ jobs:
         command: choco install --no-progress make gnuwin32-coreutils.install gzip wget git
 
     - run: |
-        & ${env:ChocolateyInstall}\bin\make.exe -f Makefile.win build build/metanorma.exe SHELL=cmd
+        %ChocolateyInstall%\bin\make.exe -f Makefile.win build build/metanorma.exe SHELL=cmd
+      shell: cmd
 
     - run: .\build\metanorma.exe help
 

@@ -12,8 +12,8 @@ build/%: ocra/% | build
 build/Gemfile: Gemfile | build
 	cp $< $@
 
-build/Gemfile.lock: Gemfile.lock | build
-	cp $< $@
+build/Gemfile.lock: build/Gemfile | build
+	pushd build & bundle install & popd
 
 build/metanorma: bin/metanorma | build
 	cp $< $@
