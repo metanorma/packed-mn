@@ -50,6 +50,8 @@ jobs:
         CC: /usr/bin/clang
         CXX: /usr/bin/clang++
 
+    - run: build/metanorma help
+
     - uses: actions/upload-artifact@v2
       with:
         name: metanorma-linux

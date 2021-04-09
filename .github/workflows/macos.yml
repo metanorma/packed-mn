@@ -41,6 +41,8 @@ jobs:
         env:
           DEVELOPER_DIR: /Applications/Xcode_11.7.app/Contents/Developer
 
+      - run: build/metanorma help
+
       - uses: actions/upload-artifact@v2
         with:
           name: metanorma-macos
