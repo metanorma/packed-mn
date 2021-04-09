@@ -58,13 +58,15 @@ jobs:
         path: build/metanorma
 
   test:
-    runs-on: ${{ matrix.os }}
     needs: build
+    runs-on: ${{ matrix.os }}
+    continue-on-error: ${{ matrix.ignore-errors }}
     strategy:
       fail-fast: false
       matrix:
         os: [ ubuntu-16.04, ubuntu-18.04, ubuntu-20.04 ]
-        mn-proc:
+        ignore-errors: [ false ]
+        test-flavor:
           - iso
           - cc
           - un
@@ -78,8 +80,37 @@ jobs:
           - csa
           - ribose
           - bipm
-          # - ietf # wait for release of https://github.com/metanorma/metanorma-ietf/commit/ca75ea3
-          # - ogc  # https://github.com/metanorma/mn-samples-ogc/issues/119
+        include:
+          # https://github.com/metanorma/packed-mn/issues/88
+          - test-flavor: itu
+            ignore-errors: true
+            os: ubuntu-16.04
+          - test-flavor: itu
+            ignore-errors: true
+            os: ubuntu-18.04
+          - test-flavor: itu
+            ignore-errors: true
+            os: ubuntu-20.04
+          # wait for release of https://github.com/metanorma/metanorma-ietf/commit/ca75ea3
+          - test-flavor: ietf
+            ignore-errors: true
+            os: ubuntu-16.04
+          - test-flavor: ietf
+            ignore-errors: true
+            os: ubuntu-18.04
+          - test-flavor: ietf
+            ignore-errors: true
+            os: ubuntu-20.04
+          # https://github.com/metanorma/mn-samples-ogc/issues/119
+          - test-flavor: ogc
+            ignore-errors: true
+            os: ubuntu-16.04
+          - test-flavor: ogc
+            ignore-errors: true
+            os: ubuntu-18.04
+          - test-flavor: ogc
+            ignore-errors: true
+            os: ubuntu-20.04
     steps:
       - uses: actions/checkout@v1
 
@@ -93,7 +124,7 @@ jobs:
       - run: make test-flavor
         env:
           GITHUB_CREDENTIALS: "metanorma-ci:${{ secrets.METANORMA_CI_PAT_TOKEN }}"
-          TEST_FLAVOR: ${{ matrix.mn-proc }}
+          TEST_FLAVOR: ${{ matrix.test-flavor }}
 
       - uses: actions/upload-artifact@v2
         with:

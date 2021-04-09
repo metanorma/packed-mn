@@ -49,12 +49,15 @@ jobs:
           path: build/metanorma
 
   test:
-    runs-on: macos-latest
     needs: build
+    runs-on: ${{ matrix.os }}
+    continue-on-error: ${{ matrix.ignore-errors }}
     strategy:
       fail-fast: false
       matrix:
-        mn-proc:
+        os: [ macos-10.15, macos-11.0 ]
+        ignore-errors: [ false ]
+        test-flavor:
           - iso
           - cc
           - un
@@ -68,8 +71,28 @@ jobs:
           - csa
           - ribose
           - bipm
-          # - ietf # wait for release of https://github.com/metanorma/metanorma-ietf/commit/ca75ea3
-          # - ogc  # https://github.com/metanorma/mn-samples-ogc/issues/119
+        include:
+          # https://github.com/metanorma/packed-mn/issues/88
+          - test-flavor: itu
+            ignore-errors: true
+            os: macos-10.15
+          - test-flavor: itu
+            ignore-errors: true
+            os: macos-11.0
+          # wait for release of https://github.com/metanorma/metanorma-ietf/commit/ca75ea3
+          - test-flavor: ietf
+            ignore-errors: true
+            os: macos-10.15
+          - test-flavor: ietf
+            ignore-errors: true
+            os: macos-11.0
+          # https://github.com/metanorma/mn-samples-ogc/issues/119
+          - test-flavor: ogc
+            ignore-errors: true
+            os: macos-10.15
+          - test-flavor: ogc
+            ignore-errors: true
+            os: macos-11.0
     steps:
       - uses: actions/checkout@v1
 
@@ -83,7 +106,7 @@ jobs:
       - run: make test-flavor
         env:
           GITHUB_CREDENTIALS: "metanorma-ci:${{ secrets.METANORMA_CI_PAT_TOKEN }}"
-          TEST_FLAVOR: ${{ matrix.mn-proc }}
+          TEST_FLAVOR: ${{ matrix.test-flavor }}
 
       - uses: actions/upload-artifact@v2
         with:

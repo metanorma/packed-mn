@@ -47,12 +47,14 @@ jobs:
         path: build/metanorma.exe
 
   test:
-    runs-on: windows-2019
     needs: build
+    runs-on: windows-2019
+    continue-on-error: ${{ matrix.ignore-errors }}
     strategy:
       fail-fast: false
       matrix:
-        mn-proc:
+        ignore-errors: [ false ]
+        test-flavor:
           - iso
           - cc
           - un
@@ -66,8 +68,16 @@ jobs:
           - csa
           - ribose
           - bipm
-          # - ietf # wait for release of https://github.com/metanorma/metanorma-ietf/commit/ca75ea3
-          # - ogc  # https://github.com/metanorma/mn-samples-ogc/issues/119
+        include:
+          # https://github.com/metanorma/packed-mn/issues/88
+          - test-flavor: itu
+            ignore-errors: true
+          # wait for release of https://github.com/metanorma/metanorma-ietf/commit/ca75ea3
+          - test-flavor: ietf
+            ignore-errors: true
+          # https://github.com/metanorma/mn-samples-ogc/issues/119
+          - test-flavor: ogc
+            ignore-errors: true
     steps:
       - uses: actions/checkout@v1
 
@@ -87,7 +97,7 @@ jobs:
           & ${env:ChocolateyInstall}\bin\make.exe -f Makefile.win test-flavor SHELL=cmd
         env:
           GITHUB_CREDENTIALS: "metanorma-ci:${{ secrets.METANORMA_CI_PAT_TOKEN }}"
-          TEST_FLAVOR: ${{ matrix.mn-proc }}
+          TEST_FLAVOR: ${{ matrix.test-flavor }}
 
       - uses: actions/upload-artifact@v2
         with:
