@@ -73,7 +73,6 @@ jobs:
           - iec
           - iho
           - nist
-          - itu
           - m3aawg
           - mpfa
           - jcgm
