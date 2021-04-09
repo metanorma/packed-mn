@@ -28,7 +28,10 @@ rubyc:
 
 $(BUILD_DIR)/metanorma: rubyc
 ifeq (,$(wildcard $(BUILD_DIR)/metanorma))
-	./bin/build.sh
+	./bin/build.sh $(BUILD_DIR)
+endif
+ifeq ($(UNAME_S),Linux)
+	strip $(BUILD_DIR)/metanorma
 endif
 
 test: $(BUILD_DIR)/metanorma

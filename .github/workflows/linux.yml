@@ -23,6 +23,8 @@ jobs:
         bundler: 2.2.3
         bundler-cache: true
 
+    - run: bundle update --all
+
     - run: sudo apt-get update && sudo apt-get -y -q install squashfs-tools bison flex texinfo
 
     - run: |
