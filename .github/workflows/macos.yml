@@ -55,7 +55,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ macos-10.15, macos-11.0 ]
+        os: [ macos-10.15 ]
         ignore-errors: [ false ]
         test-flavor:
           - iso
@@ -71,27 +71,64 @@ jobs:
           - ribose
           - bipm
         include:
+          # macos-11.0 looks not working
+          - test-flavor: iso
+            ignore-errors: true
+            os: macos-11.0
+          - test-flavor: cc
+            ignore-errors: true
+            os: macos-11.0
+          - test-flavor: un
+            ignore-errors: true
+            os: macos-11.0
+          - test-flavor: iec
+            ignore-errors: true
+            os: macos-11.0
+          - test-flavor: iho
+            ignore-errors: true
+            os: macos-11.0
+          - test-flavor: nist
+            ignore-errors: true
+            os: macos-11.0
+          - test-flavor: m3aawg
+            ignore-errors: true
+            os: macos-11.0
+          - test-flavor: mpfa
+            ignore-errors: true
+            os: macos-11.0
+          - test-flavor: jcgm
+            ignore-errors: true
+            os: macos-11.0
+          - test-flavor: csa
+            ignore-errors: true
+            os: macos-11.0
+          - test-flavor: ribose
+            ignore-errors: true
+            os: macos-11.0
+          - test-flavor: bipm
+            ignore-errors: true
+            os: macos-11.0
+          - test-flavor: itu
+            ignore-errors: true
+            os: macos-11.0
+          - test-flavor: ietf
+            ignore-errors: true
+            os: macos-11.0
+          - test-flavor: ogc
+            ignore-errors: true
+            os: macos-11.0
           # https://github.com/metanorma/packed-mn/issues/88
           - test-flavor: itu
             ignore-errors: true
             os: macos-10.15
-          - test-flavor: itu
-            ignore-errors: true
-            os: macos-11.0
           # wait for release of https://github.com/metanorma/metanorma-ietf/commit/ca75ea3
           - test-flavor: ietf
             ignore-errors: true
             os: macos-10.15
-          - test-flavor: ietf
-            ignore-errors: true
-            os: macos-11.0
           # https://github.com/metanorma/mn-samples-ogc/issues/119
           - test-flavor: ogc
             ignore-errors: true
             os: macos-10.15
-          - test-flavor: ogc
-            ignore-errors: true
-            os: macos-11.0
     steps:
       - uses: actions/checkout@v1
 
