@@ -12,24 +12,21 @@ on:
       - Makefile
       - bin/build.sh
 
-env:
-  FREEDESKTOP_MIME_TYPES_PATH: ${{ github.workspace }}/ocra/freedesktop.org.xml
-
 jobs:
   build:
     runs-on: windows-2019
     steps:
     - uses: actions/checkout@v1
 
+    - run: |
+        gem -v
+        systeminfo
+
     - uses: ruby/setup-ruby@v1
       with:
         ruby-version: 2.4
 
     - run: bundle install
-
-    - run: gem -v
-
-    - run: systeminfo
 
     - uses: nick-invision/retry@v1
       with:
@@ -38,10 +35,11 @@ jobs:
         max_attempts: 3
         command: choco install --no-progress make gnuwin32-coreutils.install gzip wget git
 
-    - run: "%ChocolateyInstall%\\bin\\make -f Makefile.win build build/metanorma.exe SHELL=cmd"
+    - run: |
+        %ChocolateyInstall%\bin\make.exe -f Makefile.win build build/metanorma.exe SHELL=cmd
       shell: cmd
 
-    - run: .\\build\\metanorma.exe help
+    - run: .\build\metanorma.exe help
 
     - uses: actions/upload-artifact@v2
       with:
@@ -49,27 +47,36 @@ jobs:
         path: build/metanorma.exe
 
   test:
+    needs: build
     runs-on: windows-2019
+    continue-on-error: ${{ matrix.ignore-errors }}
     strategy:
       fail-fast: false
       matrix:
-        mn-proc:
+        ignore-errors: [ false ]
+        test-flavor:
           - iso
           - cc
           - un
           - iec
           - iho
           - nist
-          # - ietf # wait for release of https://github.com/metanorma/metanorma-ietf/commit/ca75ea3
-          # - itu  # https://github.com/relaton/relaton-bib/issues/44
-          # - ogc  # https://github.com/metanorma/mn-samples-ogc/issues/119
           - m3aawg
           - mpfa
           - jcgm
           - csa
           - ribose
           - bipm
-    needs: build
+        include:
+          # https://github.com/metanorma/packed-mn/issues/88
+          - test-flavor: itu
+            ignore-errors: true
+          # wait for release of https://github.com/metanorma/metanorma-ietf/commit/ca75ea3
+          - test-flavor: ietf
+            ignore-errors: true
+          # https://github.com/metanorma/mn-samples-ogc/issues/119
+          - test-flavor: ogc
+            ignore-errors: true
     steps:
       - uses: actions/checkout@v1
 
@@ -77,8 +84,6 @@ jobs:
         with:
           name: metanorma-windows
           path: build
-
-      - run: .\build\metanorma.exe help
 
       - uses: nick-invision/retry@v1
         with:
@@ -91,7 +96,7 @@ jobs:
           & ${env:ChocolateyInstall}\bin\make.exe -f Makefile.win test-flavor SHELL=cmd
         env:
           GITHUB_CREDENTIALS: "metanorma-ci:${{ secrets.METANORMA_CI_PAT_TOKEN }}"
-          TEST_FLAVOR: ${{ matrix.mn-proc }}
+          TEST_FLAVOR: ${{ matrix.test-flavor }}
 
       - uses: actions/upload-artifact@v2
         with:

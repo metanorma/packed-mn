@@ -17,13 +17,13 @@ jobs:
     steps:
       - uses: actions/checkout@v1
 
-      - run: brew install shared-mime-info
-
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: 2.4.1
           bundler: 2.2.3
           bundler-cache: true
+
+      - run: bundle update --all
 
       - uses: shogo82148/actions-setup-perl@v1
         with:
@@ -37,9 +37,11 @@ jobs:
 
       - run: brew install squashfs
 
-      - run: make build
+      - run: make build/metanorma
         env:
           DEVELOPER_DIR: /Applications/Xcode_11.7.app/Contents/Developer
+
+      - run: build/metanorma help
 
       - uses: actions/upload-artifact@v2
         with:
@@ -47,8 +49,86 @@ jobs:
           path: build/metanorma
 
   test:
-    runs-on: macos-latest
     needs: build
+    runs-on: ${{ matrix.os }}
+    continue-on-error: ${{ matrix.ignore-errors }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ macos-10.15 ]
+        ignore-errors: [ false ]
+        test-flavor:
+          - iso
+          - cc
+          - un
+          - iec
+          - iho
+          - nist
+          - m3aawg
+          - mpfa
+          - jcgm
+          - csa
+          - ribose
+          - bipm
+        include:
+          # macos-11.0 looks not working
+          - test-flavor: iso
+            ignore-errors: true
+            os: macos-11.0
+          - test-flavor: cc
+            ignore-errors: true
+            os: macos-11.0
+          - test-flavor: un
+            ignore-errors: true
+            os: macos-11.0
+          - test-flavor: iec
+            ignore-errors: true
+            os: macos-11.0
+          - test-flavor: iho
+            ignore-errors: true
+            os: macos-11.0
+          - test-flavor: nist
+            ignore-errors: true
+            os: macos-11.0
+          - test-flavor: m3aawg
+            ignore-errors: true
+            os: macos-11.0
+          - test-flavor: mpfa
+            ignore-errors: true
+            os: macos-11.0
+          - test-flavor: jcgm
+            ignore-errors: true
+            os: macos-11.0
+          - test-flavor: csa
+            ignore-errors: true
+            os: macos-11.0
+          - test-flavor: ribose
+            ignore-errors: true
+            os: macos-11.0
+          - test-flavor: bipm
+            ignore-errors: true
+            os: macos-11.0
+          - test-flavor: itu
+            ignore-errors: true
+            os: macos-11.0
+          - test-flavor: ietf
+            ignore-errors: true
+            os: macos-11.0
+          - test-flavor: ogc
+            ignore-errors: true
+            os: macos-11.0
+          # https://github.com/metanorma/packed-mn/issues/88
+          - test-flavor: itu
+            ignore-errors: true
+            os: macos-10.15
+          # wait for release of https://github.com/metanorma/metanorma-ietf/commit/ca75ea3
+          - test-flavor: ietf
+            ignore-errors: true
+            os: macos-10.15
+          # https://github.com/metanorma/mn-samples-ogc/issues/119
+          - test-flavor: ogc
+            ignore-errors: true
+            os: macos-10.15
     steps:
       - uses: actions/checkout@v1
 
@@ -59,17 +139,10 @@ jobs:
 
       - run: chmod a+x build/metanorma
 
-      - run: brew install shared-mime-info
-
-      - run: make test
+      - run: make test-flavor
         env:
           GITHUB_CREDENTIALS: "metanorma-ci:${{ secrets.METANORMA_CI_PAT_TOKEN }}"
-
-      - uses: actions/upload-artifact@v2
-        if: ${{ always() }}
-        with:
-          name: samples_macos_logs
-          path: test_*.log
+          TEST_FLAVOR: ${{ matrix.test-flavor }}
 
       - uses: actions/upload-artifact@v2
         with:

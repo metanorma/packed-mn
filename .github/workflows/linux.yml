@@ -23,6 +23,8 @@ jobs:
         bundler: 2.2.3
         bundler-cache: true
 
+    - run: bundle update --all
+
     - run: sudo apt-get update && sudo apt-get -y -q install squashfs-tools bison flex texinfo
 
     - run: |
@@ -43,12 +45,14 @@ jobs:
         sudo swapon /mnt/compile.swap
         sudo swapon --all --verbose
 
-    - run: make build
+    - run: make build/metanorma
       timeout-minutes: 180
       # https://trac.sagemath.org/ticket/19762
       env:
         CC: /usr/bin/clang
         CXX: /usr/bin/clang++
+
+    - run: build/metanorma help
 
     - uses: actions/upload-artifact@v2
       with:
@@ -56,12 +60,58 @@ jobs:
         path: build/metanorma
 
   test:
+    needs: build
     runs-on: ${{ matrix.os }}
+    continue-on-error: ${{ matrix.ignore-errors }}
     strategy:
       fail-fast: false
       matrix:
         os: [ ubuntu-16.04, ubuntu-18.04, ubuntu-20.04 ]
-    needs: build
+        ignore-errors: [ false ]
+        test-flavor:
+          - iso
+          - cc
+          - un
+          - iec
+          - iho
+          - nist
+          - m3aawg
+          - mpfa
+          - jcgm
+          - csa
+          - ribose
+          - bipm
+        include:
+          # https://github.com/metanorma/packed-mn/issues/88
+          - test-flavor: itu
+            ignore-errors: true
+            os: ubuntu-16.04
+          - test-flavor: itu
+            ignore-errors: true
+            os: ubuntu-18.04
+          - test-flavor: itu
+            ignore-errors: true
+            os: ubuntu-20.04
+          # wait for release of https://github.com/metanorma/metanorma-ietf/commit/ca75ea3
+          - test-flavor: ietf
+            ignore-errors: true
+            os: ubuntu-16.04
+          - test-flavor: ietf
+            ignore-errors: true
+            os: ubuntu-18.04
+          - test-flavor: ietf
+            ignore-errors: true
+            os: ubuntu-20.04
+          # https://github.com/metanorma/mn-samples-ogc/issues/119
+          - test-flavor: ogc
+            ignore-errors: true
+            os: ubuntu-16.04
+          - test-flavor: ogc
+            ignore-errors: true
+            os: ubuntu-18.04
+          - test-flavor: ogc
+            ignore-errors: true
+            os: ubuntu-20.04
     steps:
       - uses: actions/checkout@v1
 
@@ -72,15 +122,10 @@ jobs:
 
       - run: chmod +x build/metanorma
 
-      - run: make test
+      - run: make test-flavor
         env:
           GITHUB_CREDENTIALS: "metanorma-ci:${{ secrets.METANORMA_CI_PAT_TOKEN }}"
-
-      - uses: actions/upload-artifact@v2
-        if: ${{ always() }}
-        with:
-          name: samples_${{ matrix.os }}_logs
-          path: test_*.log
+          TEST_FLAVOR: ${{ matrix.test-flavor }}
 
       - uses: actions/upload-artifact@v2
         with:
