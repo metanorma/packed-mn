@@ -11,9 +11,9 @@ gem "metanorma-ribose"
 
 gem "fontist" if Gem.win_platform?
 
-gem "ffi"
-gem "rake"
-gem "seven_zip_ruby"
+# gem "ffi"
+# gem "rake"
+# gem "seven_zip_ruby"
 
 group :development do
   gem "byebug"

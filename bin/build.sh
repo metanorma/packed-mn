@@ -17,4 +17,8 @@ cp -R vendor "$TEMP_DIR"
 
 [ -d "${BUILD_DIR}" ] || mkdir -p "${BUILD_DIR}"; rm -rf ${BUILD_DIR}/* || true
 
+if [[ "$OSTYPE" == "darwin"* ]]; then
+	export CC="xcrun clang -mmacosx-version-min=10.10 -Wno-implicit-function-declaration"
+fi
+
 ./rubyc --clean-tmpdir -r "${TEMP_DIR}" -o ${BUILD_DIR}/metanorma "${TEMP_DIR}/metanorma"
