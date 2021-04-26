@@ -152,6 +152,25 @@ unless Gem.win_platform? # because on windows we use ocra
   # END of HACK
 end
 
+if Gem.win_platform?
+  # HACK unpack jing chcp 65001
+  require 'jing'
+  require 'optout'
+
+  class Jing
+    def execute(options)
+      cmd = @@option_builder.shell(options)
+      `#{cmd} 2>&1`.encode("UTF-8", :invalid=>:replace, :replace=>"_?_")
+    rescue SystemCallError => e
+      raise ExecutionError, "jing execution failed: #{e}"
+    rescue Optout::OptionError => e
+      raise OptionError, e.message
+    end
+  end
+  # END of HACK
+end
+
+
 cert_file_path = nil
 DEBUG = ENV['DEBUG']
 
