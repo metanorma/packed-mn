@@ -67,12 +67,10 @@ jobs:
           - csa
           - ribose
           - bipm
+          - ietf
         include:
-          # https://github.com/metanorma/packed-mn/issues/88
+          # timeout www.iso.com happens
           - test-flavor: itu
-            ignore-errors: true
-          # wait for release of https://github.com/metanorma/metanorma-ietf/commit/ca75ea3
-          - test-flavor: ietf
             ignore-errors: true
           # https://github.com/metanorma/mn-samples-ogc/issues/119
           - test-flavor: ogc

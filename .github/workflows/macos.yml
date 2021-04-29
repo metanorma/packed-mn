@@ -70,6 +70,8 @@ jobs:
           - csa
           - ribose
           - bipm
+          - itu
+          - ietf
         include:
           # macos-11.0 looks not working
           - test-flavor: iso
@@ -117,14 +119,6 @@ jobs:
           - test-flavor: ogc
             ignore-errors: true
             os: macos-11.0
-          # https://github.com/metanorma/packed-mn/issues/88
-          - test-flavor: itu
-            ignore-errors: true
-            os: macos-10.15
-          # wait for release of https://github.com/metanorma/metanorma-ietf/commit/ca75ea3
-          - test-flavor: ietf
-            ignore-errors: true
-            os: macos-10.15
           # https://github.com/metanorma/mn-samples-ogc/issues/119
           - test-flavor: ogc
             ignore-errors: true

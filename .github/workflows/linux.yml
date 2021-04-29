@@ -81,27 +81,9 @@ jobs:
           - csa
           - ribose
           - bipm
+          - itu
+          - ietf
         include:
-          # https://github.com/metanorma/packed-mn/issues/88
-          - test-flavor: itu
-            ignore-errors: true
-            os: ubuntu-16.04
-          - test-flavor: itu
-            ignore-errors: true
-            os: ubuntu-18.04
-          - test-flavor: itu
-            ignore-errors: true
-            os: ubuntu-20.04
-          # wait for release of https://github.com/metanorma/metanorma-ietf/commit/ca75ea3
-          - test-flavor: ietf
-            ignore-errors: true
-            os: ubuntu-16.04
-          - test-flavor: ietf
-            ignore-errors: true
-            os: ubuntu-18.04
-          - test-flavor: ietf
-            ignore-errors: true
-            os: ubuntu-20.04
           # https://github.com/metanorma/mn-samples-ogc/issues/119
           - test-flavor: ogc
             ignore-errors: true
