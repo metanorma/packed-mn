@@ -83,6 +83,7 @@ jobs:
           - bipm
           - itu
           - ietf
+          - bsi
         include:
           # https://github.com/metanorma/mn-samples-ogc/issues/119
           - test-flavor: ogc

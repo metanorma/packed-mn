@@ -68,6 +68,7 @@ jobs:
           - ribose
           - bipm
           - ietf
+          - bsi
         include:
           # timeout www.iso.com happens
           - test-flavor: itu
