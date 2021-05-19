@@ -24,7 +24,7 @@ TEST_PROCESSORS ?= iso cc iec un nist m3aawg mpfa jcgm csa ribose bipm iho
 BUILD_DIR := build
 
 rubyc:
-	curl -L https://github.com/metanorma/ruby-packer/releases/download/v0.4.3/rubyc-$(PLATFORM)-x64 > ./rubyc && chmod +x rubyc
+	curl -L https://github.com/metanorma/ruby-packer/releases/download/v0.4.5/rubyc-$(PLATFORM)-x64 > ./rubyc && chmod +x rubyc
 
 $(BUILD_DIR)/metanorma: rubyc
 ifeq (,$(wildcard $(BUILD_DIR)/metanorma))
