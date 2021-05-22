@@ -1,7 +1,7 @@
 SHELL := cmd
 
 TEST_FLAVOR ?= iso
-TEST_PROCESSORS = "iso cc un iec nist m3aawg mpfa jcgm csa ribose itu bipm" # ietf ogc
+TEST_PROCESSORS = "iso cc un iec nist m3aawg mpfa jcgm csa ribose itu bipm bsi ietf" # ogc
 
 build:
 	if not exist build md build

@@ -72,6 +72,7 @@ jobs:
           - bipm
           - itu
           - ietf
+          - bsi
         include:
           # macos-11.0 looks not working
           - test-flavor: iso

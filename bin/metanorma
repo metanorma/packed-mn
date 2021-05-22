@@ -206,6 +206,7 @@ require 'metanorma-nist'
 require 'metanorma-ogc'
 require 'metanorma-ribose' unless Gem.win_platform? # workaround for ocra
 require 'metanorma-mpfa' unless Gem.win_platform? # workaround for ocra
+require 'metanorma-bsi'
 require 'metanorma-un'
 require 'metanorma'
 require 'nokogiri'
