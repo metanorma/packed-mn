@@ -17,6 +17,10 @@ jobs:
     steps:
       - uses: actions/checkout@v1
 
+      - uses: metanorma/metanorma-build-scripts/gh-rubygems-setup-action@master
+        with:
+          token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
+
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: 2.4.1
@@ -73,6 +77,7 @@ jobs:
           - itu
           - ietf
           - bsi
+          - ogc
         include:
           # macos-11.0 looks not working
           - test-flavor: iso
@@ -117,13 +122,6 @@ jobs:
           - test-flavor: ietf
             ignore-errors: true
             os: macos-11.0
-          - test-flavor: ogc
-            ignore-errors: true
-            os: macos-11.0
-          # https://github.com/metanorma/mn-samples-ogc/issues/119
-          - test-flavor: ogc
-            ignore-errors: true
-            os: macos-10.15
     steps:
       - uses: actions/checkout@v1
 

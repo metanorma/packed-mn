@@ -17,6 +17,10 @@ jobs:
     steps:
     - uses: actions/checkout@v1
 
+    - uses: metanorma/metanorma-build-scripts/gh-rubygems-setup-action@master
+      with:
+        token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
+
     - uses: ruby/setup-ruby@v1
       with:
         ruby-version: 2.4.1
@@ -84,17 +88,7 @@ jobs:
           - itu
           - ietf
           - bsi
-        include:
-          # https://github.com/metanorma/mn-samples-ogc/issues/119
-          - test-flavor: ogc
-            ignore-errors: true
-            os: ubuntu-16.04
-          - test-flavor: ogc
-            ignore-errors: true
-            os: ubuntu-18.04
-          - test-flavor: ogc
-            ignore-errors: true
-            os: ubuntu-20.04
+          - ogc
     steps:
       - uses: actions/checkout@v1
 
