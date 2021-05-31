@@ -69,12 +69,10 @@ jobs:
           - bipm
           - ietf
           - bsi
+          - ogc
         include:
           # timeout www.iso.com happens
           - test-flavor: itu
-            ignore-errors: true
-          # https://github.com/metanorma/mn-samples-ogc/issues/119
-          - test-flavor: ogc
             ignore-errors: true
     steps:
       - uses: actions/checkout@v1

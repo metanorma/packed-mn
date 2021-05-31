@@ -84,17 +84,7 @@ jobs:
           - itu
           - ietf
           - bsi
-        include:
-          # https://github.com/metanorma/mn-samples-ogc/issues/119
-          - test-flavor: ogc
-            ignore-errors: true
-            os: ubuntu-16.04
-          - test-flavor: ogc
-            ignore-errors: true
-            os: ubuntu-18.04
-          - test-flavor: ogc
-            ignore-errors: true
-            os: ubuntu-20.04
+          - ogc
     steps:
       - uses: actions/checkout@v1
 
