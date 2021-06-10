@@ -26,11 +26,13 @@ jobs:
       with:
         token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
 
-    - uses: ruby/setup-ruby@v1
+    - uses: actions/setup-ruby@v1
       with:
-        ruby-version: 2.7.3
+        ruby-version: '2.7'
 
-    - run: bundle install
+    - run: |
+        gem install bundler
+        bundle install
 
     - uses: nick-invision/retry@v1
       with:
@@ -40,7 +42,7 @@ jobs:
         command: choco install --no-progress make gnuwin32-coreutils.install gzip wget git
 
     - run: |
-        %ChocolateyInstall%\bin\make.exe -f Makefile.win build build/metanorma.exe SHELL=cmd
+        %ChocolateyInstall%\bin\make.exe -f Makefile.win build build/metanorma.exe
       shell: cmd
 
     - run: .\build\metanorma.exe help
