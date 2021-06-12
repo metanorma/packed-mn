@@ -45,12 +45,12 @@ jobs:
         %ChocolateyInstall%\bin\make.exe -f Makefile.win build build/metanorma.exe
       shell: cmd
 
-    - run: .\build\metanorma.exe help
-
     - uses: actions/upload-artifact@v2
       with:
         name: metanorma-windows
         path: build/metanorma.exe
+
+    - run: .\build\metanorma.exe help
 
   test:
     needs: build
