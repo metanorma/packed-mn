@@ -30,9 +30,7 @@ jobs:
       with:
         ruby-version: '2.7'
 
-    - run: |
-        gem install bundler
-        bundle install
+    - run: gem install bundler
 
     - uses: nick-invision/retry@v1
       with:

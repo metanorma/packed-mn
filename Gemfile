@@ -14,7 +14,11 @@ source "https://rubygems.pkg.github.com/metanorma" do
   gem "metanorma-nist"
 end
 
-gem "fontist" if Gem.win_platform?
+if Gem.win_platform?
+  gem "fontist"
+  gem "net-ssh"
+  gem "zlib"
+end
 
 gem "ffi"
 gem "rake"
