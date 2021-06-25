@@ -1,15 +1,15 @@
 name: linux
 
 on:
-  # push:
-  #   branches: [ master ]
-  #   tags: [ '*' ]
-  # pull_request:
-  #   paths-ignore:
-  #     - .github/workflows/macos.yml
-  #     - .github/workflows/windows.yml
-  #     - .github/workflows/release_tag.yml
-  #     - Makefile.win
+  push:
+    branches: [ master ]
+    tags: [ '*' ]
+  pull_request:
+    paths-ignore:
+      - .github/workflows/macos.yml
+      - .github/workflows/windows.yml
+      - .github/workflows/release_tag.yml
+      - Makefile.win
 
 jobs:
   build:
