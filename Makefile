@@ -16,15 +16,12 @@ else
 endif
 
 TEST_FLAVOR ?= iso
-TEST_PROCESSORS ?= iso cc iec un nist m3aawg mpfa jcgm csa ribose bipm iho bsi
-# ietf - wait for release of https://github.com/metanorma/metanorma-ietf/commit/ca75ea3
-# itu  - https://github.com/relaton/relaton-bib/issues/44
-# ogc  - https://github.com/metanorma/mn-samples-ogc/issues/119
+TEST_PROCESSORS ?= iso cc iec un nist m3aawg mpfa jcgm csa ribose bipm iho bsi ogc itu ietf
 
 BUILD_DIR := build
 
 rubyc:
-	curl -L https://github.com/metanorma/ruby-packer/releases/download/v0.4.5/rubyc-$(PLATFORM)-x64 > ./rubyc && chmod +x rubyc
+	curl -L https://github.com/metanorma/ruby-packer/releases/download/v0.5.0/rubyc-$(PLATFORM)-x64 > ./rubyc && chmod +x rubyc
 
 $(BUILD_DIR)/metanorma: rubyc
 ifeq (,$(wildcard $(BUILD_DIR)/metanorma))
