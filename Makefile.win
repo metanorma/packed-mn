@@ -33,9 +33,6 @@ ifeq (,$(wildcard build/metanorma.exe))
 			--dll ruby_builtin_dlls/libyaml-0-2.dll \
 			--dll ruby_builtin_dlls/libwinpthread-1.dll \
 			--gemfile Gemfile metanorma cacert.pem.mozilla & popd
-	rm build/Gemfile.lock
-	rm build/Gemfile
-	rm Gemfile
 endif
 
 build/mparallel.exe:

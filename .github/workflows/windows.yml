@@ -48,7 +48,9 @@ jobs:
         name: metanorma-windows
         path: build/metanorma.exe
 
-    - run: .\build\metanorma.exe help
+    - run: |
+        rm Gemfile
+        .\build\metanorma.exe help
 
   test:
     needs: build
@@ -94,6 +96,7 @@ jobs:
           command: choco install --no-progress make
 
       - run: |
+          Remove-Item Gemfile
           & ${env:ChocolateyInstall}\bin\make.exe -f Makefile.win test-flavor SHELL=cmd
         env:
           GITHUB_CREDENTIALS: "metanorma-ci:${{ secrets.METANORMA_CI_PAT_TOKEN }}"
