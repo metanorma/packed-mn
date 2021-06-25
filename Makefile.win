@@ -27,10 +27,11 @@ ifeq (,$(wildcard build/metanorma.exe))
 			--dll ruby_builtin_dlls/libffi-7.dll \
 			--dll ruby_builtin_dlls/zlib1.dll \
 			--dll ruby_builtin_dlls/libiconv-2.dll \
-			--dll ruby_builtin_dlls\libssp-0.dll \
-			--dll ruby_builtin_dlls\libssl-1_1-x64.dll \
-			--dll ruby_builtin_dlls\libcrypto-1_1-x64.dll \
-			--dll ruby_builtin_dlls\libyaml-0-2.dll \
+			--dll ruby_builtin_dlls/libssp-0.dll \
+			--dll ruby_builtin_dlls/libssl-1_1-x64.dll \
+			--dll ruby_builtin_dlls/libcrypto-1_1-x64.dll \
+			--dll ruby_builtin_dlls/libyaml-0-2.dll \
+			--dll ruby_builtin_dlls/libwinpthread-1.dll \
 			--gemfile Gemfile metanorma cacert.pem.mozilla & popd
 	rm build/Gemfile.lock
 	rm build/Gemfile
