@@ -170,23 +170,13 @@ if Gem.win_platform?
   # END of HACK
 end
 
+Net::HTTP.class_eval do
+  alias _use_ssl= use_ssl=
 
-cert_file_path = nil
-DEBUG = ENV['DEBUG']
-
-# Check ssl availability, if not use vendor ssl certificate
-begin
-  Net::HTTP.get(URI('https://www.iso.org/'))
-rescue OpenSSL::SSL::SSLError
-  puts('Cannot use SSL requests, installing custom certificate') if DEBUG
-  Net::HTTP.class_eval do
-    alias _use_ssl= use_ssl=
-
-    def use_ssl= boolean
-      self.ca_file = cert_file_path
-      self.verify_mode = OpenSSL::SSL::VERIFY_PEER
-      self._use_ssl = boolean
-    end
+  def use_ssl= boolean
+    self.ca_file = cert_file_path
+    self.verify_mode = OpenSSL::SSL::VERIFY_PEER
+    self._use_ssl = boolean
   end
 end
 
