@@ -8,6 +8,8 @@ require 'open-uri'
 require 'net/https'
 require 'tempfile'
 
+# uncomment when upgrade to Ruby 2.6
+# COMPILER_MEMFS = '/__ruby_packer_memfs__'
 COMPILER_MEMFS = '/__enclose_io_memfs__'
 
 def determine_cert_path
