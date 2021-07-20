@@ -23,7 +23,7 @@ jobs:
 
     - uses: ruby/setup-ruby@v1
       with:
-        ruby-version: 2.5.1
+        ruby-version: 2.6.3
         bundler: 2.2.3
         bundler-cache: true
 
@@ -43,10 +43,10 @@ jobs:
 
     - name: enable swap
       run: |
-        sudo fallocate -l 9g /mnt/compile.swap
-        sudo chmod 600 /mnt/compile.swap
-        sudo mkswap /mnt/compile.swap
-        sudo swapon /mnt/compile.swap
+        sudo fallocate -l 15g /compile.swap
+        sudo chmod 600 /compile.swap
+        sudo mkswap /compile.swap
+        sudo swapon /compile.swap
         sudo swapon --all --verbose
 
     - run: make build/metanorma

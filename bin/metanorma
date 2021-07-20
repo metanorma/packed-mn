@@ -8,9 +8,7 @@ require 'open-uri'
 require 'net/https'
 require 'tempfile'
 
-# uncomment when upgrade to Ruby 2.6
-# COMPILER_MEMFS = '/__ruby_packer_memfs__'
-COMPILER_MEMFS = '/__enclose_io_memfs__'
+COMPILER_MEMFS = '/__ruby_packer_memfs__'
 
 def determine_cert_path
   return "#{File.expand_path(File.dirname(__FILE__))}/cacert.pem.mozilla" if Gem.win_platform?
@@ -117,7 +115,7 @@ unless Gem.win_platform? # because on windows we use ocra
   )
   # END of HACK
 
-  # HACK unpack mn2pdf and mn2sts jar
+  # HACK unpack mn2pdf.jar
   require 'mn2pdf'
   module Mn2pdf
     remove_const('MN2PDF_JAR_PATH')
@@ -130,17 +128,20 @@ unless Gem.win_platform? # because on windows we use ocra
       convert_orig(extract_memfs(url_path), output_path, extract_memfs(xsl_stylesheet), options)
     end
   end
+  # END of HACK
 
-  require 'mn2sts'
-  module Mn2sts
-    remove_const('MN2STS_JAR_PATH')
-    MN2STS_JAR_PATH = extract_memfs(File.join(Gem.loaded_specs['mn2sts'].full_gem_path, 'bin', 'mn2sts.jar'))
+  # HACK unpack mnconvert.jar
+  require 'mnconvert'
+  module MnConvert
+    remove_const('MNCONVERT_JAR_PATH')
+    MNCONVERT_JAR_PATH = extract_memfs(File.join(Gem.loaded_specs['mnconvert'].full_gem_path, 'bin', 'mnconvert.jar'))
 
     self.singleton_class.send(:alias_method, :convert_orig, :convert)
     self.singleton_class.send(:remove_method, :convert)
 
-    def self.convert(xml_path_in, xml_path_out)
-      convert_orig(extract_memfs(xml_path_in), xml_path_out)
+    def self.convert(input_file, output_file, input_format, opts = {})
+      opts[:xsl_file] = extract_memfs(opts[:xsl_file]) if opts[:xsl_file]
+      convert_orig(extract_memfs(input_file), output_file, input_format, opts)
     end
   end
   # END of HACK
