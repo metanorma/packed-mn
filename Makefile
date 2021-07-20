@@ -21,8 +21,7 @@ TEST_PROCESSORS ?= iso cc iec un nist m3aawg mpfa jcgm csa ribose bipm iho bsi o
 BUILD_DIR := build
 
 rubyc:
-	# when upgrade to Ruby 2.6 (ruby-packer v0.6.x), the COMPILER_MEMFS constant should be changed to '/__ruby_packer_memfs__'
-	curl -L https://github.com/metanorma/ruby-packer/releases/download/v0.5.0/rubyc-$(PLATFORM)-x64 > ./rubyc && chmod +x rubyc
+	curl -L https://github.com/metanorma/ruby-packer/releases/download/v0.6.1/rubyc-$(PLATFORM)-x64 > ./rubyc && chmod +x rubyc
 
 $(BUILD_DIR)/metanorma: rubyc
 ifeq (,$(wildcard $(BUILD_DIR)/metanorma))
