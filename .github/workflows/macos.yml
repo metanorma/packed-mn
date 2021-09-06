@@ -67,7 +67,6 @@ jobs:
           - un
           - iec
           - iho
-          - nist
           - m3aawg
           - mpfa
           - jcgm
@@ -76,7 +75,6 @@ jobs:
           - bipm
           - itu
           - ietf
-          - bsi
           - ogc
         include:
           # macos-11.0 looks not working
@@ -93,9 +91,6 @@ jobs:
             ignore-errors: true
             os: macos-11.0
           - test-flavor: iho
-            ignore-errors: true
-            os: macos-11.0
-          - test-flavor: nist
             ignore-errors: true
             os: macos-11.0
           - test-flavor: m3aawg

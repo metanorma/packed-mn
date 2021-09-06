@@ -48,9 +48,7 @@ jobs:
         name: metanorma-windows
         path: build/metanorma.exe
 
-    - run: |
-        rm Gemfile
-        .\build\metanorma.exe help
+    - run: .\build\metanorma.exe help
 
   test:
     needs: build
@@ -66,7 +64,6 @@ jobs:
           - un
           - iec
           - iho
-          - nist
           - m3aawg
           - mpfa
           - jcgm
@@ -74,7 +71,6 @@ jobs:
           - ribose
           - bipm
           - ietf
-          - bsi
           - ogc
         include:
           # timeout www.iso.com happens
