@@ -171,6 +171,8 @@ if Gem.win_platform?
     end
   end
   # END of HACK
+
+  require 'ffi-libarchive-binary' # to preload libarchive-13.dll
 end
 
 Net::HTTP.class_eval do
