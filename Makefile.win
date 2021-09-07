@@ -1,7 +1,7 @@
 SHELL := cmd
 
 TEST_FLAVOR ?= iso
-TEST_PROCESSORS = "iso cc un iec nist m3aawg mpfa jcgm csa ribose itu bipm bsi ietf" # ogc
+TEST_PROCESSORS = "iso cc un iec m3aawg mpfa jcgm csa ribose itu bipm ietf" # ogc
 
 build:
 	if not exist build md build
@@ -32,7 +32,8 @@ ifeq (,$(wildcard build/metanorma.exe))
 			--dll ruby_builtin_dlls/libcrypto-1_1-x64.dll \
 			--dll ruby_builtin_dlls/libyaml-0-2.dll \
 			--dll ruby_builtin_dlls/libwinpthread-1.dll \
-			--gemfile Gemfile metanorma cacert.pem.mozilla & popd
+			--no-autoload \
+			metanorma cacert.pem.mozilla & popd
 endif
 
 build/mparallel.exe:

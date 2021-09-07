@@ -9,11 +9,6 @@ gem "iso-639", "<= 0.2.10" # https://github.com/metanorma/packed-mn/issues/26
 gem "metanorma-mpfa"
 gem "metanorma-ribose"
 
-source "https://rubygems.pkg.github.com/metanorma" do
-  gem "metanorma-bsi"
-  gem "metanorma-nist"
-end
-
 if Gem.win_platform?
   gem "fontist"
   gem "net-ssh"
