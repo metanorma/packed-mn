@@ -16,7 +16,7 @@ else
 endif
 
 TEST_FLAVOR ?= iso
-TEST_PROCESSORS ?= iso cc iec un m3aawg mpfa jcgm csa ribose bipm iho ogc itu ietf
+TEST_PROCESSORS ?= iso cc iec un m3aawg jcgm csa bipm iho ogc itu ietf
 
 BUILD_DIR := build
 

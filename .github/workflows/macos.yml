@@ -68,10 +68,8 @@ jobs:
           - iec
           - iho
           - m3aawg
-          - mpfa
           - jcgm
           - csa
-          - ribose
           - bipm
           - itu
           - ietf
@@ -96,16 +94,10 @@ jobs:
           - test-flavor: m3aawg
             ignore-errors: true
             os: macos-11.0
-          - test-flavor: mpfa
-            ignore-errors: true
-            os: macos-11.0
           - test-flavor: jcgm
             ignore-errors: true
             os: macos-11.0
           - test-flavor: csa
-            ignore-errors: true
-            os: macos-11.0
-          - test-flavor: ribose
             ignore-errors: true
             os: macos-11.0
           - test-flavor: bipm
