@@ -113,7 +113,7 @@ jobs:
         bin/build-with-tebako.sh
 
 
-#    - run: build/metanorma help
+    - run: ${{github.workspace}}/${{ env.TEBAKO_DIR }}/build/metanorma help
 
 #    - uses: actions/upload-artifact@v2
 #      with:
