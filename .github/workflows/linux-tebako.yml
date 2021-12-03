@@ -32,7 +32,19 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    name: ${{ matrix.os }} [CC ${{ matrix.env.CC }}]
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        env:
+          - CC: gcc
+            CXX: g++
+          - CC: clang
+            CXX: clang++
+    if: "!contains(github.event.head_commit.message, 'skip ci')"
+    env: ${{ matrix.env }}
     steps:
     - uses: actions/checkout@v1
 
@@ -60,15 +72,15 @@ jobs:
         libffi-dev libgdbm-dev libyaml-dev libncurses-dev libreadline-dev libsqlite3-dev \
         texinfo
 
-    - run: |
-        sudo update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100
-        sudo update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 100
+#    - run: |
+#        sudo update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100
+#        sudo update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 100
 
     - run: |
         curl -Lks 'https://git.io/rg-ssl' | ruby
         echo "perl -v: $(perl -v)"
-        echo "clang -v: $(clang -v)"
-        echo "clang++ -v: $(clang -v)"
+        echo "cc -v: $($CC -v)"
+        echo "CXX -v: $($CXX -v)"
 
     - name: enable swap
       run: |
