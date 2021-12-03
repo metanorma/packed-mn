@@ -40,6 +40,14 @@ jobs:
       with:
         token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
 
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ env.RUBY_VER }}
+        bundler: ${{ env.BUNDLER_VER }}
+        bundler-cache: true
+
+    - run: bundle update --all
+
     - name: Install packages
       run: |
         sudo apt-get update
