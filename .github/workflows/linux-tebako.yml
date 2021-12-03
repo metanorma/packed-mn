@@ -112,13 +112,17 @@ jobs:
       run: | 
         bin/build-with-tebako.sh
 
+    - name: run 'metanorma help'
+      run: ${{github.workspace}}/${{ env.TEBAKO_DIR }}/build/metanorma help
+        
+    - name: run 'metanorma version'
+      run:  ${{github.workspace}}/${{ env.TEBAKO_DIR }}/build/metanorma version
+        
+    - name: run 'metanorma list-doctypes'
+      run: ${{github.workspace}}/${{ env.TEBAKO_DIR }}/build/metanorma list-doctypes
 
-    - name: run some commands
-      run: |
-        ${{github.workspace}}/${{ env.TEBAKO_DIR }}/build/metanorma help
-        ${{github.workspace}}/${{ env.TEBAKO_DIR }}/build/metanorma version
-        ${{github.workspace}}/${{ env.TEBAKO_DIR }}/build/metanorma list-doctypes
-        ${{github.workspace}}/${{ env.TEBAKO_DIR }}/build/metanorma list-extensions
+    - name: run 'metanorma list-extensions'
+      run: ${{github.workspace}}/${{ env.TEBAKO_DIR }}/build/metanorma list-extensions
 
 #    - uses: actions/upload-artifact@v2
 #      with:
