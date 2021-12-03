@@ -19,7 +19,7 @@ env:
 # Customize tebako build type here 
   BUILD_TYPE: Release
 # The folders
-  TEBAKO: tebako
+  TEBAKO_DIR: tebako
   DEPS: deps
 # Versions
   TEBAKO_TAG: maxirmx-issue-23
@@ -82,7 +82,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: tamatebako/tebako
-        path: ${{ env.TEBAKO }}
+        path: ${{ env.TEBAKO_DIR }}
         ref: ${{ env.TEBAKO_TAG }}
         fetch-depth: 0
 
@@ -91,30 +91,27 @@ jobs:
       run: |
         mkdir -p -v ${{ github.workspace }}/${{ env.TEBAKO }}/${{ env.DEPS }}
         echo "Keys" > key.txt
-        echo  ${{ env.TEBAKO_TAG }} >> key.txt
+        echo  ${{ env.TEBAKO_DIR_TAG }} >> key.txt
         echo  ${{ env.RUBY_HASH }} >> key.txt
 
     - name: Process cache
       id: cache
       uses: actions/cache@v2
       with:
-        path: ${{github.workspace}}/${{ env.TEBAKO }}/${{ env.DEPS }}
+        path: ${{github.workspace}}/${{ env.TEBAKO_DIR }}/${{ env.DEPS }}
         key: ${{ github.workflow }}-${{ matrix.os }}-${{ matrix.env.CC }}-${{ hashFiles('key.txt') }}-v01
 
     - name: tebako setup
       if: steps.cache.outputs.cache-hit != 'true'
       run: |
-        pushd ${{github.workspace}}/${{ env.TEBAKO }}
+        pushd ${{github.workspace}}/${{ env.TEBAKO_DIR }}
         bin/tebako setup
         popd
 
+    - name: package metanorma
+      run: | 
+        bin/build-with-tebako.sh
 
-#    - run: make build/metanorma
-#      timeout-minutes: 180
-      # https://trac.sagemath.org/ticket/19762
-#      env:
-#        CC: /usr/bin/clang
-#        CXX: /usr/bin/clang++
 
 #    - run: build/metanorma help
 
@@ -126,7 +123,7 @@ jobs:
     - name: prepare cache
       if: steps.cache.outputs.cache-hit != 'true'
       run:  |
-        rm -rf ${{github.workspace}}/${{ env.TEBAKO }}/${{ env.DEPS }}/src/_ruby*
-        pushd ${{github.workspace}}/${{ env.TEBAKO }}
+        rm -rf ${{github.workspace}}/${{ env.TEBAKO_DIR }}/${{ env.DEPS }}/src/_ruby*
+        pushd ${{github.workspace}}/${{ env.TEBAKO_DIR }}
         bin/tebako setup
         popd
