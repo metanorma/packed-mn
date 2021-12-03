@@ -108,9 +108,9 @@ jobs:
         bin/tebako setup
         popd
 
-#    - name: package metanorma
-#      run: | 
-#        bin/build-with-tebako.sh
+    - name: package metanorma
+      run: | 
+        bin/build-with-tebako.sh
 
 
 #    - run: build/metanorma help
