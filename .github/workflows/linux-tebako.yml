@@ -114,7 +114,7 @@ jobs:
 
 
     - name: run some commands
-    - run: |
+      run: |
         ${{github.workspace}}/${{ env.TEBAKO_DIR }}/build/metanorma help
         ${{github.workspace}}/${{ env.TEBAKO_DIR }}/build/metanorma version
         ${{github.workspace}}/${{ env.TEBAKO_DIR }}/build/metanorma list-doctypes
