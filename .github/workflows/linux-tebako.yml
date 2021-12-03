@@ -1,4 +1,4 @@
-name: linux
+name: linux-with-tebako-packager
 
 on:
   push:
@@ -11,6 +11,24 @@ on:
       - .github/workflows/windows.yml
       - .github/workflows/release_tag.yml
       - Makefile.win
+
+# Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+env:
+# Customize tebako build type here 
+  BUILD_TYPE: Release
+# The folders
+  TEBAKO: tebako
+  DEPS: deps
+# Versions
+  TEBAKO_TAG: maxirmx-issue-23
+  RUBY_VER:   "2.7.4"
+  RUBY_HASH:  "3043099089608859fc8cce7f9fdccaa1f53a462457e3838ec3b25a7d609fbc5b"
+  BUNDLER_VER: "2.2.3"
+#  
+  CC: clang
+  CXX: clang++
 
 jobs:
   build:
@@ -52,6 +70,37 @@ jobs:
         sudo swapon /compile.swap
         sudo swapon --all --verbose
 
+    - name: Checkout tebako packaging environment
+      uses: actions/checkout@v2
+      with:
+        repository: tamatebako/tebako
+        path: ${{ env.TEBAKO }}
+        ref: ${{ env.TEBAKO_TAG }}
+        fetch-depth: 0
+
+
+    - name: Create deps folder and cache key
+      run: |
+        mkdir -p -v ${{ github.workspace }}/${{ env.TEBAKO }}/${{ env.DEPS }}
+        echo "Keys" > key.txt
+        echo  ${{ env.TEBAKO_TAG }} >> key.txt
+        echo  ${{ env.RUBY_HASH }} >> key.txt
+
+    - name: Process cache
+      id: cache
+      uses: actions/cache@v2
+      with:
+        path: ${{github.workspace}}/${{ env.TEBAKO }}/${{ env.DEPS }}
+        key: ${{ github.workflow }}-${{ matrix.os }}-${{ matrix.env.CC }}-${{ hashFiles('key.txt') }}-v01
+
+    - name: tebako setup
+      if: steps.cache.outputs.cache-hit != 'true'
+      run: |
+        pushd ${{github.workspace}}/${{ env.TEBAKO }}
+        bin/tebako setup
+        popd
+
+
 #    - run: make build/metanorma
 #      timeout-minutes: 180
       # https://trac.sagemath.org/ticket/19762
@@ -66,3 +115,10 @@ jobs:
 #        name: metanorma-linux
 #        path: build/metanorma
 
+    - name: prepare cache
+      if: steps.cache.outputs.cache-hit != 'true'
+      run:  |
+        rm -rf ${{github.workspace}}/${{ env.TEBAKO }}/${{ env.DEPS }}/src/_ruby*
+        pushd ${{github.workspace}}/${{ env.TEBAKO }}
+        bin/tebako setup
+        popd
