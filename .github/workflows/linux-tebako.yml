@@ -135,6 +135,18 @@ jobs:
 
     - name: run 'metanorma list-extensions'
       run: ${{github.workspace}}/${{ env.TEBAKO_DIR }}/build/metanorma list-extensions
+      
+    - name: Checkout metanorma/iso-19156
+      uses: actions/checkout@v2
+      with:
+        repository: metanorma/iso-19156
+        path: iso-19156
+        fetch-depth: 1
+
+    - name: Generate iso-19156
+      run: |
+        cd iso-19156
+        ${{github.workspace}}/${{ env.TEBAKO_DIR }}/build/metanorma site generate
 
 #    - uses: actions/upload-artifact@v2
 #      with:
