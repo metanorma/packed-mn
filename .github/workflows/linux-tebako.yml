@@ -2,7 +2,7 @@ name: linux-with-tebako-packager
 
 on:
   push:
-    branches: [ maxirmx-tebako-packager ]
+    branches: [ master ]
     tags: [ '*' ]
   pull_request:
     paths-ignore:
@@ -16,7 +16,7 @@ on:
   workflow_dispatch:
 
 env:
-# Customize tebako build type here 
+# Customize tebako build type here
   BUILD_TYPE: Release
 # The folders
   TEBAKO_DIR: tebako
@@ -26,7 +26,7 @@ env:
   RUBY_VER:   "2.7.4"
   RUBY_HASH:  "3043099089608859fc8cce7f9fdccaa1f53a462457e3838ec3b25a7d609fbc5b"
   BUNDLER_VER: "2.2.3"
-#  
+#
   CC: clang
   CXX: clang++
 
@@ -121,21 +121,21 @@ jobs:
         popd
 
     - name: package metanorma
-      run: | 
+      run: |
         bin/build-with-tebako.sh
 
     - name: run 'metanorma help'
       run: ${{github.workspace}}/${{ env.TEBAKO_DIR }}/build/metanorma help
-        
+
     - name: run 'metanorma version'
       run:  ${{github.workspace}}/${{ env.TEBAKO_DIR }}/build/metanorma version
-        
+
     - name: run 'metanorma list-doctypes'
       run: ${{github.workspace}}/${{ env.TEBAKO_DIR }}/build/metanorma list-doctypes
 
     - name: run 'metanorma list-extensions'
       run: ${{github.workspace}}/${{ env.TEBAKO_DIR }}/build/metanorma list-extensions
-      
+
     - name: Checkout metanorma/iso-19156
       uses: actions/checkout@v2
       with:
