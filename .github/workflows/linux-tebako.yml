@@ -143,10 +143,10 @@ jobs:
         path: iso-19156
         fetch-depth: 1
 
-#    - name: Generate iso-19156
-#      run: |
-#        cd iso-19156
-#        ${{github.workspace}}/${{ env.TEBAKO_DIR }}/build/metanorma site generate
+    - name: Generate iso-19156
+      run: |
+        cd iso-19156
+        ${{github.workspace}}/${{ env.TEBAKO_DIR }}/build/metanorma site generate
 
 #    - uses: actions/upload-artifact@v2
 #      with:
