@@ -21,15 +21,20 @@ TEST_PROCESSORS ?= iso cc iec un m3aawg jcgm csa bipm iho ogc itu ietf
 BUILD_DIR := build
 
 rubyc:
-	curl -L https://github.com/metanorma/ruby-packer/releases/download/v0.6.1/rubyc-$(PLATFORM)-x64 > ./rubyc && chmod +x rubyc
+	curl -L https://github.com/metanorma/ruby-packer/releases/download/v0.6.1/rubyc-$(PLATFORM)-x64 \
+	  -o $@ && \
+		chmod +x rubyc
 
-$(BUILD_DIR)/metanorma: rubyc
+$(BUILD_DIR)/metanorma: rubyc vendor/cacert.pem.mozilla
 ifeq (,$(wildcard $(BUILD_DIR)/metanorma))
 	./bin/build.sh $(BUILD_DIR)
 endif
 ifeq ($(UNAME_S),Linux)
 	strip $(BUILD_DIR)/metanorma
 endif
+
+vendor/cacert.pem.mozilla:
+	curl -L https://curl.se/ca/cacert.pem -o $@
 
 test: $(BUILD_DIR)/metanorma
 	parallel -j+0 --joblog parallel.log --eta make test-flavor TEST_FLAVOR={} "&>" test_{}.log ::: $(TEST_PROCESSORS); \
