@@ -18,6 +18,9 @@ build/Gemfile.lock: build/Gemfile | build
 build/metanorma: bin/metanorma | build
 	cp $< $@
 
+build/cacert.pem.mozilla:
+	curl -L https://curl.se/ca/cacert.pem > $@
+
 build/metanorma.exe: build/cacert.pem.mozilla build/metanorma.ico build/metanorma build/Gemfile build/Gemfile.lock
 ifeq (,$(wildcard build/metanorma.exe))
 	gem update --system
