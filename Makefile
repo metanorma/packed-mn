@@ -1,7 +1,7 @@
 #!make
 SHELL := /bin/bash
 
-.PHONY: build test png2ico
+.PHONY: build test png2ico update_pem
 
 ifeq ($(OS),Windows_NT)
   PLATFORM := windows
@@ -44,3 +44,6 @@ clean:
 
 png2ico:
 	convert ocra/icon.png -define icon:auto-resize="256,128,96,64,48,32,16" ocra/metanorma.ico
+
+update_pem:
+	curl https://curl.se/ca/cacert.pem --output vendor/cacert.pem.mozilla
