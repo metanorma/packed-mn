@@ -48,4 +48,4 @@ clean:
 	[ -d $(BUILD_DIR) ] || mkdir $(BUILD_DIR); rm -rf $(BUILD_DIR)/* || true
 
 ocra/metanorma.ico:
-	convert ocra/icon.png -define icon:auto-resize="256,128,96,64,48,32,16"
+	convert ocra/icon.png -define icon:auto-resize="256,128,96,64,48,32,16" $@
