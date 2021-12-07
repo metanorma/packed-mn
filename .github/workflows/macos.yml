@@ -60,7 +60,7 @@ jobs:
       fail-fast: false
       max-parallel: 6
       matrix:
-        os: [ macos-10.15 ]
+        os: [ macos-11.0 ]
         ignore-errors: [ false ]
         test-flavor:
           - iso
@@ -75,41 +75,6 @@ jobs:
           - itu
           - ietf
           - ogc
-        include:
-          # macos-11.0 looks not working
-          - test-flavor: iso
-            ignore-errors: true
-            os: macos-11.0
-          - test-flavor: cc
-            ignore-errors: true
-            os: macos-11.0
-          - test-flavor: un
-            ignore-errors: true
-            os: macos-11.0
-          - test-flavor: iec
-            ignore-errors: true
-            os: macos-11.0
-          - test-flavor: iho
-            ignore-errors: true
-            os: macos-11.0
-          - test-flavor: m3aawg
-            ignore-errors: true
-            os: macos-11.0
-          - test-flavor: jcgm
-            ignore-errors: true
-            os: macos-11.0
-          - test-flavor: csa
-            ignore-errors: true
-            os: macos-11.0
-          - test-flavor: bipm
-            ignore-errors: true
-            os: macos-11.0
-          - test-flavor: itu
-            ignore-errors: true
-            os: macos-11.0
-          - test-flavor: ietf
-            ignore-errors: true
-            os: macos-11.0
     steps:
       - uses: actions/checkout@v1
 
