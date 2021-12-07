@@ -2,8 +2,7 @@ name: windows
 
 on:
   push:
-    branches: [ master ]
-    tags: [ '*' ]
+    branches: [ main ]
   pull_request:
     paths-ignore:
       - .github/workflows/linux.yml
