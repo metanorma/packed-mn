@@ -10,6 +10,9 @@ require 'tempfile'
 
 COMPILER_MEMFS = '/__ruby_packer_memfs__'
 
+# Limit Relaton to concurrent fetches of 1
+ENV["RELATON_FETCH_PARALLEL"] = "1"
+
 def determine_cert_path
   return "#{File.expand_path(File.dirname(__FILE__))}/cacert.pem.mozilla" if Gem.win_platform?
 
