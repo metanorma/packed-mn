@@ -148,7 +148,7 @@ jobs:
     - name: Generate iso-19156
       run: |
         cd iso-19156
-        ../${{ env.TEBAKO_DIR }}/build/metanorma site generate --agree-to-term
+        ../${{ env.TEBAKO_DIR }}/build/metanorma site generate --agree-to-terms
 
     - name: prepare cache
       if: steps.cache.outputs.cache-hit != 'true'
