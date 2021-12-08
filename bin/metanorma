@@ -175,6 +175,16 @@ if Gem.win_platform?
   require 'ffi-libarchive-binary' # to preload libarchive-13.dll
 end
 
+Net::HTTP.class_eval do
+  alias _use_ssl= use_ssl=
+
+  def use_ssl= boolean
+    self.ca_file = cert_file_path
+    self.verify_mode = OpenSSL::SSL::VERIFY_PEER
+    self._use_ssl = boolean
+  end
+end
+
 # explicitly load all dependent gems
 # ruby packer cannot use gem load path correctly.
 require 'isodoc'
