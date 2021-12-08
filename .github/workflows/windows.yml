@@ -15,7 +15,7 @@ jobs:
   build:
     runs-on: windows-2019
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
 
     - run: |
         gem -v
@@ -55,6 +55,7 @@ jobs:
     continue-on-error: ${{ matrix.ignore-errors }}
     strategy:
       fail-fast: false
+      max-parallel: 3
       matrix:
         ignore-errors: [ false ]
         test-flavor:
@@ -63,18 +64,19 @@ jobs:
           - un
           - iec
           - iho
-          - m3aawg
-          - jcgm
+          # - m3aawg
+          # - jcgm
           - csa
           - bipm
+          # - itu
           - ietf
           - ogc
-        include:
-          # timeout www.iso.com happens
-          - test-flavor: itu
-            ignore-errors: true
+        # include:
+        #   # timeout www.iso.com happens
+        #   - test-flavor: itu
+        #     ignore-errors: true
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
 
       - uses: actions/download-artifact@v2
         with:
@@ -88,7 +90,9 @@ jobs:
           max_attempts: 3
           command: choco install --no-progress make
 
-      - run: |
+      - name: Test processing for ${{ matrix.test-flavor }}
+        timeout-minutes: 30
+        run: |
           Remove-Item Gemfile
           & ${env:ChocolateyInstall}\bin\make.exe -f Makefile.win test-flavor SHELL=cmd
         env:
