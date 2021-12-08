@@ -96,7 +96,7 @@ jobs:
       - run: chmod +x build/metanorma
 
       - name: Test processing for ${{ matrix.test-flavor }}
-        timeout-minutes: 30
+        timeout-minutes: 45
         run: make test-flavor
         env:
           GITHUB_CREDENTIALS: "metanorma-ci:${{ secrets.METANORMA_CI_PAT_TOKEN }}"
