@@ -175,14 +175,11 @@ if Gem.win_platform?
   require 'ffi-libarchive-binary' # to preload libarchive-13.dll
 end
 
-@@global_cert_store = OpenSSL::X509::Store.new
-@@global_cert_store.add_file cert_file_path
-
 Net::HTTP.class_eval do
   alias _use_ssl= use_ssl=
 
   def use_ssl= boolean
-    self.cert_store = @@global_cert_store
+    self.ca_file = cert_file_path
     self.verify_mode = OpenSSL::SSL::VERIFY_PEER
     self._use_ssl = boolean
   end
