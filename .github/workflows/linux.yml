@@ -138,17 +138,17 @@ jobs:
     - name: run 'metanorma list-extensions'
       run: ${{ env.TEBAKO_DIR }}/build/metanorma list-extensions
 
-    - name: Checkout metanorma/iso-19156
-      uses: actions/checkout@v2
-      with:
-        repository: metanorma/iso-19156
-        path: iso-19156
-        fetch-depth: 1
+#    - name: Checkout metanorma/iso-19156
+#      uses: actions/checkout@v2
+#      with:
+#        repository: metanorma/iso-19156
+#        path: iso-19156
+#        fetch-depth: 1
 
-    - name: Generate iso-19156
-      run: |
-        cd iso-19156
-        ../${{ env.TEBAKO_DIR }}/build/metanorma site generate
+#    - name: Generate iso-19156
+#      run: |
+#        cd iso-19156
+#        ../${{ env.TEBAKO_DIR }}/build/metanorma site generate
 
     - name: prepare cache
       if: steps.cache.outputs.cache-hit != 'true'
