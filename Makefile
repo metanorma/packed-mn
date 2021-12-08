@@ -20,6 +20,8 @@ TEST_PROCESSORS ?= iso cc iec un m3aawg jcgm csa bipm iho ogc itu ietf
 
 BUILD_DIR := build
 
+all: $(BUILD_DIR)/metanorma
+
 rubyc:
 	curl -L https://github.com/metanorma/ruby-packer/releases/download/v0.6.1/rubyc-$(PLATFORM)-x64 \
 	  -o $@ && \
