@@ -106,6 +106,9 @@ jobs:
           GITHUB_CREDENTIALS: "metanorma-ci:${{ secrets.METANORMA_CI_PAT_TOKEN }}"
           TEST_FLAVOR: ${{ matrix.test-flavor }}
 
+      - run: |
+          Get-ChildItem -Path ".\site" -Recurse -Force | Where-Object { $_.PSIsContainer -eq $false -and $_.Length -eq 0 }  | Remove-Item
+
       - uses: actions/upload-artifact@v2
         with:
           name: site
