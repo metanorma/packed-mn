@@ -94,6 +94,12 @@ jobs:
           name: metanorma-linux
           path: build
 
+      - uses: actions/cache@v2
+        with:
+          path: ~/.relaton
+          key: relaton-linux-${{ matrix.test-flavor }}
+          restore-keys: relaton-linux-${{ matrix.test-flavor }}
+
       - run: chmod +x build/metanorma
 
       - name: Test processing for ${{ matrix.test-flavor }}

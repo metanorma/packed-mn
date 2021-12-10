@@ -83,6 +83,12 @@ jobs:
           name: metanorma-macos
           path: build
 
+      - uses: actions/cache@v2
+        with:
+          path: ~/.relaton
+          key: relaton-macos-${{ matrix.test-flavor }}
+          restore-keys: relaton-macos-${{ matrix.test-flavor }}
+
       - run: chmod a+x build/metanorma
 
       - name: Test processing for ${{ matrix.test-flavor }}

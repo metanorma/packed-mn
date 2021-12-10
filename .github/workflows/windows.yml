@@ -79,6 +79,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - uses: actions/cache@v2
+        with:
+          path: ~/.relaton
+          key: relaton-windows-${{ matrix.test-flavor }}
+          restore-keys: relaton-windows-${{ matrix.test-flavor }}
+
       - uses: actions/download-artifact@v2
         with:
           name: metanorma-windows
