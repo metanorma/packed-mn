@@ -65,17 +65,17 @@ jobs:
           - un
           - iec
           - iho
-          # - m3aawg
-          # - jcgm
           - csa
           - bipm
-          # - itu
           - ietf
           - ogc
-        # include:
-        #   # timeout www.iso.com happens
-        #   - test-flavor: itu
-        #     ignore-errors: true
+        include:
+          - test-flavor: m3aawg
+            ignore-errors: true
+          - test-flavor: jcgm
+            ignore-errors: true
+          - test-flavor: itu
+            ignore-errors: true
     steps:
       - uses: actions/checkout@v2
 

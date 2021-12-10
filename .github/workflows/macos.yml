@@ -68,13 +68,20 @@ jobs:
           - un
           - iec
           - iho
-          # - m3aawg
-          # - jcgm
           - csa
           - bipm
-          # - itu
           - ietf
           - ogc
+        include:
+          - os: macos-11.0
+            test-flavor: m3aawg
+            ignore-errors: true
+          - os: macos-11.0
+            test-flavor: jcgm
+            ignore-errors: true
+          - os: macos-11.0
+            test-flavor: itu
+            ignore-errors: true
     steps:
       - uses: actions/checkout@v2
 

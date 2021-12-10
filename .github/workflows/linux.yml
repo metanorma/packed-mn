@@ -78,14 +78,35 @@ jobs:
           - cc
           - un
           - iec
-          - iho
-          # - m3aawg
-          # - jcgm
           - csa
           - bipm
-          # - itu
           - ietf
           - ogc
+        include:
+          - os: ubuntu-18.04
+            test-flavor: m3aawg
+            ignore-errors: true
+          - os: ubuntu-18.04
+            test-flavor: jcgm
+            ignore-errors: true
+          - os: ubuntu-18.04
+            test-flavor: itu
+            ignore-errors: true
+          - os: ubuntu-18.04
+            test-flavor: iho
+            ignore-errors: true
+          - os: ubuntu-20.04
+            test-flavor: m3aawg
+            ignore-errors: true
+          - os: ubuntu-20.04
+            test-flavor: jcgm
+            ignore-errors: true
+          - os: ubuntu-20.04
+            test-flavor: itu
+            ignore-errors: true
+          - os: ubuntu-20.04
+            test-flavor: iho
+            ignore-errors: true
     steps:
       - uses: actions/checkout@v2
 
