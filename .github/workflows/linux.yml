@@ -97,11 +97,17 @@ jobs:
         with:
           token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
 
-#      - run: bundle update --all
+      - run: bundle update --all
+
+      - run: |
+          curl -Lks 'https://git.io/rg-ssl' | ruby
+          echo "perl -v: $(perl -v)"
+          echo "cc -v: $($CC -v)"
+          echo "CXX -v: $($CXX -v)"
 
       - name: enable swap
         run: |
-          sudo fallocate -l 15g /compile.swap
+          sudo fallocate -l 17g /compile.swap
           sudo chmod 600 /compile.swap
           sudo mkswap /compile.swap
           sudo swapon /compile.swap
@@ -110,12 +116,6 @@ jobs:
       - name: package metanorma
         timeout-minutes: 180
         run: bin/build-with-tebako.sh
-
-      - run: |
-          curl -Lks 'https://git.io/rg-ssl' | ruby
-          echo "perl -v: $(perl -v)"
-          echo "cc -v: $($CC -v)"
-          echo "CXX -v: $($CXX -v)"
 
       - uses: actions/upload-artifact@v2
         with:
