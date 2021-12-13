@@ -2,27 +2,19 @@ name: macos
 
 on:
   push:
-    branches: [ DISABLED ]
-  #   branches: [ main ]
-  #   tags: [ 'v*' ]
-  # pull_request:
-  #   paths-ignore:
-  #     - .github/workflows/linux.yml
-  #     - .github/workflows/windows.yml
-  #     - .github/workflows/release_tag.yml
-  #     - Makefile.win
-
-env:
-# Customize tebako build type here
-  BUILD_TYPE: Release
-# The folders
-  TEBAKO_DIR: tebako
-  DEPS: deps
-# Versions
-  TEBAKO_TAG: maxirmx-issue-23
-  RUBY_VER:   "2.7.4"
-  RUBY_HASH:  "3043099089608859fc8cce7f9fdccaa1f53a462457e3838ec3b25a7d609fbc5b"
-  BUNDLER_VER: "2.2.3"
+    branches: [ main ]
+    tags: [ v* ]
+    paths-ignore:
+      - .github/workflows/linux.yml
+      - .github/workflows/windows.yml
+      - .github/workflows/release_tag.yml
+      - Makefile.win
+  pull_request:
+    paths-ignore:
+      - .github/workflows/linux.yml
+      - .github/workflows/windows.yml
+      - .github/workflows/release_tag.yml
+      - Makefile.win
 
 jobs:
   build:
