@@ -3,7 +3,7 @@ name: windows
 on:
   push:
     branches: [ main ]
-    tags: [ 'v*' ]
+    tags: [ v* ]
   pull_request:
     paths-ignore:
       - .github/workflows/linux.yml
@@ -126,12 +126,15 @@ jobs:
 
       - run: cp build/metanorma.exe metanorma-windows-x64.exe
 
-      - if: startsWith(github.ref, 'refs/tags/')
+      - run: Get-FileHash -Algorithm SHA256 metanorma-windows-x64.exe | Select -ExpandProperty "Hash" | Out-File metanorma-windows-x64.exe.sha256.txt
+
+      - uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        uses: softprops/action-gh-release@v1
         with:
-          files: metanorma-windows-x64.exe
+          files: |
+            metanorma-windows-x64.exe
+            metanorma-windows-x64.exe.sha256.txt
 
       - name: Trigger chocolatey-metanorma
         uses: peter-evans/repository-dispatch@v1
