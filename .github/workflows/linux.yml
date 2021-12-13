@@ -78,14 +78,35 @@ jobs:
           - cc
           - un
           - iec
-          - iho
-          # - m3aawg
-          # - jcgm
           - csa
           - bipm
-          # - itu
           - ietf
           - ogc
+        include:
+          - os: ubuntu-18.04
+            test-flavor: m3aawg
+            ignore-errors: true
+          - os: ubuntu-18.04
+            test-flavor: jcgm
+            ignore-errors: true
+          - os: ubuntu-18.04
+            test-flavor: itu
+            ignore-errors: true
+          - os: ubuntu-18.04
+            test-flavor: iho
+            ignore-errors: true
+          - os: ubuntu-20.04
+            test-flavor: m3aawg
+            ignore-errors: true
+          - os: ubuntu-20.04
+            test-flavor: jcgm
+            ignore-errors: true
+          - os: ubuntu-20.04
+            test-flavor: itu
+            ignore-errors: true
+          - os: ubuntu-20.04
+            test-flavor: iho
+            ignore-errors: true
     steps:
       - uses: actions/checkout@v2
 
@@ -93,6 +114,12 @@ jobs:
         with:
           name: metanorma-linux
           path: build
+
+      - uses: actions/cache@v2
+        with:
+          path: ~/.relaton
+          key: relaton-linux-${{ matrix.test-flavor }}
+          restore-keys: relaton-linux-${{ matrix.test-flavor }}
 
       - run: chmod +x build/metanorma
 

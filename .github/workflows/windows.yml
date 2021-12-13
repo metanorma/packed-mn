@@ -65,19 +65,25 @@ jobs:
           - un
           - iec
           - iho
-          # - m3aawg
-          # - jcgm
           - csa
           - bipm
-          # - itu
           - ietf
           - ogc
-        # include:
-        #   # timeout www.iso.com happens
-        #   - test-flavor: itu
-        #     ignore-errors: true
+        include:
+          - test-flavor: m3aawg
+            ignore-errors: true
+          - test-flavor: jcgm
+            ignore-errors: true
+          - test-flavor: itu
+            ignore-errors: true
     steps:
       - uses: actions/checkout@v2
+
+      - uses: actions/cache@v2
+        with:
+          path: ~/.relaton
+          key: relaton-windows-${{ matrix.test-flavor }}
+          restore-keys: relaton-windows-${{ matrix.test-flavor }}
 
       - uses: actions/download-artifact@v2
         with:
@@ -99,6 +105,9 @@ jobs:
         env:
           GITHUB_CREDENTIALS: "metanorma-ci:${{ secrets.METANORMA_CI_PAT_TOKEN }}"
           TEST_FLAVOR: ${{ matrix.test-flavor }}
+
+      - run: |
+          Get-ChildItem -Path ".\site" -Recurse -Force | Where-Object { $_.PSIsContainer -eq $false -and $_.Length -eq 0 }  | Remove-Item
 
       - uses: actions/upload-artifact@v2
         with:
