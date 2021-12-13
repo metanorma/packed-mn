@@ -124,10 +124,13 @@ jobs:
           chmod a+x metanorma-linux-x64
           tar -czvf metanorma-linux-x64.tgz metanorma-linux-x64
 
+      - run: sha256sum metanorma-linux-x64.tgz > metanorma-linux-x64.tgz.sha256.txt
+
       - uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: metanorma-linux-x64.tgz
+          files: |
+            metanorma-linux-x64.tgz
+            metanorma-linux-x64.tgz.sha256.txt
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
