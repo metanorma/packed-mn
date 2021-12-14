@@ -165,7 +165,9 @@ jobs:
         with:
           token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
 
-      - run: bundle update --all
+# ???  Tebako deploys gems in prisitine environment anyway     
+#      This does not look useful but I can be wrong
+#      - run: bundle update --all
 
       - run: |
           curl -Lks 'https://git.io/rg-ssl' | ruby
@@ -181,8 +183,7 @@ jobs:
          name: metanorma-tebako-linux
          path: build/metanorma
 
-# This is 'smoke check' that helps fail fast if something went wrong
-      - name: run 'metanorma help'
+      - name: smoke test
         run: build/metanorma help
 
   test:
