@@ -126,7 +126,9 @@ jobs:
           chmod a+x metanorma-darwin-x64
           tar -czvf metanorma-darwin-x64.tgz metanorma-darwin-x64
 
-      - run: sha256sum metanorma-darwin-x64.tgz > metanorma-darwin-x64.tgz.sha256.txt
+      - run: |
+          brew install coreutils
+          sha256sum metanorma-darwin-x64.tgz > metanorma-darwin-x64.tgz.sha256.txt
 
       - uses: softprops/action-gh-release@v1
         with:
