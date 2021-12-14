@@ -29,7 +29,7 @@ env:
   TEBAKO_DIR: tebako
   DEPS: deps
 # Versions
-  TEBAKO_TAG: "v0.2.1"
+  TEBAKO_TAG: "v0.2.2"
   RUBY_VER:   "2.7.4"
   RUBY_HASH:  "3043099089608859fc8cce7f9fdccaa1f53a462457e3838ec3b25a7d609fbc5b"
   BUNDLER_VER: "2.2.3"
@@ -175,7 +175,7 @@ jobs:
 
       - name: enable swap
         run: |
-          sudo fallocate -l 25g /compile.swap
+          sudo fallocate -l 15g /compile.swap
           sudo chmod 600 /compile.swap
           sudo mkswap /compile.swap
           sudo swapon /compile.swap
