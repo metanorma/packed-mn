@@ -71,7 +71,6 @@ jobs:
           - csa
           - bipm
           - ietf
-          - ogc
         include:
           - os: macos-11.0
             test-flavor: m3aawg
@@ -81,6 +80,9 @@ jobs:
             ignore-errors: true
           - os: macos-11.0
             test-flavor: itu
+            ignore-errors: true
+          - os: macos-11.0
+            test-flavor: ogc
             ignore-errors: true
     steps:
       - uses: actions/checkout@v2

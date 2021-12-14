@@ -68,13 +68,14 @@ jobs:
           - csa
           - bipm
           - ietf
-          - ogc
         include:
           - test-flavor: m3aawg
             ignore-errors: true
           - test-flavor: jcgm
             ignore-errors: true
           - test-flavor: itu
+            ignore-errors: true
+          - test-flavor: ogc
             ignore-errors: true
     steps:
       - uses: actions/checkout@v2
