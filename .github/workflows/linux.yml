@@ -181,20 +181,9 @@ jobs:
          name: metanorma-tebako-linux
          path: build/metanorma
 
+# This is 'smoke check' that helps fail fast if something went wrong
       - name: run 'metanorma help'
         run: build/metanorma help
-
-      - name: Checkout metanorma/iso-19156
-        uses: actions/checkout@v2
-        with:
-          repository: metanorma/iso-19156
-          path: iso-19156
-          fetch-depth: 1
-
-      - name: Generate iso-19156
-        run: |
-          cd iso-19156
-          ../build/metanorma site generate --agree-to-terms
 
   test:
     needs: build
@@ -258,7 +247,7 @@ jobs:
 
       - name: Test processing for ${{ matrix.test-flavor }}
         timeout-minutes: 45
-        run: make test-flavor
+        run: make test-flavor-with-tebako
         env:
           GITHUB_CREDENTIALS: "metanorma-ci:${{ secrets.METANORMA_CI_PAT_TOKEN }}"
           TEST_FLAVOR: ${{ matrix.test-flavor }}
