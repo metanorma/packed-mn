@@ -27,9 +27,6 @@ all: $(BUILD_DIR)/bin/metanorma-$(PLATFORM)-$(ARCH)
 ocra/metanorma.ico:
 	convert ocra/icon.png -define icon:auto-resize="256,128,96,64,48,32,16" $@
 
-vendor/cacert.pem.mozilla:
-	curl -L https://curl.se/ca/cacert.pem -o $@
-
 test:
 	parallel -j+0 --joblog parallel.log --eta make test-flavor TEST_FLAVOR={} "&>" test_{}.log ::: $(TEST_PROCESSORS); \
 	parallel -j+0 --joblog parallel.log --resume-failed 'echo ---- {} ----; tail -15 test_{}.log; echo ---- --- ----; exit 1' ::: $(TEST_PROCESSORS)
@@ -66,15 +63,11 @@ $(BUILD_DIR)/package/metanorma:
 	mkdir -p $(dir $@);
 	cp bin/metanorma $@
 
-$(BUILD_DIR)/package/cacert.pem.mozilla:
-	mkdir -p $(dir $@);
-	cp vendor/cacert.pem.mozilla $@
-
 $(BUILD_DIR)/package/vendor:
 	mkdir -p $(dir $@);
 	cp -R vendor $@
 
-$(BUILD_DIR)/.package-ready: $(BUILD_DIR)/package/metanorma $(BUILD_DIR)/package/Gemfile $(BUILD_DIR)/package/cacert.pem.mozilla $(BUILD_DIR)/package/vendor
+$(BUILD_DIR)/.package-ready: $(BUILD_DIR)/package/metanorma $(BUILD_DIR)/package/Gemfile $(BUILD_DIR)/package/vendor
 	touch $@
 
 $(BUILD_DIR)/bin/metanorma-darwin-x86_64: .archive/tebako/bin/tebako $(BUILD_DIR)/.package-ready

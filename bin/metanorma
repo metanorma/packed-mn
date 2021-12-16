@@ -17,21 +17,6 @@ COMPILER_MEMFS = '/__tebako_memfs__'
 # Limit Relaton to concurrent fetches of 1
 ENV["RELATON_FETCH_PARALLEL"] = "1"
 
-def determine_cert_path
-  return "#{File.expand_path(File.dirname(__FILE__))}/cacert.pem.mozilla" if Gem.win_platform?
-
-  path = "#{COMPILER_MEMFS}/local/vendor/cacert.pem.mozilla"
-  return path if File.file?(path)
-
-  File.join('vendor', 'cacert.pem.mozilla')
-end
-
-def cert_file_path
-  cert_tempfile = Tempfile.new
-  cert_tempfile.tap { |n| n.puts(File.read(determine_cert_path)) }.close
-  cert_file_path = cert_tempfile.path
-end
-
 def full_gem_path(gem)
   Gem::Specification.find_by_name(gem).full_gem_path
 end
@@ -215,15 +200,15 @@ if Gem.win_platform?
   # END of HACK
 
   require 'ffi-libarchive-binary' # to preload libarchive-13.dll
-end
 
-Net::HTTP.class_eval do
-  alias _use_ssl= use_ssl=
+  Net::HTTP.class_eval do
+    alias _use_ssl= use_ssl=
 
-  def use_ssl= boolean
-    self.ca_file = cert_file_path
-    self.verify_mode = OpenSSL::SSL::VERIFY_PEER
-    self._use_ssl = boolean
+    def use_ssl= boolean
+      self.ca_file = "#{File.expand_path(File.dirname(__FILE__))}/cacert.pem.mozilla"
+      self.verify_mode = OpenSSL::SSL::VERIFY_PEER
+      self._use_ssl = boolean
+    end
   end
 end
 
