@@ -80,7 +80,7 @@ $(BUILD_DIR)/bin/metanorma-darwin-arm64: rubyc $(BUILD_DIR)/package/Gemfile $(BU
 	chmod a+x $@
 
 $(BUILD_DIR)/bin/metanorma-linux-x86_64: tebako/bin/tebako $(BUILD_DIR)/package/Gemfile $(BUILD_DIR)/package/metanorma $(BUILD_DIR)/package/cacert.pem.mozilla | $(BUILD_DIR)/bin
-	$< press -r "$(BUILD_DIR)/package" -e "$(BUILD_DIR)/package/metanorma" -o "$@"
+	$< press -r "$(BUILD_DIR)/package" -e "metanorma" -o "$@"
 	strip $@
 	chmod +x $@
 
