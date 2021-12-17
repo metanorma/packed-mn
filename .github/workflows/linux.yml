@@ -240,13 +240,15 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: metanorma-linux-x86_64
-          path: build/bin/metanorma-linux-x86_64
+          path: build/bin
 
       - uses: actions/cache@v2
         with:
           path: ~/.relaton
           key: relaton-linux-${{ matrix.test-flavor }}
           restore-keys: relaton-linux-${{ matrix.test-flavor }}
+
+      - run: chmod +x build/bin/metanorma-linux-x86_64
 
       - name: Test processing for ${{ matrix.test-flavor }}
         timeout-minutes: 45
@@ -268,10 +270,11 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: metanorma-linux-x86_64
-          path: build/bin/metanorma-linux-x86_64
+          path: build/bin
 
       - name: Package binary into archive
         run: |
+          chmod +x build/bin/metanorma-linux-x86_64
           mv build/bin/metanorma-linux-x86_64 metanorma-linux-x86_64
           tar -czvf metanorma-linux-x86_64.tgz metanorma-linux-x86_64
 

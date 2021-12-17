@@ -97,7 +97,9 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: metanorma-darwin-x86_64
-          path: build/bin/metanorma-darwin-x86_64
+          path: build/bin
+
+      - run: chmod a+x build/bin/metanorma-darwin-x86_64
 
       - uses: actions/cache@v2
         with:
@@ -125,10 +127,11 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: metanorma-darwin-x86_64
-          path: build/bin/metanorma-darwin-x86_64
+          path: build/bin
 
       - name: Package binary into archive
         run: |
+          chmod a+x build/bin/metanorma-darwin-x86_64
           cp build/bin/metanorma-darwin-x86_64 metanorma-darwin-x86_64
           tar -czvf metanorma-darwin-x86_64.tgz metanorma-darwin-x86_64
 
