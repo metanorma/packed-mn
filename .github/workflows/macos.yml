@@ -46,16 +46,17 @@ jobs:
 
       - run: brew install squashfs
 
-      - run: make build/metanorma
+      - run: make build/bin/metanorma-darwin-x86_64
         env:
           DEVELOPER_DIR: /Applications/Xcode_11.7.app/Contents/Developer
 
-      - run: build/metanorma help
-
       - uses: actions/upload-artifact@v2
         with:
-          name: metanorma-macos
-          path: build/metanorma
+          name: metanorma-darwin-x86_64
+          path: build/bin/metanorma-darwin-x86_64
+
+      - name: Run help
+        run: build/bin/metanorma-darwin-x86_64 help
 
   test:
     needs: build
@@ -94,16 +95,14 @@ jobs:
 
       - uses: actions/download-artifact@v2
         with:
-          name: metanorma-macos
-          path: build
+          name: metanorma-darwin-x86_64
+          path: build/bin
 
       - uses: actions/cache@v2
         with:
           path: ~/.relaton
           key: relaton-macos-${{ matrix.test-flavor }}
           restore-keys: relaton-macos-${{ matrix.test-flavor }}
-
-      - run: chmod a+x build/metanorma
 
       - name: Test processing for ${{ matrix.test-flavor }}
         timeout-minutes: 30
@@ -124,24 +123,23 @@ jobs:
     steps:
       - uses: actions/download-artifact@v2
         with:
-          name: metanorma-macos
-          path: build
+          name: metanorma-darwin-x86_64
+          path: build/bin
 
       - name: Set release binary permissions
         run: |
-          cp build/metanorma metanorma-darwin-x64
-          chmod a+x metanorma-darwin-x64
-          tar -czvf metanorma-darwin-x64.tgz metanorma-darwin-x64
+          cp build/bin/metanorma-darwin-x86_64 metanorma-darwin-x86_64
+          tar -czvf metanorma-darwin-x86_64.tgz metanorma-darwin-x86_64
 
       - run: |
           brew install coreutils
-          sha256sum metanorma-darwin-x64.tgz > metanorma-darwin-x64.tgz.sha256.txt
+          sha256sum metanorma-darwin-x86_64.tgz > metanorma-darwin-x86_64.tgz.sha256.txt
 
       - uses: softprops/action-gh-release@v1
         with:
           files: |
-            metanorma-darwin-x64.tgz
-            metanorma-darwin-x64.tgz.sha256.txt
+            metanorma-darwin-x86_64.tgz
+            metanorma-darwin-x86_64.tgz.sha256.txt
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

@@ -131,17 +131,17 @@ jobs:
           name: metanorma-windows
           path: build
 
-      - run: cp build/metanorma.exe metanorma-windows-x64.exe
+      - run: cp build/metanorma.exe metanorma-windows-x86_64.exe
 
-      - run: Get-FileHash -Algorithm SHA256 metanorma-windows-x64.exe | Select -ExpandProperty "Hash" | Out-File metanorma-windows-x64.exe.sha256.txt
+      - run: Get-FileHash -Algorithm SHA256 metanorma-windows-x86_64.exe | Select -ExpandProperty "Hash" | Out-File metanorma-windows-x86_64.exe.sha256.txt
 
       - uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           files: |
-            metanorma-windows-x64.exe
-            metanorma-windows-x64.exe.sha256.txt
+            metanorma-windows-x86_64.exe
+            metanorma-windows-x86_64.exe.sha256.txt
 
       - name: Trigger chocolatey-metanorma
         uses: peter-evans/repository-dispatch@v1

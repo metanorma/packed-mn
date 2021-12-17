@@ -38,10 +38,14 @@ jobs:
   setup:
     runs-on: ubuntu-18.04
     steps:
+
+      # Note. This step is required on ubuntu-18 only.  GHA ubuntu-20 works off-the-shelf
       - name: Switch to gcc-9
-# Note. This step is required on ubuntu-18 only.  GHA ubuntu-20 works off-the-shelf 
         run: |
-          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 100 --slave /usr/bin/g++ g++ /usr/bin/g++-9 --slave /usr/bin/gcov gcov /usr/bin/gcov-9
+          sudo update-alternatives \
+            --install /usr/bin/gcc gcc /usr/bin/gcc-9 100 \
+            --slave /usr/bin/g++ g++ /usr/bin/g++-9 \
+            --slave /usr/bin/gcov gcov /usr/bin/gcov-9
           sudo update-alternatives --set gcc /usr/bin/gcc-9
 
       - name: Install packages
@@ -56,8 +60,9 @@ jobs:
           libffi-dev libgdbm-dev libyaml-dev libncurses-dev libreadline-dev \
           libsqlite3-dev
 
+      # Note. ppa:team-xbmc is required on ubuntu-18 only. GHA ubuntu-20 will
+      # work with 'sudo apt-get install libfmt-dev'
       - name: Update libfmt (bionic)
-# Note. ppa:team-xbmc is required on ubuntu-18 only.  GHA ubuntu-20 will work with 'sudo apt-get install libfmt-dev'
         run: |
           sudo apt-get -y remove libfmt-dev
           sudo apt-get -y install software-properties-common
@@ -84,16 +89,16 @@ jobs:
       - name: Create deps folder
         run: mkdir -p -v ${{ env.TEBAKO_DIR }}/${{ env.DEPS }}
 
-      - name: Process cache
+      - name: Tebako setup cache
         id: cache
         uses: actions/cache@v2
         with:
           path: ${{ env.TEBAKO_DIR }}/${{ env.DEPS }}
           key: ${{ github.workflow }}-${{ env.OS_VER }}-${{ env.CC }}-${{ env.TEBAKO_TAG }}-${{ env.RUBY_HASH }}-v${{ env.CACHE_VER }}
 
-      - name: tebako setup
+      - name: Tebako setup
         if: steps.cache.outputs.cache-hit != 'true'
-        run: ${{ env.TEBAKO_DIR }}/bin/tebako setup
+        run: make tebako/deps/bin/mkdwarfs
 
   build:
     runs-on: ubuntu-18.04
@@ -101,9 +106,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-# ---------- Start of tebako prerequisites    
+# ---------- Start of tebako prerequisites
+      # Note. This step is required on ubuntu-18 only.  GHA ubuntu-20 works
+      # off-the-shelf
       - name: Switch to gcc-9
-# Note. This step is required on ubuntu-18 only.  GHA ubuntu-20 works off-the-shelf 
         run: |
           sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 100 --slave /usr/bin/g++ g++ /usr/bin/g++-9 --slave /usr/bin/gcov gcov /usr/bin/gcov-9
           sudo update-alternatives --set gcc /usr/bin/gcc-9
@@ -117,10 +123,11 @@ jobs:
           libboost-context-dev libboost-filesystem-dev libboost-program-options-dev \
           libboost-regex-dev libboost-system-dev libboost-thread-dev \
           libunwind-dev libdwarf-dev libelf-dev libfuse-dev libgoogle-glog-dev \
-          libffi-dev libgdbm-dev libyaml-dev libncurses-dev libreadline-dev 
+          libffi-dev libgdbm-dev libyaml-dev libncurses-dev libreadline-dev
 
+      # Note. ppa:team-xbmc is required on ubuntu-18 only. GHA ubuntu-20 will
+      # work with 'sudo apt-get install libfmt-dev'
       - name: Update libfmt (bionic)
-# Note. ppa:team-xbmc is required on ubuntu-18 only.  GHA ubuntu-20 will work with 'sudo apt-get install libfmt-dev'
         run: |
           sudo apt-get -y remove libfmt-dev
           sudo apt-get -y install software-properties-common
@@ -147,7 +154,7 @@ jobs:
       - name: Create deps folder
         run: mkdir -p -v ${{ env.TEBAKO_DIR }}/${{ env.DEPS }}
 
-      - name: Process cache
+      - name: Tebako setup cache
         id: cache
         uses: actions/cache@v2
         with:
@@ -159,15 +166,14 @@ jobs:
         run: |
           echo "Failed to load cache"
           false
-# ------- End of tebako prerequisites    
+# ------- End of tebako prerequisites
 
       - uses: metanorma/metanorma-build-scripts/gh-rubygems-setup-action@master
         with:
           token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
 
-# ???  Tebako deploys gems in prisitine environment anyway     
-#      This does not look useful but I can be wrong
-#      - run: bundle update --all
+      - name: Tebako setup
+        run: make tebako/deps/bin/mkdwarfs
 
       - run: |
           curl -Lks 'https://git.io/rg-ssl' | ruby
@@ -176,15 +182,15 @@ jobs:
           echo "CXX -v: $($CXX -v)"
 
       - name: package metanorma
-        run: bin/build-with-tebako.sh
+        run: make build/bin/metanorma-linux-x86_64
 
       - uses: actions/upload-artifact@v2
         with:
-         name: metanorma-tebako-linux
-         path: build/metanorma
+         name: metanorma-linux-x86_64
+         path: build/bin/metanorma-linux-x86_64
 
       - name: smoke test
-        run: build/metanorma help
+        run: build/bin/metanorma-linux-x86_64 help
 
   test:
     needs: build
@@ -235,8 +241,8 @@ jobs:
 
       - uses: actions/download-artifact@v2
         with:
-          name: metanorma-tebako-linux
-          path: build
+          name: metanorma-linux-x86_64
+          path: build/bin
 
       - uses: actions/cache@v2
         with:
@@ -244,11 +250,9 @@ jobs:
           key: relaton-linux-${{ matrix.test-flavor }}
           restore-keys: relaton-linux-${{ matrix.test-flavor }}
 
-      - run: chmod +x build/metanorma
-
       - name: Test processing for ${{ matrix.test-flavor }}
         timeout-minutes: 45
-        run: make test-flavor-with-tebako
+        run: make test-flavor
         env:
           GITHUB_CREDENTIALS: "metanorma-ci:${{ secrets.METANORMA_CI_PAT_TOKEN }}"
           TEST_FLAVOR: ${{ matrix.test-flavor }}
@@ -265,22 +269,21 @@ jobs:
     steps:
       - uses: actions/download-artifact@v2
         with:
-          name: metanorma-tebako-linux
-          path: build
+          name: metanorma-linux-x86_64
+          path: build/bin
 
       - name: Set release binary permissions
         run: |
-          mv build/metanorma metanorma-linux-x64
-          chmod a+x metanorma-linux-x64
-          tar -czvf metanorma-linux-x64.tgz metanorma-linux-x64
+          mv build/bin/metanorma-linux-x86_64 metanorma-linux-x86_64
+          tar -czvf metanorma-linux-x86_64.tgz metanorma-linux-x86_64
 
-      - run: sha256sum metanorma-linux-x64.tgz > metanorma-linux-x64.tgz.sha256.txt
+      - run: sha256sum metanorma-linux-x86_64.tgz > metanorma-linux-x86_64.tgz.sha256.txt
 
       - uses: softprops/action-gh-release@v1
         with:
           files: |
-            metanorma-linux-x64.tgz
-            metanorma-linux-x64.tgz.sha256.txt
+            metanorma-linux-x86_64.tgz
+            metanorma-linux-x86_64.tgz.sha256.txt
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
