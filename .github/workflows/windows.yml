@@ -9,14 +9,13 @@ on:
       - .github/workflows/macos.yml
       - .github/workflows/release_tag.yml
       - Makefile
-      - bin/build.sh
   pull_request:
     paths-ignore:
       - .github/workflows/linux.yml
       - .github/workflows/macos.yml
       - .github/workflows/release_tag.yml
       - Makefile
-      - bin/build.sh
+  workflow_dispatch:
 
 jobs:
   build:

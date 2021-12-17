@@ -15,8 +15,6 @@ on:
       - .github/workflows/windows.yml
       - .github/workflows/release_tag.yml
       - Makefile.win
-
-# Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 env:
@@ -39,7 +37,7 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
 
-      # Note. This step is required on ubuntu-18 only.  GHA ubuntu-20 works off-the-shelf
+      # Note. This step is required on ubuntu-18 only. GHA ubuntu-20 works off-the-shelf
       - name: Switch to gcc-9
         run: |
           sudo update-alternatives \
@@ -52,13 +50,13 @@ jobs:
         run: |
           sudo apt-get -y update
           sudo apt-get -y install \
-          binutils-dev libarchive-dev libevent-dev libjemalloc-dev acl-dev \
-          libdouble-conversion-dev libiberty-dev liblz4-dev liblzma-dev libssl-dev \
-          libboost-context-dev libboost-filesystem-dev libboost-program-options-dev \
-          libboost-regex-dev libboost-system-dev libboost-thread-dev \
-          libunwind-dev libdwarf-dev libelf-dev libfuse-dev libgoogle-glog-dev \
-          libffi-dev libgdbm-dev libyaml-dev libncurses-dev libreadline-dev \
-          libsqlite3-dev
+            binutils-dev libarchive-dev libevent-dev libjemalloc-dev acl-dev \
+            libdouble-conversion-dev libiberty-dev liblz4-dev liblzma-dev \
+            libssl-dev libboost-context-dev libboost-filesystem-dev \
+            libboost-program-options-dev libboost-regex-dev \
+            libboost-system-dev libboost-thread-dev libunwind-dev libdwarf-dev \
+            libelf-dev libfuse-dev libgoogle-glog-dev libffi-dev libgdbm-dev \
+            libyaml-dev libncurses-dev libreadline-dev libsqlite3-dev
 
       # Note. ppa:team-xbmc is required on ubuntu-18 only. GHA ubuntu-20 will
       # work with 'sudo apt-get install libfmt-dev'
@@ -106,24 +104,27 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-# ---------- Start of tebako prerequisites
-      # Note. This step is required on ubuntu-18 only.  GHA ubuntu-20 works
-      # off-the-shelf
+      # ---------- Start of tebako prerequisites
+      # Note. This step is required on ubuntu-18 only. GHA ubuntu-20 works off-the-shelf
       - name: Switch to gcc-9
         run: |
-          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 100 --slave /usr/bin/g++ g++ /usr/bin/g++-9 --slave /usr/bin/gcov gcov /usr/bin/gcov-9
+          sudo update-alternatives \
+            --install /usr/bin/gcc gcc /usr/bin/gcc-9 100 \
+            --slave /usr/bin/g++ g++ /usr/bin/g++-9 \
+            --slave /usr/bin/gcov gcov /usr/bin/gcov-9
           sudo update-alternatives --set gcc /usr/bin/gcc-9
 
       - name: Install packages
         run: |
           sudo apt-get -y update
           sudo apt-get -y install \
-          binutils-dev libarchive-dev libevent-dev libjemalloc-dev acl-dev \
-          libdouble-conversion-dev libiberty-dev liblz4-dev liblzma-dev libssl-dev \
-          libboost-context-dev libboost-filesystem-dev libboost-program-options-dev \
-          libboost-regex-dev libboost-system-dev libboost-thread-dev \
-          libunwind-dev libdwarf-dev libelf-dev libfuse-dev libgoogle-glog-dev \
-          libffi-dev libgdbm-dev libyaml-dev libncurses-dev libreadline-dev
+            binutils-dev libarchive-dev libevent-dev libjemalloc-dev acl-dev \
+            libdouble-conversion-dev libiberty-dev liblz4-dev liblzma-dev \
+            libssl-dev libboost-context-dev libboost-filesystem-dev \
+            libboost-program-options-dev libboost-regex-dev \
+            libboost-system-dev libboost-thread-dev libunwind-dev libdwarf-dev \
+            libelf-dev libfuse-dev libgoogle-glog-dev libffi-dev libgdbm-dev \
+            libyaml-dev libncurses-dev libreadline-dev libsqlite3-dev
 
       # Note. ppa:team-xbmc is required on ubuntu-18 only. GHA ubuntu-20 will
       # work with 'sudo apt-get install libfmt-dev'
@@ -161,19 +162,16 @@ jobs:
           path: ${{ env.TEBAKO_DIR }}/${{ env.DEPS }}
           key: ${{ github.workflow }}-${{ env.OS_VER }}-${{ env.CC }}-${{ env.TEBAKO_TAG }}-${{ env.RUBY_HASH }}-v${{ env.CACHE_VER }}
 
-      - name: Check cache
+      - name: Tebako cache check
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
           echo "Failed to load cache"
           false
-# ------- End of tebako prerequisites
+      # ------- End of tebako prerequisites
 
       - uses: metanorma/metanorma-build-scripts/gh-rubygems-setup-action@master
         with:
           token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
-
-      - name: Tebako setup
-        run: make tebako/deps/bin/mkdwarfs
 
       - run: |
           curl -Lks 'https://git.io/rg-ssl' | ruby
@@ -272,7 +270,7 @@ jobs:
           name: metanorma-linux-x86_64
           path: build/bin
 
-      - name: Set release binary permissions
+      - name: Package binary into archive
         run: |
           mv build/bin/metanorma-linux-x86_64 metanorma-linux-x86_64
           tar -czvf metanorma-linux-x86_64.tgz metanorma-linux-x86_64
@@ -287,9 +285,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # - uses: peter-evans/repository-dispatch@v1
-      #   with:
-      #     token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
-      #     repository: metanorma/metanorma-snap
-      #     event-type: ${{ github.repository }}
-      #     client-payload: '{ "ref": "${{ github.ref }}" }'
+      - uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
+          repository: metanorma/metanorma-snap
+          event-type: ${{ github.repository }}
+          client-payload: '{ "ref": "${{ github.ref }}" }'

@@ -15,6 +15,7 @@ on:
       - .github/workflows/windows.yml
       - .github/workflows/release_tag.yml
       - Makefile.win
+  workflow_dispatch:
 
 jobs:
   build:
@@ -126,7 +127,7 @@ jobs:
           name: metanorma-darwin-x86_64
           path: build/bin
 
-      - name: Set release binary permissions
+      - name: Package binary into archive
         run: |
           cp build/bin/metanorma-darwin-x86_64 metanorma-darwin-x86_64
           tar -czvf metanorma-darwin-x86_64.tgz metanorma-darwin-x86_64
