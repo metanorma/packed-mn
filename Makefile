@@ -63,6 +63,9 @@ $(BUILD_DIR)/package:
 $(BUILD_DIR)/package/Gemfile: | $(BUILD_DIR)/package
 	cp Gemfile $@
 
+$(BUILD_DIR)/package/Gemfile.lock: | $(BUILD_DIR)/package
+	cp Gemfile.lock $@
+
 $(BUILD_DIR)/package/metanorma: | $(BUILD_DIR)/package
 	cp bin/metanorma $@
 
@@ -72,16 +75,18 @@ $(BUILD_DIR)/package/cacert.pem.mozilla: | $(BUILD_DIR)/package
 $(BUILD_DIR)/bin:
 	mkdir -p $@
 
-$(BUILD_DIR)/bin/metanorma-darwin-x86_64: rubyc $(BUILD_DIR)/package/Gemfile $(BUILD_DIR)/package/metanorma $(BUILD_DIR)/package/cacert.pem.mozilla | $(BUILD_DIR)/bin
-	export CC='xcrun clang -mmacosx-version-min=10.10 -Wno-implicit-function-declaration'
-	arch -x86_64 ./rubyc --clean-tmpdir -r "$(BUILD_DIR)/package" -o $@ "$(BUILD_DIR)/package/metanorma"
-	strip $@
+$(BUILD_DIR)/bin/metanorma-darwin-x86_64: rubyc $(BUILD_DIR)/package/Gemfile $(BUILD_DIR)/package/Gemfile.lock $(BUILD_DIR)/package/metanorma $(BUILD_DIR)/package/cacert.pem.mozilla | $(BUILD_DIR)/bin
+	pushd $(BUILD_DIR)/package/; \
+	arch -x86_64 ../../rubyc --clean-tmpdir -o ../$(notdir $@) metanorma; \
+	popd; \
+	strip $@; \
 	chmod a+x $@
 
-$(BUILD_DIR)/bin/metanorma-darwin-arm64: rubyc $(BUILD_DIR)/package/Gemfile $(BUILD_DIR)/package/metanorma $(BUILD_DIR)/package/cacert.pem.mozilla | $(BUILD_DIR)/bin
-	export CC='xcrun clang -mmacosx-version-min=10.10 -Wno-implicit-function-declaration'
-	arch -arm64 ./rubyc --clean-tmpdir -r "$(BUILD_DIR)/package" -o $@ "$(BUILD_DIR)/package/metanorma"
-	strip $@
+$(BUILD_DIR)/bin/metanorma-darwin-arm64: rubyc $(BUILD_DIR)/package/Gemfile $(BUILD_DIR)/package/Gemfile.lock $(BUILD_DIR)/package/metanorma $(BUILD_DIR)/package/cacert.pem.mozilla | $(BUILD_DIR)/bin
+	pushd $(BUILD_DIR)/package/; \
+	arch -arm64 ../../rubyc --clean-tmpdir -o ../$(notdir $@) metanorma; \
+	popd; \
+	strip $@; \
 	chmod a+x $@
 
 $(BUILD_DIR)/bin/metanorma-linux-x86_64: tebako/bin/tebako $(BUILD_DIR)/package/Gemfile $(BUILD_DIR)/package/metanorma $(BUILD_DIR)/package/cacert.pem.mozilla | $(BUILD_DIR)/bin
