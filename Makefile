@@ -29,11 +29,11 @@ ocra/metanorma.ico:
 vendor/cacert.pem.mozilla:
 	curl -L https://curl.se/ca/cacert.pem -o $@
 
-test: $(BUILD_DIR)/bin/metanorma-$(PLATFORM)-x86
+test: $(BUILD_DIR)/bin/metanorma-$(PLATFORM)-x86_64
 	parallel -j+0 --joblog parallel.log --eta make test-flavor TEST_FLAVOR={} "&>" test_{}.log ::: $(TEST_PROCESSORS); \
 	parallel -j+0 --joblog parallel.log --resume-failed 'echo ---- {} ----; tail -15 test_{}.log; echo ---- --- ----; exit 1' ::: $(TEST_PROCESSORS)
 
-test-flavor: $(BUILD_DIR)/bin/metanorma-$(PLATFORM)-x86
+test-flavor: $(BUILD_DIR)/bin/metanorma-$(PLATFORM)-x86_64
 	[ -d $(BUILD_DIR)/$(TEST_FLAVOR) ] || git clone --recurse-submodules https://${GITHUB_CREDENTIALS}@github.com/metanorma/mn-samples-$(TEST_FLAVOR) $(BUILD_DIR)/$(TEST_FLAVOR); \
 	$< site generate $(BUILD_DIR)/$(TEST_FLAVOR) -c $(BUILD_DIR)/$(TEST_FLAVOR)/metanorma.yml -o site/$(TEST_FLAVOR) --agree-to-terms
 
