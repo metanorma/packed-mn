@@ -33,6 +33,8 @@ jobs:
           bundler: 2.2.3
           bundler-cache: true
 
+      - run: bundle update --all
+
       - uses: shogo82148/actions-setup-perl@v1
         with:
           perl-version: '5.16.2'
