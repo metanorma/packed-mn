@@ -12,7 +12,6 @@ else
   endif
   ifeq ($(UNAME_S),Darwin)
     PLATFORM := darwin
-		CC := xcrun clang -mmacosx-version-min=10.10 -Wno-implicit-function-declaration
   endif
 endif
 
@@ -74,11 +73,13 @@ $(BUILD_DIR)/bin:
 	mkdir -p $@
 
 $(BUILD_DIR)/bin/metanorma-darwin-x86_64: rubyc $(BUILD_DIR)/package/Gemfile $(BUILD_DIR)/package/metanorma $(BUILD_DIR)/package/cacert.pem.mozilla | $(BUILD_DIR)/bin
+	export CC=xcrun clang -mmacosx-version-min=10.10 -Wno-implicit-function-declaration
 	arch -x86_64 ./rubyc --clean-tmpdir -r "$(BUILD_DIR)/package" -o $@ "$(BUILD_DIR)/package/metanorma"
 	strip $@
 	chmod a+x $@
 
 $(BUILD_DIR)/bin/metanorma-darwin-arm64: rubyc $(BUILD_DIR)/package/Gemfile $(BUILD_DIR)/package/metanorma $(BUILD_DIR)/package/cacert.pem.mozilla | $(BUILD_DIR)/bin
+	export CC=xcrun clang -mmacosx-version-min=10.10 -Wno-implicit-function-declaration
 	arch -arm64 ./rubyc --clean-tmpdir -r "$(BUILD_DIR)/package" -o $@ "$(BUILD_DIR)/package/metanorma"
 	strip $@
 	chmod a+x $@
