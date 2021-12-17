@@ -97,7 +97,7 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: metanorma-darwin-x86_64
-          path: build/bin
+          path: build/bin/metanorma-darwin-x86_64
 
       - uses: actions/cache@v2
         with:
@@ -125,7 +125,7 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: metanorma-darwin-x86_64
-          path: build/bin
+          path: build/bin/metanorma-darwin-x86_64
 
       - name: Package binary into archive
         run: |
