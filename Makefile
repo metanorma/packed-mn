@@ -77,14 +77,14 @@ $(BUILD_DIR)/bin:
 
 $(BUILD_DIR)/bin/metanorma-darwin-x86_64: rubyc $(BUILD_DIR)/package/Gemfile $(BUILD_DIR)/package/Gemfile.lock $(BUILD_DIR)/package/metanorma $(BUILD_DIR)/package/cacert.pem.mozilla | $(BUILD_DIR)/bin
 	pushd $(BUILD_DIR)/package/; \
-	arch -x86_64 ../../rubyc --clean-tmpdir -o ../$(notdir $@) metanorma; \
+	arch -x86_64 ../../rubyc --clean-tmpdir -o ../bin/$(notdir $@) metanorma; \
 	popd; \
 	strip $@; \
 	chmod a+x $@
 
 $(BUILD_DIR)/bin/metanorma-darwin-arm64: rubyc $(BUILD_DIR)/package/Gemfile $(BUILD_DIR)/package/Gemfile.lock $(BUILD_DIR)/package/metanorma $(BUILD_DIR)/package/cacert.pem.mozilla | $(BUILD_DIR)/bin
 	pushd $(BUILD_DIR)/package/; \
-	arch -arm64 ../../rubyc --clean-tmpdir -o ../$(notdir $@) metanorma; \
+	arch -arm64 ../../rubyc --clean-tmpdir -o ../bin/$(notdir $@) metanorma; \
 	popd; \
 	strip $@; \
 	chmod a+x $@
