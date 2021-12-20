@@ -8,7 +8,7 @@ require 'open-uri'
 require 'net/https'
 require 'tempfile'
 
-COMPILER_MEMFS = '/__tebako_memfs__'
+COMPILER_MEMFS = '/__ruby_packer_memfs__'
 
 # Limit Relaton to concurrent fetches of 1
 ENV["RELATON_FETCH_PARALLEL"] = "1"
