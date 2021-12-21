@@ -96,7 +96,7 @@ jobs:
 
       - name: Tebako setup
         if: steps.cache.outputs.cache-hit != 'true'
-        run: make tebako/deps/bin/mkdwarfs
+        run: ${{ env.TEBAKO_DIR }}/bin/tebako setup
 
   build:
     runs-on: ubuntu-18.04
