@@ -18,13 +18,13 @@ on:
   workflow_dispatch:
 
 env:
-  CACHE_VER: 02
+  CACHE_VER: 03
   OS_VER: "ubuntu-18.04"
   BUILD_TYPE: Release
   CC: gcc
   CXX: g++
 # The folders
-  TEBAKO_DIR: tebako
+  TEBAKO_DIR: .archive/tebako
   DEPS: deps
 # Versions
   TEBAKO_TAG: "v0.2.4"
