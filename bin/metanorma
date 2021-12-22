@@ -8,7 +8,11 @@ require 'open-uri'
 require 'net/https'
 require 'tempfile'
 
-COMPILER_MEMFS = '/__tebako_memfs__'
+COMPILER_MEMFS = if RbConfig::CONFIG["host_os"] =~ /darwin/
+                   '/__ruby_packer_memfs__'
+                 else
+                   '/__tebako_memfs__'
+                 end
 
 # Limit Relaton to concurrent fetches of 1
 ENV["RELATON_FETCH_PARALLEL"] = "1"
