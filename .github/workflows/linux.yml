@@ -118,7 +118,7 @@ jobs:
         run: |
           sudo apt-get -y update
           sudo apt-get -y install \
-            binutils-dev libarchive-dev libevent-dev libjemalloc-dev acl-dev \
+            binutils-dev libarchive-dev libevent-dev acl-dev \
             libdouble-conversion-dev libiberty-dev liblz4-dev liblzma-dev \
             libssl-dev libboost-context-dev libboost-filesystem-dev \
             libboost-program-options-dev libboost-regex-dev \
@@ -136,6 +136,16 @@ jobs:
           sudo apt-get -y update
           sudo apt-get -y install libfmt-dev
 
+      - name: Install libjemalloc 5
+        run: |
+          sudo apt-get remove libjemalloc-dev
+          wget -q https://github.com/jemalloc/jemalloc/releases/download/5.2.1/jemalloc-5.2.1.tar.bz2
+          tar -xf jemalloc-5.2.1.tar.bz2
+          cd jemalloc-5.2.1
+          ./configure --prefix='/usr'
+          make
+          sudo make install
+      
       - name: Install Ruby
         uses: ruby/setup-ruby@v1
         with:
