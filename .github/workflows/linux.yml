@@ -78,12 +78,6 @@ jobs:
           make
           sudo make install
           
-      - name: Install Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: ${{ env.RUBY_VER }}
-          bundler: ${{ env.BUNDLER_VER }}
-
       - name: Checkout tebako packaging environment
         uses: actions/checkout@v2
         with:
@@ -153,6 +147,12 @@ jobs:
           make
           sudo make install
       
+      - name: Install Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ env.RUBY_VER }}
+          bundler: ${{ env.BUNDLER_VER }}
+
       - name: Checkout tebako packaging environment
         uses: actions/checkout@v2
         with:
