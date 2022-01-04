@@ -18,16 +18,16 @@ on:
   workflow_dispatch:
 
 env:
-  CACHE_VER: 04
+  CACHE_VER: 05
   OS_VER: "ubuntu-18.04"
   BUILD_TYPE: Release
-  CC: gcc
-  CXX: g++
+  CC: clang
+  CXX: clang++
 # The folders
   TEBAKO_DIR: .archive/tebako
   DEPS: deps
 # Versions
-  TEBAKO_TAG: "v0.2.4"
+  TEBAKO_TAG: "maxirmx-0.3.0"
   RUBY_VER:   "2.7.5"
   RUBY_HASH:  "2755b900a21235b443bb16dadd9032f784d4a88f143d852bc5d154f22b8781f1"
   BUNDLER_VER: "2.2.3"
