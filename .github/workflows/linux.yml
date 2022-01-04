@@ -153,12 +153,6 @@ jobs:
           make
           sudo make install
       
-      - name: Install Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: ${{ env.RUBY_VER }}
-          bundler: ${{ env.BUNDLER_VER }}
-
       - name: Checkout tebako packaging environment
         uses: actions/checkout@v2
         with:
@@ -183,7 +177,7 @@ jobs:
           false
       # ------- End of tebako prerequisites
 
-      - uses: metanorma/metanorma-build-scripts/gh-rubygems-setup-action@master
+      - uses: metanorma/metanorma-build-scripts/gh-rubygems-setup-action@main
         with:
           token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
 
