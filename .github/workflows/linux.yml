@@ -28,8 +28,8 @@ env:
   DEPS: deps
 # Versions
   TEBAKO_TAG: "v0.2.4"
-  RUBY_VER:   "2.7.4"
-  RUBY_HASH:  "3043099089608859fc8cce7f9fdccaa1f53a462457e3838ec3b25a7d609fbc5b"
+  RUBY_VER:   "2.7.5"
+  RUBY_HASH:  "2755b900a21235b443bb16dadd9032f784d4a88f143d852bc5d154f22b8781f1"
   BUNDLER_VER: "2.2.3"
 
 jobs:
