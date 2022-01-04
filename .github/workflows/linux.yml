@@ -68,14 +68,21 @@ jobs:
           sudo apt-get -y update
           sudo apt-get -y install libfmt-dev
 
+      - name: Install libjemalloc 5
+        run: |
+          sudo apt-get remove libjemalloc-dev
+          wget -q https://github.com/jemalloc/jemalloc/releases/download/5.2.1/jemalloc-5.2.1.tar.bz2
+          tar -xf jemalloc-5.2.1.tar.bz2
+          cd jemalloc-5.2.1
+          ./configure --prefix='/usr'
+          make
+          sudo make install
+          
       - name: Install Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ env.RUBY_VER }}
           bundler: ${{ env.BUNDLER_VER }}
-
-      - name: Install ronn
-        run: sudo gem install ronn
 
       - name: Checkout tebako packaging environment
         uses: actions/checkout@v2
@@ -152,10 +159,7 @@ jobs:
           ruby-version: ${{ env.RUBY_VER }}
           bundler: ${{ env.BUNDLER_VER }}
 
-      - name: Install ronn
-        run: sudo gem install ronn
-
-      - name: Checkout tebako packaging environment
+       - name: Checkout tebako packaging environment
         uses: actions/checkout@v2
         with:
           repository: tamatebako/tebako
