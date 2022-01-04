@@ -27,7 +27,7 @@ jobs:
         gem -v
         systeminfo
 
-    - uses: metanorma/metanorma-build-scripts/gh-rubygems-setup-action@master
+    - uses: metanorma/metanorma-build-scripts/gh-rubygems-setup-action@main
       with:
         token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
 
