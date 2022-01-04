@@ -159,7 +159,7 @@ jobs:
           ruby-version: ${{ env.RUBY_VER }}
           bundler: ${{ env.BUNDLER_VER }}
 
-       - name: Checkout tebako packaging environment
+      - name: Checkout tebako packaging environment
         uses: actions/checkout@v2
         with:
           repository: tamatebako/tebako
