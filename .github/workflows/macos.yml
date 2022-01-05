@@ -129,6 +129,9 @@ jobs:
           echo "cc -v: $($CC -v)"
           echo "CXX -v: $($CXX -v)"
 
+      - name: package metanorma
+        run: make build/bin/metanorma-darwin-x86_64
+
       - uses: actions/upload-artifact@v2
         with:
           name: metanorma-darwin-x86_64
