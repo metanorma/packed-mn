@@ -83,11 +83,11 @@ $(BUILD_DIR)/package/vendor:
 $(BUILD_DIR)/.package-ready: $(BUILD_DIR)/package/metanorma $(BUILD_DIR)/package/Gemfile $(BUILD_DIR)/package/Gemfile.lock $(BUILD_DIR)/package/cacert.pem.mozilla $(BUILD_DIR)/package/vendor
 	touch $@
 
-$(BUILD_DIR)/bin/metanorma-darwin-x86_64: .archive/rubyc $(BUILD_DIR)/.package-ready
+$(BUILD_DIR)/bin/metanorma-darwin-x86_64: .archive/tebako/bin/tebako $(BUILD_DIR)/.package-ready
 	mkdir -p $(dir $@);
-	export CC="xcrun clang -mmacosx-version-min=10.10 -Wno-implicit-function-declaration"
-	arch -x86_64 $< --clean-tmpdir -o $@ -r "$(BUILD_DIR)/package" "$(BUILD_DIR)/package/metanorma"
-	chmod a+x $@
+	$< press -r "$(BUILD_DIR)/package" -e "metanorma" -o "$@";
+	strip $@;
+	chmod +x $@
 
 $(BUILD_DIR)/bin/metanorma-darwin-arm64: .archive/rubyc $(BUILD_DIR)/.package-ready
 	mkdir -p $(dir $@);
