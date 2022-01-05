@@ -59,7 +59,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ${{ github.workspace }}/${{ env.DEPS }}
-          key: key: ${{ github.workflow }}-${{ env.OS_VER }}-${{ env.CC }}-${{ env.TEBAKO_TAG }}-${{ env.RUBY_HASH }}-v${{ env.CACHE_VER }}
+          key: ${{ github.workflow }}-${{ env.OS_VER }}-${{ env.CC }}-${{ env.TEBAKO_TAG }}-${{ env.RUBY_HASH }}-v${{ env.CACHE_VER }}
 
       - name: tebako setup
         run: ${{ github.workspace }}/bin/tebako setup
