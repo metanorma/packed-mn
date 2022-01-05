@@ -66,7 +66,7 @@ jobs:
 
   build:
     runs-on: macos-10.15
-    needs: build
+    needs: setup
     steps:
       - uses: actions/checkout@v2
 
