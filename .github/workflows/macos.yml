@@ -40,30 +40,29 @@ jobs:
         with:
           xcode-version: '12.1.1'
 
-      - name: Checkout tebako packaging environment
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 1
-
       - name: Install packages
         run: |
           brew install \
           bison flex binutils libarchive double-conversion boost jemalloc fmt glog \
           gnu-getopt gnu-sed bash ncurses
 
-      - name: Create deps folder
-        run: mkdir ${{ github.workspace }}/${{ env.DEPS }}
+      - name: Checkout tebako packaging environment
+        uses: actions/checkout@v2
+        with:
+          repository: tamatebako/tebako
+          path: ${{ env.TEBAKO_DIR }}
+          ref: ${{ env.TEBAKO_TAG }}
 
-      - name: Process cache
+      - name: Create deps folder
+        run: mkdir -p -v ${{ env.TEBAKO_DIR }}/${{ env.DEPS }}
+
+      - name: Tebako setup cache
         id: cache
         uses: actions/cache@v2
         with:
-          path: ${{ github.workspace }}/${{ env.DEPS }}
+          path: ${{ env.TEBAKO_DIR }}/${{ env.DEPS }}
           key: ${{ github.workflow }}-${{ env.OS_VER }}-${{ env.CC }}-${{ env.TEBAKO_TAG }}-${{ env.RUBY_HASH }}-v${{ env.CACHE_VER }}
-
-      - name: tebako setup
-        run: ${{ github.workspace }}/bin/tebako setup
-
+          
   build:
     runs-on: macos-10.15
     needs: setup
