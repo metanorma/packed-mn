@@ -86,7 +86,7 @@ $(BUILD_DIR)/.package-ready: $(BUILD_DIR)/package/metanorma $(BUILD_DIR)/package
 $(BUILD_DIR)/bin/metanorma-darwin-x86_64: .archive/tebako/bin/tebako $(BUILD_DIR)/.package-ready
 	mkdir -p $(dir $@);
 	$< press -r "$(BUILD_DIR)/package" -e "metanorma" -o "$@";
-	strip $@;
+#	strip $@;
 	chmod +x $@
 
 $(BUILD_DIR)/bin/metanorma-darwin-arm64: .archive/rubyc $(BUILD_DIR)/.package-ready
