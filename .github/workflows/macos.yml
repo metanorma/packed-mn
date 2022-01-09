@@ -22,8 +22,6 @@ env:
   BUILD_TYPE: Release
   CC: clang
   CXX: clang++
-  CFLAGS: -mmacosx-version-min=10.10
-  CXXFLAGS: -mmacosx-version-min=10.10
 # The folders
   TEBAKO_DIR: .archive/tebako
   DEPS: deps
