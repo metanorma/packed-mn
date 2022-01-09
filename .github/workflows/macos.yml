@@ -22,11 +22,13 @@ env:
   BUILD_TYPE: Release
   CC: clang
   CXX: clang++
+  CFLAGS: -mmacosx-version-min=10.10
+  CXXFLAGS: -mmacosx-version-min=10.10
 # The folders
   TEBAKO_DIR: .archive/tebako
   DEPS: deps
 # Versions
-  TEBAKO_TAG: "maxirmx_v0.3.1"
+  TEBAKO_TAG: "v0.3.1"
   RUBY_VER:   "2.7.5"
   RUBY_HASH:  "2755b900a21235b443bb16dadd9032f784d4a88f143d852bc5d154f22b8781f1"
   BUNDLER_VER: "2.2.3"
@@ -73,6 +75,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      # ---------- Start of tebako prerequisites
       - name: Select XCode 12.1.1 & SDK 10.15
         uses: maxim-lobanov/setup-xcode@v1
         with:
