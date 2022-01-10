@@ -1,8 +1,10 @@
 name: release-tag
 
 on:
-  repository_dispatch:
-    types: [ metanorma/metanorma-cli ]
+  push:
+    branches: [ REMOVEME ]
+  # repository_dispatch:
+  #   types: [ metanorma/metanorma-cli ]
 
 jobs:
   push-tag:

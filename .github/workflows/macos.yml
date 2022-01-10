@@ -4,53 +4,143 @@ on:
   push:
     branches: [ main ]
     tags: [ v* ]
+    paths-ignore:
+      - .github/workflows/linux.yml
+      - .github/workflows/windows.yml
+      - .github/workflows/release_tag.yml
+      - Makefile.win
   pull_request:
     paths-ignore:
       - .github/workflows/linux.yml
       - .github/workflows/windows.yml
       - .github/workflows/release_tag.yml
       - Makefile.win
+  workflow_dispatch:
+
+env:
+  CACHE_VER: "03"
+  BUILD_TYPE: Release
+  CC: clang
+  CXX: clang++
+# The folders
+  TEBAKO_DIR: .archive/tebako
+  DEPS: deps
+# Versions
+  TEBAKO_TAG: "v0.3.1"
+  RUBY_VER:   "2.7.5"
+  RUBY_HASH:  "2755b900a21235b443bb16dadd9032f784d4a88f143d852bc5d154f22b8781f1"
+  BUNDLER_VER: "2.2.3"
 
 jobs:
-  build:
+  setup:
     runs-on: macos-10.15
     steps:
+      - name: Select XCode 12.1.1 & SDK 10.15
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '12.1.1'
+
+      - name: Install packages
+        run: |
+          brew install \
+          bison flex binutils libarchive double-conversion boost jemalloc fmt glog \
+          gnu-getopt gnu-sed bash ncurses
+
+      - name: Checkout tebako packaging environment
+        uses: actions/checkout@v2
+        with:
+          repository: tamatebako/tebako
+          path: ${{ env.TEBAKO_DIR }}
+          ref: ${{ env.TEBAKO_TAG }}
+
+      - name: Create deps folder
+        run: mkdir -p -v ${{ env.TEBAKO_DIR }}/${{ env.DEPS }}
+
+      - name: Tebako setup cache
+        id: cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.TEBAKO_DIR }}/${{ env.DEPS }}
+          key: ${{ github.workflow }}-${{ env.OS_VER }}-${{ env.CC }}-${{ env.TEBAKO_TAG }}-${{ env.RUBY_HASH }}-v${{ env.CACHE_VER }}
+
+      - name: Tebako setup
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: ${{ env.TEBAKO_DIR }}/bin/tebako setup
+
+  build:
+    runs-on: macos-10.15
+    needs: setup
+    steps:
       - uses: actions/checkout@v2
+
+      # ---------- Start of tebako prerequisites
+      - name: Select XCode 12.1.1 & SDK 10.15
+        uses: maxim-lobanov/setup-xcode@v1
+
+        with:
+          xcode-version: '12.1.1'
+
+      - name: Checkout tebako packaging environment
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+
+      - name: Install packages
+        run: |
+          brew install \
+          bison flex binutils libarchive double-conversion boost jemalloc fmt glog \
+          gnu-getopt gnu-sed bash ncurses
+
+      - name: Install Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ env.RUBY_VER }}
+          bundler: ${{ env.BUNDLER_VER }}
+
+      - name: Checkout tebako packaging environment
+        uses: actions/checkout@v2
+        with:
+          repository: tamatebako/tebako
+          path: ${{ env.TEBAKO_DIR }}
+          ref: ${{ env.TEBAKO_TAG }}
+
+      - name: Create deps folder
+        run: mkdir -p -v ${{ env.TEBAKO_DIR }}/${{ env.DEPS }}
+
+      - name: Tebako setup cache
+        id: cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.TEBAKO_DIR }}/${{ env.DEPS }}
+          key: ${{ github.workflow }}-${{ env.OS_VER }}-${{ env.CC }}-${{ env.TEBAKO_TAG }}-${{ env.RUBY_HASH }}-v${{ env.CACHE_VER }}
+
+      - name: Tebako cache check
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          echo "Failed to load cache"
+          false
+      # ------- End of tebako prerequisites
 
       - uses: metanorma/metanorma-build-scripts/gh-rubygems-setup-action@main
         with:
           token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
 
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 2.6.3
-          bundler: 2.2.3
-          bundler-cache: true
-
-      - run: bundle update --all
-
-      - uses: shogo82148/actions-setup-perl@v1
-        with:
-          perl-version: '5.16.2'
-
       - run: |
           curl -Lks 'https://git.io/rg-ssl' | ruby
           echo "perl -v: $(perl -v)"
-          echo "clang -v: $(clang -v)"
-          echo "clang++ -v: $(clang -v)"
+          echo "cc -v: $($CC -v)"
+          echo "CXX -v: $($CXX -v)"
 
-      - run: brew install squashfs
-
-      - run: make build/metanorma
-        env:
-          DEVELOPER_DIR: /Applications/Xcode_11.7.app/Contents/Developer
-
-      - run: build/metanorma help
+      - name: package metanorma
+        run: make build/bin/metanorma-darwin-x86_64
 
       - uses: actions/upload-artifact@v2
         with:
-          name: metanorma-macos
-          path: build/metanorma
+          name: metanorma-darwin-x86_64
+          path: build/bin/metanorma-darwin-x86_64
+
+      - name: Run help
+        run: build/bin/metanorma-darwin-x86_64 help
 
   test:
     needs: build
@@ -89,16 +179,16 @@ jobs:
 
       - uses: actions/download-artifact@v2
         with:
-          name: metanorma-macos
-          path: build
+          name: metanorma-darwin-x86_64
+          path: build/bin
+
+      - run: chmod a+x build/bin/metanorma-darwin-x86_64
 
       - uses: actions/cache@v2
         with:
           path: ~/.relaton
           key: relaton-macos-${{ matrix.test-flavor }}
           restore-keys: relaton-macos-${{ matrix.test-flavor }}
-
-      - run: chmod a+x build/metanorma
 
       - name: Test processing for ${{ matrix.test-flavor }}
         timeout-minutes: 30
@@ -119,24 +209,24 @@ jobs:
     steps:
       - uses: actions/download-artifact@v2
         with:
-          name: metanorma-macos
-          path: build
+          name: metanorma-darwin-x86_64
+          path: build/bin
 
-      - name: Set release binary permissions
+      - name: Package binary into archive
         run: |
-          cp build/metanorma metanorma-darwin-x64
-          chmod a+x metanorma-darwin-x64
-          tar -czvf metanorma-darwin-x64.tgz metanorma-darwin-x64
+          chmod a+x build/bin/metanorma-darwin-x86_64
+          cp build/bin/metanorma-darwin-x86_64 metanorma-darwin-x86_64
+          tar -czvf metanorma-darwin-x86_64.tgz metanorma-darwin-x86_64
 
       - run: |
           brew install coreutils
-          sha256sum metanorma-darwin-x64.tgz > metanorma-darwin-x64.tgz.sha256.txt
+          sha256sum metanorma-darwin-x86_64.tgz > metanorma-darwin-x86_64.tgz.sha256.txt
 
       - uses: softprops/action-gh-release@v1
         with:
           files: |
-            metanorma-darwin-x64.tgz
-            metanorma-darwin-x64.tgz.sha256.txt
+            metanorma-darwin-x86_64.tgz
+            metanorma-darwin-x86_64.tgz.sha256.txt
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
