@@ -76,6 +76,7 @@ jobs:
       # ---------- Start of tebako prerequisites
       - name: Select XCode 12.1.1 & SDK 10.15
         uses: maxim-lobanov/setup-xcode@v1
+
         with:
           xcode-version: '12.1.1'
 
