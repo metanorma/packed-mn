@@ -15,6 +15,7 @@ end
 gem "ffi"
 gem "rake"
 gem "seven_zip_ruby"
+gem "sassc"
 
 group :development do
   gem "byebug"
