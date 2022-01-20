@@ -178,6 +178,30 @@ if Gem.win_platform?
   require 'ffi-libarchive-binary' # to preload libarchive-13.dll
 end
 
+# HACK unpack style files for sassc
+require 'sassc'
+
+module SassC
+  class Engine
+    def load_paths()
+      paths = (@options[:load_paths] || []) + SassC.load_paths
+        np = []
+        paths.each { |p|
+          if p.start_with?(COMPILER_MEMFS)
+            m = p.sub(COMPILER_MEMFS, COMPILER_MEMFS_LIB_CACHE.to_s)
+            FileUtils.cp_r(File.join(p, "."), m) if File.exists?(p)
+            np << m
+          else
+            np << p
+          end
+      }
+      np.join(File::PATH_SEPARATOR) unless np.empty?
+    end
+  end
+end
+# END of HACK 
+
+
 Net::HTTP.class_eval do
   alias _use_ssl= use_ssl=
 

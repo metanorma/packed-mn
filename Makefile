@@ -49,7 +49,7 @@ test-flavor:
 
 .archive/tebako/.git:
 	mkdir -p .archive;
-	git clone https://github.com/tamatebako/tebako $(dir $@)
+	git clone -b "maxirmx_v0.3.2" https://github.com/tamatebako/tebako $(dir $@)
 
 .archive/tebako/bin/tebako: .archive/tebako/.git
 
