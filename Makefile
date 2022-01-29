@@ -20,7 +20,7 @@ TEST_FLAVOR ?= iso
 TEST_PROCESSORS ?= iso cc iec un m3aawg jcgm csa bipm iho ogc itu ietf
 
 BUILD_DIR := build
-TEBAKO_TAG := maxirmx_v0.3.3
+TEBAKO_TAG := v0.3.3
 
 all: $(BUILD_DIR)/bin/metanorma-$(PLATFORM)-$(ARCH)
 
