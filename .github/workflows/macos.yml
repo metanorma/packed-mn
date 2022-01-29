@@ -18,7 +18,7 @@ on:
   workflow_dispatch:
 
 env:
-  CACHE_VER: "03"
+  CACHE_VER: 04
   BUILD_TYPE: Release
   CC: clang
   CXX: clang++
