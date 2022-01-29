@@ -216,7 +216,6 @@ jobs:
           - csa
           - bipm
           - ietf
-          - ogc
         include:
           - os: ubuntu-18.04
             test-flavor: m3aawg
@@ -230,6 +229,9 @@ jobs:
           - os: ubuntu-18.04
             test-flavor: iho
             ignore-errors: true
+          - os: ubuntu-18.04
+            test-flavor: ogc
+            ignore-errors: true
           - os: ubuntu-20.04
             test-flavor: m3aawg
             ignore-errors: true
@@ -241,6 +243,9 @@ jobs:
             ignore-errors: true
           - os: ubuntu-20.04
             test-flavor: iho
+            ignore-errors: true
+          - os: ubuntu-20.04
+            test-flavor: ogc
             ignore-errors: true
     steps:
       - uses: actions/checkout@v2
