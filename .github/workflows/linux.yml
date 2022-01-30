@@ -18,7 +18,7 @@ on:
   workflow_dispatch:
 
 env:
-  CACHE_VER: 05
+  CACHE_VER: 07
   OS_VER: "ubuntu-18.04"
   BUILD_TYPE: Release
   CC: clang
@@ -27,7 +27,7 @@ env:
   TEBAKO_DIR: .archive/tebako
   DEPS: deps
 # Versions
-  TEBAKO_TAG: "v0.3.1"
+  TEBAKO_TAG: "v0.3.3"
   RUBY_VER:   "2.7.5"
   RUBY_HASH:  "2755b900a21235b443bb16dadd9032f784d4a88f143d852bc5d154f22b8781f1"
   BUNDLER_VER: "2.2.3"
@@ -77,7 +77,7 @@ jobs:
           ./configure --prefix='/usr'
           make
           sudo make install
-          
+
       - name: Checkout tebako packaging environment
         uses: actions/checkout@v2
         with:
@@ -146,7 +146,7 @@ jobs:
           ./configure --prefix='/usr'
           make
           sudo make install
-      
+
       - name: Install Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -216,7 +216,6 @@ jobs:
           - csa
           - bipm
           - ietf
-          - ogc
         include:
           - os: ubuntu-18.04
             test-flavor: m3aawg
@@ -230,6 +229,9 @@ jobs:
           - os: ubuntu-18.04
             test-flavor: iho
             ignore-errors: true
+          - os: ubuntu-18.04
+            test-flavor: ogc
+            ignore-errors: true
           - os: ubuntu-20.04
             test-flavor: m3aawg
             ignore-errors: true
@@ -241,6 +243,9 @@ jobs:
             ignore-errors: true
           - os: ubuntu-20.04
             test-flavor: iho
+            ignore-errors: true
+          - os: ubuntu-20.04
+            test-flavor: ogc
             ignore-errors: true
     steps:
       - uses: actions/checkout@v2

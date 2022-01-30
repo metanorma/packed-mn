@@ -20,6 +20,7 @@ TEST_FLAVOR ?= iso
 TEST_PROCESSORS ?= iso cc iec un m3aawg jcgm csa bipm iho ogc itu ietf
 
 BUILD_DIR := build
+TEBAKO_TAG := v0.3.3
 
 all: $(BUILD_DIR)/bin/metanorma-$(PLATFORM)-$(ARCH)
 
@@ -49,7 +50,7 @@ test-flavor:
 
 .archive/tebako/.git:
 	mkdir -p .archive;
-	git clone https://github.com/tamatebako/tebako $(dir $@)
+	git clone -b "$(TEBAKO_TAG)" https://github.com/tamatebako/tebako $(dir $@)
 
 .archive/tebako/bin/tebako: .archive/tebako/.git
 

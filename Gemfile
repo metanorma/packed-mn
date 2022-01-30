@@ -14,6 +14,7 @@ end
 
 gem "ffi"
 gem "rake"
+gem "sassc"
 gem "seven_zip_ruby"
 
 group :development do
