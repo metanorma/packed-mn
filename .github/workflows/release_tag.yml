@@ -3,8 +3,8 @@ name: release-tag
 on:
   push:
     branches: [ REMOVEME ]
-  # repository_dispatch:
-  #   types: [ metanorma/metanorma-cli ]
+  repository_dispatch:
+    types: [ metanorma/metanorma-cli ]
 
 jobs:
   push-tag:
