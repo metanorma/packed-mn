@@ -1,8 +1,6 @@
 name: release-tag
 
 on:
-  push:
-    branches: [ REMOVEME ]
   repository_dispatch:
     types: [ metanorma/metanorma-cli ]
 
@@ -12,13 +10,8 @@ jobs:
     if: startsWith(github.event.client_payload.ref, 'refs/tags/v')
     steps:
     - uses: actions/checkout@v2
-
-    - name: Add writable remote
-      run: |
-        git config --global user.name "metanorma-ci"
-        git config --global user.email "metanorma-ci@users.noreply.github.com"
-        git remote add github "https://metanorma-ci:${{ secrets.METANORMA_CI_PAT_TOKEN }}@github.com/$GITHUB_REPOSITORY.git"
-        git pull github ${GITHUB_REF} --ff-only
+      with:
+        token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
 
     - name: Parse metanorma-cli version
       env:
@@ -45,6 +38,8 @@ jobs:
 
     - name: Push commit and tag
       run: |
+        git config --global user.name "metanorma-ci"
+        git config --global user.email "metanorma-ci@users.noreply.github.com"
         git add Gemfile
         git commit -m "Bump version to ${METANORMA_CLI_VERSION}"
         git tag v${METANORMA_CLI_VERSION}
