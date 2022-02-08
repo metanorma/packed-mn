@@ -28,6 +28,10 @@ def cert_file_path
   cert_file_path = cert_tempfile.path
 end
 
+def full_gem_path(gem)
+  Gem::Specification.find_by_name(gem).full_gem_path
+end
+
 unless Gem.win_platform? # because on windows we use ocra
   # https://github.com/pmq20/ruby-packer/blob/master/lib/compiler/constants.rb#L10
   COMPILER_MEMFS_LIB_CACHE = Pathname.new(Dir.mktmpdir("packed-mn-"))
@@ -122,7 +126,7 @@ unless Gem.win_platform? # because on windows we use ocra
   require 'mn2pdf'
   module Mn2pdf
     remove_const('MN2PDF_JAR_PATH')
-    MN2PDF_JAR_PATH = extract_memfs(File.join(Gem.loaded_specs['mn2pdf'].full_gem_path, 'bin', 'mn2pdf.jar'))
+    MN2PDF_JAR_PATH = extract_memfs(File.join(full_gem_path('mn2pdf'), 'bin', 'mn2pdf.jar'))
 
     self.singleton_class.send(:alias_method, :convert_orig, :convert)
     self.singleton_class.send(:remove_method, :convert)
@@ -137,7 +141,7 @@ unless Gem.win_platform? # because on windows we use ocra
   require 'mnconvert'
   module MnConvert
     remove_const('MNCONVERT_JAR_PATH')
-    MNCONVERT_JAR_PATH = extract_memfs(File.join(Gem.loaded_specs['mnconvert'].full_gem_path, 'bin', 'mnconvert.jar'))
+    MNCONVERT_JAR_PATH = extract_memfs(File.join(full_gem_path('mnconvert'), 'bin', 'mnconvert.jar'))
 
     self.singleton_class.send(:alias_method, :convert_orig, :convert)
     self.singleton_class.send(:remove_method, :convert)
@@ -151,7 +155,7 @@ unless Gem.win_platform? # because on windows we use ocra
 
   # HACK fix path for 7zip load
   sevenz_lib = RUBY_PLATFORM.downcase.match(/mswin|mingw/) ? "7z*.dll" : "7z.so"
-  sevenz_path = File.join(Gem.loaded_specs['seven_zip_ruby'].full_gem_path, 'lib', 'seven_zip_ruby', sevenz_lib)
+  sevenz_path = File.join(full_gem_path('seven_zip_ruby'), 'lib', 'seven_zip_ruby', sevenz_lib)
   FileUtils.mkdir_p(COMPILER_MEMFS_LIB_CACHE / 'seven_zip_ruby')
   FileUtils.cp(sevenz_path, COMPILER_MEMFS_LIB_CACHE / 'seven_zip_ruby')
   $LOAD_PATH.unshift(COMPILER_MEMFS_LIB_CACHE)
@@ -186,7 +190,7 @@ unless Gem.win_platform? # because on windows we use ocra
       end
     end
   end
-# END of HACK/sassc 
+  # END of HACK/sassc
 
 end
 
