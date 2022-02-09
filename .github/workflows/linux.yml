@@ -293,7 +293,7 @@ jobs:
           mv build/bin/metanorma-linux-x86_64 metanorma-linux-x86_64
           tar -czvf metanorma-linux-x86_64.tgz metanorma-linux-x86_64
 
-      - run: sha256sum metanorma-linux-x86_64.tgz > metanorma-linux-x86_64.tgz.sha256.txt
+      - run: sha256sum metanorma-linux-x86_64.tgz | cut -d ' ' -f1 > metanorma-linux-x86_64.tgz.sha256.txt
 
       - uses: softprops/action-gh-release@v1
         with:

@@ -222,7 +222,7 @@ jobs:
 
       - run: |
           brew install coreutils
-          sha256sum metanorma-darwin-x86_64.tgz > metanorma-darwin-x86_64.tgz.sha256.txt
+          sha256sum metanorma-darwin-x86_64.tgz | cut -d ' ' -f1 > metanorma-darwin-x86_64.tgz.sha256.txt
 
       - uses: softprops/action-gh-release@v1
         with:
