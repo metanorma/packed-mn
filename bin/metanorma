@@ -1,14 +1,40 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require 'rubygems'
-require 'bundler/setup'
+require 'pathname'
+require 'tempfile'
+require 'fileutils'
+
+COMPILER_MEMFS = '/__tebako_memfs__'
+COMPILER_MEMFS_LIB_CACHE = Pathname.new(Dir.mktmpdir("packed-mn-"))
+at_exit {
+  FileUtils.remove_dir(COMPILER_MEMFS_LIB_CACHE.to_path, true)
+}
+
+ENV['BUNDLE_PATH'] = COMPILER_MEMFS_LIB_CACHE.to_s
+FileUtils.mkdir_p(COMPILER_MEMFS_LIB_CACHE / 'ruby/2.7.0')
+require 'bundler/inline'
+
+gemfile do
+  source 'https://rubygems.org'
+
+  if Gem.win_platform?
+    gem "fontist"
+    gem "net-ssh"
+    gem "zlib"
+  end
+
+  gem "ffi"
+  gem "rake"
+  gem "sassc"
+  gem "seven_zip_ruby"
+
+  gem "metanorma-cli", "= 1.5.9"
+end
+
 require 'openssl'
 require 'open-uri'
 require 'net/https'
-require 'tempfile'
-
-COMPILER_MEMFS = '/__tebako_memfs__'
 
 # Limit Relaton to concurrent fetches of 1
 ENV["RELATON_FETCH_PARALLEL"] = "1"
@@ -33,12 +59,6 @@ def full_gem_path(gem)
 end
 
 unless Gem.win_platform? # because on windows we use ocra
-  # https://github.com/pmq20/ruby-packer/blob/master/lib/compiler/constants.rb#L10
-  COMPILER_MEMFS_LIB_CACHE = Pathname.new(Dir.mktmpdir("packed-mn-"))
-  at_exit {
-    FileUtils.remove_dir(COMPILER_MEMFS_LIB_CACHE.to_path, true)
-  }
-
   class String
     def is_quoted
       self.start_with?('"') && self.end_with?('"')
