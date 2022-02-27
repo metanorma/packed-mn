@@ -129,4 +129,4 @@ jobs:
           bundler: ${{ env.BUNDLER_VER }}
 
       - name: tebako setup
-        run: ${{ github.workspace }}/bin/tebako setup --target=${{ env.TARGET }} --target-homebrew=${{ env.ARCHIVE }}/arm-homebrew
+        run: ${{ env.TEBAKO_DIR }}/bin/tebako setup --target=${{ env.TARGET }} --target-homebrew=${{ env.ARCHIVE }}/arm-homebrew
