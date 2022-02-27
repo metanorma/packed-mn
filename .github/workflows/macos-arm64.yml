@@ -1,0 +1,131 @@
+# Copyright (c) 2022 [Ribose Inc](https://www.ribose.com).
+# All rights reserved.
+# This file is a part of tamatebako
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in the
+#    documentation and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+# TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+# PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS
+# BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+#
+name: macos-arm64
+
+on:
+  push:
+    branches: [ main ]
+    tags: [ v* ]
+    paths-ignore:
+      - .github/workflows/linux.yml
+      - .github/workflows/windows.yml
+      - .github/workflows/macos.yml
+      - .github/workflows/release_tag.yml
+      - Makefile.win
+  pull_request:
+    paths-ignore:
+      - .github/workflows/linux.yml
+      - .github/workflows/windows.yml
+      - .github/workflows/macos.yml
+      - .github/workflows/release_tag.yml
+      - Makefile.win
+  workflow_dispatch:
+
+env:
+  MAKEFLAGS: -j4
+  TARGET: "arm64-apple-macos11"
+  CACHE_VER: 01
+  BUILD_TYPE: Release
+  CC: clang
+  CXX: clang++
+# The folders
+  ARCCHIVE_DIR: .archive
+  TEBAKO_DIR: .archive/tebako
+  DEPS: deps
+# Versions
+  TEBAKO_TAG: "maxirmx_v0.3.4"
+  DWARFS_WR_TAG: "v0.1.10"  
+  RUBY_VER:   "2.7.5"
+  RUBY_HASH:  "2755b900a21235b443bb16dadd9032f784d4a88f143d852bc5d154f22b8781f1"
+  BUNDLER_VER: "2.2.3"
+
+jobs:
+  setup:
+    name: macos-11.0 [ cross-compile for arm64-apple-macos11 ]
+    runs-on: macos-11.0
+    strategy:
+      fail-fast: false
+    steps:
+      - name: Select XCode 12.4 & SDK 11.1 for macos-11.0
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '12.4'
+
+      - name: Checkout tebako packaging environment
+        uses: actions/checkout@v2
+        with:
+          repository: tamatebako/tebako
+          path: ${{ env.TEBAKO_DIR }}
+          ref: ${{ env.TEBAKO_TAG }}
+
+      - name: Create deps folder
+        run: mkdir -p -v ${{ env.TEBAKO_DIR }}/${{ env.DEPS }}
+
+      - name: Create deps folders, setup environment
+        run: |
+          mkdir ${{ github.workspace }}/${{ env.DEPS }}
+          echo 'BREW_HOME<<EOF' >> $GITHUB_ENV
+          brew --prefix >> $GITHUB_ENV
+          echo 'EOF' >> $GITHUB_ENV
+
+      - name: Process cache
+        id: cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ${{ env.BRE_HOME }}
+            ${{ env.ARCHIVE }}/arm-homebrew
+            ${{ github.workspace }}/${{ env.DEPS }}
+          key: macos-11.0-X-${{ env.TARGET }}-${{ env.DWARFS_WR_TAG }}-${{ env.DWARFS_TAG }}-${{ env.INCBIN_TAG }}-${{ env.RUBY_HASH }}-v${{ env.CACHE_VER }}
+
+      - name: Install packages [for build system architecture]
+        run: |
+          brew install \
+          bison flex binutils libarchive double-conversion boost jemalloc fmt glog \
+          gnu-getopt gnu-sed bash ncurses
+
+# Note: we cannot rely on dependencies here since resolved dependencies will point to x86_64 version
+# TODO: use brew deps -n to create full list of dependencies rather then hardcode
+# (libarchive depends on ibb2 lz4 xz zstd zlib)
+# (boost depends on icu4c)
+# (glog depends on gflags)
+      - name: Install packages [for target host architecture]
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          ${{ env.BREW_HOME }}/bin/bash ci-scripts/arm-brew-setup.sh ${{ env.ARCHIVE}}
+          ${{ env.BREW_HOME }}/bin/bash ci-scripts/arm-brew-install.sh ${{ env.ARCHIVE }} libb2 lz4 xz zstd zlib libarchive   \
+                                icu4c boost fmt openssl@1.1 libevent libsodium double-conversion                               \
+                                gflags glog jemalloc ncurses gdbm libffi readline
+  
+# We need it in this workflow for BASERUBY (that is used in cross-compile scenario to bootstrap ruby instead of miniruby)
+      - name: Install Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ env.RUBY_VER }}
+          bundler: ${{ env.BUNDLER_VER }}
+
+      - name: tebako setup
+        run: ${{ github.workspace }}/bin/tebako setup --target=${{ env.TARGET }} --target-homebrew=${{ env.ARCHIVE }}/arm-homebrew
