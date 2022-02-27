@@ -115,10 +115,11 @@ jobs:
       - name: Install packages [for target host architecture]
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
-          ${{ env.BREW_HOME }}/bin/bash ci-scripts/arm-brew-setup.sh ${{ env.ARCHIVE}}
-          ${{ env.BREW_HOME }}/bin/bash ci-scripts/arm-brew-install.sh ${{ env.ARCHIVE }} libb2 lz4 xz zstd zlib libarchive   \
-                                icu4c boost fmt openssl@1.1 libevent libsodium double-conversion                               \
-                                gflags glog jemalloc ncurses gdbm libffi readline
+          ${{ env.BREW_HOME }}/bin/bash ${{ env.TEBAKO_DIR }}/ci-scripts/arm-brew-setup.sh ${{ env.ARCHIVE}}
+          ${{ env.BREW_HOME }}/bin/bash ${{ env.TEBAKO_DIR }}/ci-scripts/arm-brew-install.sh ${{ env.ARCHIVE }} \
+                                libb2 lz4 xz zstd zlib libarchive icu4c boost fmt openssl@1.1                   \
+                                libevent libsodium double-conversion gflags glog jemalloc ncurses               \
+                                gdbm libffi readline
   
 # We need it in this workflow for BASERUBY (that is used in cross-compile scenario to bootstrap ruby instead of miniruby)
       - name: Install Ruby
