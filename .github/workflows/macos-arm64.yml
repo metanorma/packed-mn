@@ -52,7 +52,7 @@ env:
   CC: clang
   CXX: clang++
 # The folders
-  ARCCHIVE_DIR: .archive
+  ARCHIVE_DIR: .archive
   TEBAKO_DIR: .archive/tebako
   DEPS: deps
 # Versions
@@ -97,7 +97,7 @@ jobs:
         with:
           path: |
             ${{ env.BRE_HOME }}
-            ${{ env.ARCHIVE }}/arm-homebrew
+            ${{ env.ARCHIVE_DIR }}/arm-homebrew
             ${{ github.workspace }}/${{ env.DEPS }}
           key: macos-11.0-X-${{ env.TARGET }}-${{ env.DWARFS_WR_TAG }}-${{ env.DWARFS_TAG }}-${{ env.INCBIN_TAG }}-${{ env.RUBY_HASH }}-v${{ env.CACHE_VER }}
 
@@ -115,10 +115,10 @@ jobs:
       - name: Install packages [for target host architecture]
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
-          ${{ env.BREW_HOME }}/bin/bash ${{ env.TEBAKO_DIR }}/ci-scripts/arm-brew-setup.sh ${{ env.ARCHIVE}}
-          ${{ env.BREW_HOME }}/bin/bash ${{ env.TEBAKO_DIR }}/ci-scripts/arm-brew-install.sh ${{ env.ARCHIVE }} \
-                                libb2 lz4 xz zstd zlib libarchive icu4c boost fmt openssl@1.1                   \
-                                libevent libsodium double-conversion gflags glog jemalloc ncurses               \
+          ${{ env.BREW_HOME }}/bin/bash ${{ env.TEBAKO_DIR }}/ci-scripts/arm-brew-setup.sh ${{ env.ARCHIVE_DIR }}
+          ${{ env.BREW_HOME }}/bin/bash ${{ env.TEBAKO_DIR }}/ci-scripts/arm-brew-install.sh ${{ env.ARCHIVE_DIR }} \
+                                libb2 lz4 xz zstd zlib libarchive icu4c boost fmt openssl@1.1                       \
+                                libevent libsodium double-conversion gflags glog jemalloc ncurses                   \
                                 gdbm libffi readline
   
 # We need it in this workflow for BASERUBY (that is used in cross-compile scenario to bootstrap ruby instead of miniruby)
