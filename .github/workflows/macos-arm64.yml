@@ -27,7 +27,7 @@ name: macos-arm64
 
 on:
   push:
-    branches: [ main ]
+    branches: [ * ]
     tags: [ v* ]
     paths-ignore:
       - .github/workflows/linux.yml
@@ -35,13 +35,13 @@ on:
       - .github/workflows/macos.yml
       - .github/workflows/release_tag.yml
       - Makefile.win
-  pull_request:
-    paths-ignore:
-      - .github/workflows/linux.yml
-      - .github/workflows/windows.yml
-      - .github/workflows/macos.yml
-      - .github/workflows/release_tag.yml
-      - Makefile.win
+#  pull_request:
+#    paths-ignore:
+#      - .github/workflows/linux.yml
+#      - .github/workflows/windows.yml
+#      - .github/workflows/macos.yml
+#      - .github/workflows/release_tag.yml
+#      - Makefile.win
   workflow_dispatch:
 
 env:

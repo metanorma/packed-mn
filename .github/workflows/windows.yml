@@ -2,7 +2,7 @@ name: windows
 
 on:
   push:
-    branches: [ main ]
+    branches: [ * ]
     tags: [ v* ]
     paths-ignore:
       - .github/workflows/linux.yml
@@ -10,13 +10,13 @@ on:
       - .github/workflows/macos-arm64.yml
       - .github/workflows/release_tag.yml
       - Makefile
-  pull_request:
-    paths-ignore:
-      - .github/workflows/linux.yml
-      - .github/workflows/macos.yml
-      - .github/workflows/macos-arm64.yml     
-      - .github/workflows/release_tag.yml
-      - Makefile
+#  pull_request:
+#    paths-ignore:
+#      - .github/workflows/linux.yml
+#      - .github/workflows/macos.yml
+#      - .github/workflows/macos-arm64.yml     
+#      - .github/workflows/release_tag.yml
+#      - Makefile
   workflow_dispatch:
 
 jobs:
