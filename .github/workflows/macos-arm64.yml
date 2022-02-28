@@ -115,10 +115,10 @@ jobs:
       - name: Install packages [for target host architecture]
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
-          ${{ env.BREW_HOME }}/bin/bash ${{ env.TEBAKO_DIR }}/ci-scripts/arm-brew-setup.sh ${{ env.ARCHIVE_DIR }}
-          ${{ env.BREW_HOME }}/bin/bash ${{ env.TEBAKO_DIR }}/ci-scripts/arm-brew-install.sh ${{ env.ARCHIVE_DIR }} \
-                                libb2 lz4 xz zstd zlib libarchive icu4c boost fmt openssl@1.1                       \
-                                libevent libsodium double-conversion gflags glog jemalloc ncurses                   \
+          ${{ env.BREW_HOME }}/bin/bash ${{ env.TEBAKO_DIR }}/ci-scripts/arm-brew-setup.sh ${{ github.workspace }}/${{ env.ARCHIVE_DIR }}
+          ${{ env.BREW_HOME }}/bin/bash ${{ env.TEBAKO_DIR }}/ci-scripts/arm-brew-install.sh ${{ github.workspace }}/${{ env.ARCHIVE_DIR }} \
+                                libb2 lz4 xz zstd zlib libarchive icu4c boost fmt openssl@1.1                                               \
+                                libevent libsodium double-conversion gflags glog jemalloc ncurses                                           \
                                 gdbm libffi readline
   
 # We need it in this workflow for BASERUBY (that is used in cross-compile scenario to bootstrap ruby instead of miniruby)
@@ -129,4 +129,4 @@ jobs:
           bundler: ${{ env.BUNDLER_VER }}
 
       - name: tebako setup
-        run: ${{ env.TEBAKO_DIR }}/bin/tebako setup --target=${{ env.TARGET }} --target-homebrew=${{ env.ARCHIVE_DIR }}/arm-homebrew
+        run: ${{ env.TEBAKO_DIR }}/bin/tebako setup --target=${{ env.TARGET }} --target-homebrew=${{ github.workspace }}/${{ env.ARCHIVE_DIR }}/arm-homebrew
