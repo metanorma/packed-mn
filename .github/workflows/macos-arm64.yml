@@ -27,7 +27,7 @@ name: macos-arm64
 
 on:
   push:
-    branches: [ * ]
+#    branches: [ main ]
     tags: [ v* ]
     paths-ignore:
       - .github/workflows/linux.yml

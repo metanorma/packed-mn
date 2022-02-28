@@ -2,7 +2,7 @@ name: linux
 
 on:
   push:
-    branches: [ * ]
+#    branches: [ main ]
     tags: [ v* ]
     paths-ignore:
       - .github/workflows/macos.yml
