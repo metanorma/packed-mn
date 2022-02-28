@@ -27,7 +27,7 @@ name: macos-arm64
 
 on:
   push:
-#    branches: [ main ]
+    branches: [ main, maxirmx_arm64 ]
     tags: [ v* ]
     paths-ignore:
       - .github/workflows/linux.yml
