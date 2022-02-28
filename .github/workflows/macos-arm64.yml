@@ -64,7 +64,6 @@ env:
 
 jobs:
   setup:
-    name: macos-11.0 [ cross-compile for arm64-apple-macos11 ]
     runs-on: macos-11.0
     strategy:
       fail-fast: false
@@ -81,12 +80,9 @@ jobs:
           path: ${{ env.TEBAKO_DIR }}
           ref: ${{ env.TEBAKO_TAG }}
 
-      - name: Create deps folder
-        run: mkdir -p -v ${{ env.TEBAKO_DIR }}/${{ env.DEPS }}
-
       - name: Create deps folders, setup environment
         run: |
-          mkdir ${{ github.workspace }}/${{ env.DEPS }}
+          mkdir -p -v ${{ github.workspace }}/${{ env.DEPS }}
           echo 'BREW_HOME<<EOF' >> $GITHUB_ENV
           brew --prefix >> $GITHUB_ENV
           echo 'EOF' >> $GITHUB_ENV
@@ -130,3 +126,62 @@ jobs:
 
       - name: tebako setup
         run: ${{ env.TEBAKO_DIR }}/bin/tebako setup --target=${{ env.TARGET }} --target-homebrew=${{ github.workspace }}/${{ env.ARCHIVE_DIR }}/arm-homebrew
+
+  build:
+    runs-on: macos-11.00
+    needs: setup
+    steps:
+      - uses: actions/checkout@v2
+
+     # ---------- Start of tebako prerequisites
+      - name: Checkout packed-mn
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+
+      - name: Checkout tebako packaging environment
+        uses: actions/checkout@v2
+        with:
+          repository: tamatebako/tebako
+          path: ${{ env.TEBAKO_DIR }}
+          ref: ${{ env.TEBAKO_TAG }}         
+
+      - name: Install packages [for build system architecture]
+        run: |
+          brew install \
+          bison flex binutils libarchive double-conversion boost jemalloc fmt glog \
+          gnu-getopt gnu-sed bash ncurses
+
+      - name: Create deps folders, setup environment
+        run: |
+          mkdir -p -v ${{ github.workspace }}/${{ env.DEPS }}
+          echo 'BREW_HOME<<EOF' >> $GITHUB_ENV
+          brew --prefix >> $GITHUB_ENV
+          echo 'EOF' >> $GITHUB_ENV
+
+      - name: Process cache
+        id: cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ${{ env.BRE_HOME }}
+            ${{ env.ARCHIVE_DIR }}/arm-homebrew
+            ${{ github.workspace }}/${{ env.DEPS }}
+          key: macos-11.0-X-${{ env.TARGET }}-${{ env.DWARFS_WR_TAG }}-${{ env.DWARFS_TAG }}-${{ env.INCBIN_TAG }}-${{ env.RUBY_HASH }}-v${{ env.CACHE_VER }}
+
+      - name: Tebako cache check
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          echo "Failed to load cache"
+          false
+      # ------- End of tebako prerequisites
+
+      - uses: metanorma/metanorma-build-scripts/gh-rubygems-setup-action@main
+        with:
+          token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
+
+      - run: |
+          curl -Lks 'https://git.io/rg-ssl' | ruby
+          echo "perl -v: $(perl -v)"
+          echo "cc -v: $($CC -v)"
+          echo "CXX -v: $($CXX -v)"

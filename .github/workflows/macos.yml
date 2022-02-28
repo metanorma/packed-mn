@@ -82,7 +82,7 @@ jobs:
         with:
           xcode-version: '12.1.1'
 
-      - name: Checkout tebako packaging environment
+      - name: Checkout packed-mn
         uses: actions/checkout@v2
         with:
           fetch-depth: 1
