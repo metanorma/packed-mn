@@ -1,25 +1,35 @@
 #!make
+# Copyright (c) 2022 [Ribose Inc](https://www.ribose.com).
+# All rights reserved.
+# This file is a part of tebako
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in the
+#    documentation and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+# TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+# PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS
+# BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+
 SHELL := /bin/bash
 
 .PHONY: build test clean
 
-ifeq ($(OS),Windows_NT)
-  PLATFORM := windows
-else
-  UNAME_S := $(shell uname -s)
-	ARCH := $(shell uname -m)
-  ifeq ($(UNAME_S),Linux)
-    PLATFORM := linux
-  endif
-  ifeq ($(UNAME_S),Darwin)
-    PLATFORM := darwin
-  endif
-endif
-
 BUILD_DIR := build
 TEBAKO_TAG := maxirmx_v0.3.4
-ARM_HOMEBREW := --target-homebrew=$( cd $( dirname .archive/arm_homebrew ) && pwd )
-
 
 all: $(BUILD_DIR)/bin/metanorma-darwin-arm64
 
@@ -53,12 +63,12 @@ $(BUILD_DIR)/.package-ready: $(BUILD_DIR)/package/metanorma $(BUILD_DIR)/package
 	touch $@
 
 $(BUILD_DIR)/bin/metanorma-darwin-arm64: $(BUILD_DIR)/.package-ready
-	mkdir -p $(dir $@);
-	.archive/tebako/bin/tebako press -r "$(BUILD_DIR)/package" -e "metanorma" -o "$@" --target-homebrew=$(ARM_HOMEBREW)  --target=arm64-apple-macos11
+	mkdir -p $(dir $@)
+	.archive/tebako/bin/tebako press -r "$(BUILD_DIR)/package" -e "metanorma" -o "$@" --target-homebrew=.archive/arm-homebrew  --target=arm64-apple-macos11
 	chmod +x $@
 
 clean:
-	rm -rf $(BUILD_DIR)
+	.archive/tebako/bin/tebako clean
 
 distclean: clean
 	rm -rf .archive
