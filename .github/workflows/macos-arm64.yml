@@ -191,7 +191,7 @@ jobs:
           mkdir ${{ github.workspace }}/${{ env.BUILD_DIR }}
 
       - name: package metanorma
-        run: make -f Makefile.x86_64-2-arm64 
+        run: make -f Makefile.x86_64-2-arm64 build/bin/metanorma-darwin-arm64
 
       - uses: actions/upload-artifact@v2
         with:
