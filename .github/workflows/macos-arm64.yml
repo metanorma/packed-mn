@@ -128,7 +128,7 @@ jobs:
         run: ${{ env.TEBAKO_DIR }}/bin/tebako setup --target=${{ env.TARGET }} --target-homebrew=${{ github.workspace }}/${{ env.ARCHIVE_DIR }}/arm-homebrew
 
   build:
-    runs-on: macos-11.00
+    runs-on: macos-11.0
     needs: setup
     steps:
       - uses: actions/checkout@v2
