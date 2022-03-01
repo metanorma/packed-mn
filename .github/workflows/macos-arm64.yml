@@ -188,7 +188,7 @@ jobs:
           echo "CXX -v: $($CXX -v)"
 
       - run: |
-          mkdir ${{ github.workspace }}/${{ env.BUILD_SIR }}
+          mkdir ${{ github.workspace }}/${{ env.BUILD_DIR }}
 
       - name: package metanorma
         run: make -f Makefile.x86_64-2-arm64 build/bin/metanorma-darwin-arm64
