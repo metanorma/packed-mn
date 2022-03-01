@@ -47,7 +47,7 @@ on:
 env:
   MAKEFLAGS: -j4
   TARGET: "arm64-apple-macos11"
-  CACHE_VER: 01
+  CACHE_VER: 02
   BUILD_TYPE: Release
   CC: clang
   CXX: clang++
@@ -93,8 +93,8 @@ jobs:
         uses: actions/cache@v2
         with:
           path: |
-            ${{ env.ARCHIVE_DIR }}/arm-homebrew
-            ${{ github.workspace }}/${{ env.DEPS }}
+            ${{ github.workspace }}/${{ env.ARCHIVE_DIR }}/arm-homebrew
+            ${{ github.workspace }}//${{ env.TEBAKO_DIR }}/${{ env.DEPS }}
           key: macos-11.0-X-${{ env.TARGET }}-${{ env.DWARFS_WR_TAG }}-${{ env.DWARFS_TAG }}-${{ env.INCBIN_TAG }}-${{ env.RUBY_HASH }}-v${{ env.CACHE_VER }}
 
       - name: Install packages [for build system architecture]
@@ -155,7 +155,7 @@ jobs:
 
       - name: Create deps folders, setup environment
         run: |
-          mkdir -p -v ${{ github.workspace }}/${{ env.DEPS }}
+          mkdir -p -v ${{ github.workspace }}/${{ env.TEBAKO_DIR }}/${{ env.DEPS }}
           echo 'BREW_HOME<<EOF' >> $GITHUB_ENV
           brew --prefix >> $GITHUB_ENV
           echo 'EOF' >> $GITHUB_ENV
@@ -165,9 +165,8 @@ jobs:
         uses: actions/cache@v2
         with:
           path: |
-            ${{ env.BRE_HOME }}
-            ${{ env.ARCHIVE_DIR }}/arm-homebrew
-            ${{ github.workspace }}/${{ env.DEPS }}
+            ${{ github.workspace }}/${{ env.ARCHIVE_DIR }}/arm-homebrew
+            ${{ github.workspace }}//${{ env.TEBAKO_DIR }}/${{ env.DEPS }}
           key: macos-11.0-X-${{ env.TARGET }}-${{ env.DWARFS_WR_TAG }}-${{ env.DWARFS_TAG }}-${{ env.INCBIN_TAG }}-${{ env.RUBY_HASH }}-v${{ env.CACHE_VER }}
 
       - name: Tebako cache check
