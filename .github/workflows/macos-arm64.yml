@@ -54,6 +54,7 @@ env:
 # The folders
   ARCHIVE_DIR: .archive
   TEBAKO_DIR: .archive/tebako
+  BUILD_DIR: build
   DEPS: deps
 # Versions
   TEBAKO_TAG: "maxirmx_v0.3.4"
@@ -92,7 +93,6 @@ jobs:
         uses: actions/cache@v2
         with:
           path: |
-            ${{ env.BRE_HOME }}
             ${{ env.ARCHIVE_DIR }}/arm-homebrew
             ${{ github.workspace }}/${{ env.DEPS }}
           key: macos-11.0-X-${{ env.TARGET }}-${{ env.DWARFS_WR_TAG }}-${{ env.DWARFS_TAG }}-${{ env.INCBIN_TAG }}-${{ env.RUBY_HASH }}-v${{ env.CACHE_VER }}
@@ -125,6 +125,7 @@ jobs:
           bundler: ${{ env.BUNDLER_VER }}
 
       - name: tebako setup
+        if: steps.cache.outputs.cache-hit != 'true'
         run: ${{ env.TEBAKO_DIR }}/bin/tebako setup --target=${{ env.TARGET }} --target-homebrew=${{ github.workspace }}/${{ env.ARCHIVE_DIR }}/arm-homebrew
 
   build:
@@ -185,3 +186,16 @@ jobs:
           echo "perl -v: $(perl -v)"
           echo "cc -v: $($CC -v)"
           echo "CXX -v: $($CXX -v)"
+
+      - run: |
+          mkdir ${{ github.workspace }}/${{ env.BUILD_SIR }}
+
+      - name: package metanorma
+        run: make -f Makefile.x86_64-2-arm64 build/bin/metanorma-darwin-arm64
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: metanorma-darwin-arm64
+          path: build/bin/metanorma-darwin-arm64
+              
+
