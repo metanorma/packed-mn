@@ -58,16 +58,9 @@ test-flavor:
 	mkdir -p -v $(dir $(dir $@))
 	$< setup
 
-Gemfile.lock:
-	bundle
-
 $(BUILD_DIR)/package/Gemfile:
 	mkdir -p $(dir $@);
 	cp Gemfile $@
-
-$(BUILD_DIR)/package/Gemfile.lock: Gemfile.lock
-	mkdir -p $(dir $@);
-	cp Gemfile.lock $@
 
 $(BUILD_DIR)/package/metanorma:
 	mkdir -p $(dir $@);
@@ -81,7 +74,7 @@ $(BUILD_DIR)/package/vendor:
 	mkdir -p $(dir $@);
 	cp -R vendor $@
 
-$(BUILD_DIR)/.package-ready: $(BUILD_DIR)/package/metanorma $(BUILD_DIR)/package/Gemfile $(BUILD_DIR)/package/Gemfile.lock $(BUILD_DIR)/package/cacert.pem.mozilla $(BUILD_DIR)/package/vendor
+$(BUILD_DIR)/.package-ready: $(BUILD_DIR)/package/metanorma $(BUILD_DIR)/package/Gemfile $(BUILD_DIR)/package/cacert.pem.mozilla $(BUILD_DIR)/package/vendor
 	touch $@
 
 $(BUILD_DIR)/bin/metanorma-darwin-x86_64: .archive/tebako/bin/tebako $(BUILD_DIR)/.package-ready

@@ -2,11 +2,11 @@
 # frozen_string_literal: true
 
 require 'rubygems'
-require 'bundler/setup'
 require 'openssl'
 require 'open-uri'
 require 'net/https'
 require 'tempfile'
+require 'pathname'
 
 COMPILER_MEMFS = '/__tebako_memfs__'
 
@@ -75,7 +75,6 @@ unless Gem.win_platform? # because on windows we use ocra
   # HACK: extract temp libraries to use with ffi
   # Wrapper for FFI.map_library_name method
   require 'ffi'
-  require 'pathname'
 
   module FFI
     # https://stackoverflow.com/questions/29907157/how-to-alias-a-class-method-in-rails-model/29907207
@@ -163,7 +162,7 @@ unless Gem.win_platform? # because on windows we use ocra
 
   # HACK unpack style files for sassc
   require 'sassc'
-  
+
   module SassC
     class Engine
       @@loaded_pathes = []
@@ -184,7 +183,7 @@ unless Gem.win_platform? # because on windows we use ocra
               np << m
             else
               np << p
-            end          
+            end
           }
         np.join(File::PATH_SEPARATOR) unless np.empty?
       end
