@@ -18,7 +18,8 @@ on:
   workflow_dispatch:
 
 env:
-  CACHE_VER: 05
+  CACHE_VER: 01
+  OS_VER: "macos-10.15"
   BUILD_TYPE: Release
   CC: clang
   CXX: clang++
@@ -61,7 +62,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ${{ env.TEBAKO_DIR }}/${{ env.DEPS }}
-          key: ${{ github.workflow }}-${{ env.OS_VER }}-${{ env.CC }}-${{ env.TEBAKO_TAG }}-${{ env.RUBY_HASH }}-v${{ env.CACHE_VER }}
+          key: ${{ env.OS_VER }}-${{ env.CC }}-${{ env.TEBAKO_TAG }}-${{ env.RUBY_HASH }}-v${{ env.CACHE_VER }}
 
       - name: Tebako setup
         if: steps.cache.outputs.cache-hit != 'true'
@@ -112,7 +113,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ${{ env.TEBAKO_DIR }}/${{ env.DEPS }}
-          key: ${{ github.workflow }}-${{ env.OS_VER }}-${{ env.CC }}-${{ env.TEBAKO_TAG }}-${{ env.RUBY_HASH }}-v${{ env.CACHE_VER }}
+          key: ${{ env.OS_VER }}-${{ env.CC }}-${{ env.TEBAKO_TAG }}-${{ env.RUBY_HASH }}-v${{ env.CACHE_VER }}
 
       - name: Tebako cache check
         if: steps.cache.outputs.cache-hit != 'true'
