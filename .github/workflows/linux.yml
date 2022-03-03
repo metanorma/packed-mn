@@ -93,7 +93,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ${{ env.TEBAKO_DIR }}/${{ env.DEPS }}
-          key: ${{ github.workflow }}-${{ env.OS_VER }}-${{ env.CC }}-${{ env.TEBAKO_TAG }}-${{ env.RUBY_HASH }}-v${{ env.CACHE_VER }}
+          key: ${{ env.OS_VER }}-${{ env.CC }}-${{ env.TEBAKO_TAG }}-${{ env.RUBY_HASH }}-v${{ env.CACHE_VER }}
 
       - name: Tebako setup
         if: steps.cache.outputs.cache-hit != 'true'
@@ -168,7 +168,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ${{ env.TEBAKO_DIR }}/${{ env.DEPS }}
-          key: ${{ github.workflow }}-${{ env.OS_VER }}-${{ env.CC }}-${{ env.TEBAKO_TAG }}-${{ env.RUBY_HASH }}-v${{ env.CACHE_VER }}
+          key: ${{ env.OS_VER }}-${{ env.CC }}-${{ env.TEBAKO_TAG }}-${{ env.RUBY_HASH }}-v${{ env.CACHE_VER }}
 
       - name: Tebako cache check
         if: steps.cache.outputs.cache-hit != 'true'
