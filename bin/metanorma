@@ -2,6 +2,10 @@
 # frozen_string_literal: true
 
 require 'rubygems'
+# Required by OCRA, poison for tebako
+if Gem.win_platform?
+  require 'bundler/setup'
+end
 require 'openssl'
 require 'open-uri'
 require 'net/https'
