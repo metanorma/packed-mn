@@ -146,35 +146,31 @@ jobs:
   test:
     needs: build
     runs-on: ${{ matrix.os }}
-    continue-on-error: ${{ matrix.ignore-errors }}
+    continue-on-error: ${{ matrix.experimental }}
     strategy:
       fail-fast: false
-      max-parallel: 3
+      max-parallel: 5
       matrix:
         os: [ macos-11.0 ]
-        ignore-errors: [ false ]
+        experimental: [ false ]
         test-flavor:
           - iso
           - cc
-          - un
           - iec
-          - iho
-          - csa
+          - ogc
+          - itu
           - bipm
           - ietf
+          - un
+          - iho
+          - csa
         include:
           - os: macos-11.0
             test-flavor: m3aawg
-            ignore-errors: true
+            experimental: true
           - os: macos-11.0
             test-flavor: jcgm
-            ignore-errors: true
-          - os: macos-11.0
-            test-flavor: itu
-            ignore-errors: true
-          - os: macos-11.0
-            test-flavor: ogc
-            ignore-errors: true
+            experimental: true
     steps:
       - uses: actions/checkout@v2
 
@@ -193,17 +189,28 @@ jobs:
           key: relaton-macos-${{ matrix.test-flavor }}
           restore-keys: relaton-macos-${{ matrix.test-flavor }}
 
-      - name: Test processing for ${{ matrix.test-flavor }}
-        timeout-minutes: 30
-        run: make test-flavor
-        env:
-          GITHUB_CREDENTIALS: "metanorma-ci:${{ secrets.METANORMA_CI_PAT_TOKEN }}"
-          TEST_FLAVOR: ${{ matrix.test-flavor }}
+      - name: Fetch samples (${{ matrix.test-flavor }})
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+          repository: metanorma/mn-samples-${{ matrix.test-flavor }}
+          token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
+          path: ${{ github.workspace }}/samples
+          fetch-depth: 1
+
+      - name: Test (${{ matrix.test-flavor }})
+        timeout-minutes: 45
+        run: |
+          build/bin/metanorma-darwin-x86_64 \
+            site generate samples \
+            -c samples/metanorma.yml \
+            -o site-${{ matrix.test-flavor }} \
+            --agree-to-terms
 
       - uses: actions/upload-artifact@v2
         with:
-          name: site
-          path: site/**
+          name: site-${{ matrix.test-flavor }}
+          path: site-${{ matrix.test-flavor }}
 
   release:
     if: startsWith(github.ref, 'refs/tags/')
@@ -221,7 +228,8 @@ jobs:
           cp build/bin/metanorma-darwin-x86_64 metanorma-darwin-x86_64
           tar -czvf metanorma-darwin-x86_64.tgz metanorma-darwin-x86_64
 
-      - run: |
+      - name: Calculate SHA256 hash
+        run: |
           brew install coreutils
           sha256sum metanorma-darwin-x86_64.tgz | cut -d ' ' -f1 > metanorma-darwin-x86_64.tgz.sha256.txt
 
@@ -230,8 +238,6 @@ jobs:
           files: |
             metanorma-darwin-x86_64.tgz
             metanorma-darwin-x86_64.tgz.sha256.txt
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: peter-evans/repository-dispatch@v1
         with:

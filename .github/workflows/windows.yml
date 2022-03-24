@@ -58,32 +58,37 @@ jobs:
   test:
     needs: build
     runs-on: windows-2019
-    continue-on-error: ${{ matrix.ignore-errors }}
+    continue-on-error: ${{ matrix.experimental }}
     strategy:
       fail-fast: false
       max-parallel: 3
       matrix:
-        ignore-errors: [ false ]
+        experimental: [ false ]
         test-flavor:
           - iso
           - cc
-          - un
           - iec
-          - iho
-          - csa
+          - ogc
+          - itu
           - bipm
           - ietf
+          - un
+          - iho
+          - csa
         include:
           - test-flavor: m3aawg
-            ignore-errors: true
+            experimental: true
           - test-flavor: jcgm
-            ignore-errors: true
-          - test-flavor: itu
-            ignore-errors: true
-          - test-flavor: ogc
-            ignore-errors: true
+            experimental: true
     steps:
       - uses: actions/checkout@v2
+
+      - run: Remove-Item Gemfile
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: metanorma-windows
+          path: build
 
       - uses: actions/cache@v2
         with:
@@ -91,34 +96,27 @@ jobs:
           key: relaton-windows-${{ matrix.test-flavor }}
           restore-keys: relaton-windows-${{ matrix.test-flavor }}
 
-      - uses: actions/download-artifact@v2
+      - name: Fetch samples (${{ matrix.test-flavor }})
+        uses: actions/checkout@v3
         with:
-          name: metanorma-windows
-          path: build
+          submodules: recursive
+          repository: metanorma/mn-samples-${{ matrix.test-flavor }}
+          token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
+          path: ${{ github.workspace }}/samples
+          fetch-depth: 1
 
-      - uses: nick-invision/retry@v1
-        with:
-          polling_interval_seconds: 5
-          timeout_minutes: 5
-          max_attempts: 3
-          command: choco install --no-progress make
-
-      - name: Test processing for ${{ matrix.test-flavor }}
+      - name: Test (${{ matrix.test-flavor }})
         timeout-minutes: 30
         run: |
-          Remove-Item Gemfile
-          & ${env:ChocolateyInstall}\bin\make.exe -f Makefile.win test-flavor SHELL=cmd
-        env:
-          GITHUB_CREDENTIALS: "metanorma-ci:${{ secrets.METANORMA_CI_PAT_TOKEN }}"
-          TEST_FLAVOR: ${{ matrix.test-flavor }}
+          build\metanorma.exe site generate samples -c samples\metanorma.yml -o site-${{ matrix.test-flavor }}--agree-to-terms
 
       - run: |
-          Get-ChildItem -Path ".\site" -Recurse -Force | Where-Object { $_.PSIsContainer -eq $false -and $_.Length -eq 0 }  | Remove-Item
+          Get-ChildItem -Path ".\site-${{ matrix.test-flavor }}" -Recurse -Force | Where-Object { $_.PSIsContainer -eq $false -and $_.Length -eq 0 }  | Remove-Item
 
       - uses: actions/upload-artifact@v2
         with:
-          name: site
-          path: site/**
+          name: site-${{ matrix.test-flavor }}
+          path: site-${{ matrix.test-flavor }}
 
   release:
     if: startsWith(github.ref, 'refs/tags/')
@@ -135,8 +133,6 @@ jobs:
       - run: Get-FileHash -Algorithm SHA256 metanorma-windows-x86_64.exe | Select -ExpandProperty "Hash" | Out-File metanorma-windows-x86_64.exe.sha256.txt
 
       - uses: softprops/action-gh-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           files: |
             metanorma-windows-x86_64.exe
