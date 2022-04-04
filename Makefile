@@ -1,31 +1,25 @@
 #!make
-SHELL := /bin/bash
+SHELL := bash
 
 .PHONY: build test clean
 
-ifeq ($(OS),Windows_NT)
-  PLATFORM := windows
-else
-  UNAME_S := $(shell uname -s)
-	ARCH := $(shell uname -m)
-  ifeq ($(UNAME_S),Linux)
-    PLATFORM := linux
-  endif
-  ifeq ($(UNAME_S),Darwin)
-    PLATFORM := darwin
-  endif
-endif
+PLATFORM := $(shell echo $$OSTYPE)
+ARCH := $(shell uname -m)
 
 TEST_FLAVOR ?= iso
 TEST_PROCESSORS ?= iso cc iec un m3aawg jcgm csa bipm iho ogc itu ietf
 
 BUILD_DIR := build
-TEBAKO_TAG := v0.3.6
+TEBAKO_TAG := v0.3.7
 
 all: $(BUILD_DIR)/bin/metanorma-$(PLATFORM)-$(ARCH)
 
-ocra/metanorma.ico:
-	convert ocra/icon.png -define icon:auto-resize="256,128,96,64,48,32,16" $@
+gogo: 
+	echo "$$OSTYPE"
+	echo $(UNAME_S)
+	echo $(BUILD_DIR)
+	echo $(PLATFORM)
+	echo $(ARCH)
 
 test:
 	parallel -j+0 --joblog parallel.log --eta make test-flavor TEST_FLAVOR={} "&>" test_{}.log ::: $(TEST_PROCESSORS); \
@@ -33,21 +27,15 @@ test:
 
 test-flavor:
 	[ -d $(BUILD_DIR)/$(TEST_FLAVOR) ] || git clone --recurse-submodules https://${GITHUB_CREDENTIALS}@github.com/metanorma/mn-samples-$(TEST_FLAVOR) $(BUILD_DIR)/$(TEST_FLAVOR); \
-	$(BUILD_DIR)/bin/metanorma-$(PLATFORM)-x86_64 \
+	$(BUILD_DIR)/bin/metanorma-$(PLATFORM)-$(ARCH) \
 	  site generate $(BUILD_DIR)/$(TEST_FLAVOR) \
 		-c $(BUILD_DIR)/$(TEST_FLAVOR)/metanorma.yml \
 		-o site/$(TEST_FLAVOR) \
 		--agree-to-terms
 
-.archive/rubyc:
-	mkdir -p $(dir $@);
-	curl -L https://github.com/metanorma/ruby-packer/releases/download/v0.6.1/rubyc-$(PLATFORM)-x64 \
-		-o $@ && \
-	chmod +x $@
-
 .archive/tebako/.git:
-	mkdir -p .archive;
-	git clone -b "$(TEBAKO_TAG)" https://github.com/tamatebako/tebako $(dir $@)
+	mkdir -p .archive
+	git clone --recurse-submodules -b "$(TEBAKO_TAG)" https://github.com/tamatebako/tebako $(dir $@)
 
 .archive/tebako/bin/tebako: .archive/tebako/.git
 
@@ -70,24 +58,7 @@ $(BUILD_DIR)/package/vendor:
 $(BUILD_DIR)/.package-ready: $(BUILD_DIR)/package/metanorma $(BUILD_DIR)/package/Gemfile $(BUILD_DIR)/package/vendor
 	touch $@
 
-$(BUILD_DIR)/bin/metanorma-darwin-x86_64: .archive/tebako/bin/tebako $(BUILD_DIR)/.package-ready
-	mkdir -p $(dir $@);
-	$< press -r "$(BUILD_DIR)/package" -e "metanorma" -o "$@";
-	chmod +x $@
-
-$(BUILD_DIR)/bin/metanorma-darwin-arm64: .archive/rubyc $(BUILD_DIR)/.package-ready
-	mkdir -p $(dir $@);
-	export CC="xcrun clang -mmacosx-version-min=10.10 -Wno-implicit-function-declaration";
-	arch -arm64 $< --clean-tmpdir -o $@ -r "$(BUILD_DIR)/package" "$(BUILD_DIR)/package/metanorma"
-	chmod a+x $@
-
-$(BUILD_DIR)/bin/metanorma-linux-x86_64: .archive/tebako/bin/tebako $(BUILD_DIR)/.package-ready
-	mkdir -p $(dir $@);
-	$< press -r "$(BUILD_DIR)/package" -e "metanorma" -o "$@";
-	strip $@;
-	chmod +x $@
-
-$(BUILD_DIR)/bin/metanorma-linux-aarch64: .archive/tebako/bin/tebako $(BUILD_DIR)/.package-ready
+$(BUILD_DIR)/bin/metanorma-$(PLATFORM)-$(ARCH): .archive/tebako/bin/tebako $(BUILD_DIR)/.package-ready
 	mkdir -p $(dir $@);
 	$< press -r "$(BUILD_DIR)/package" -e "metanorma" -o "$@";
 	strip $@;
