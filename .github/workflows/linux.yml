@@ -192,8 +192,17 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
-         name: metanorma-linux-x86_64
-         path: build/bin/metanorma-linux-x86_64
+          name: metanorma-linux-x86_64
+          path: build/bin/metanorma-linux-x86_64
+
+      - name: save source filesystem
+        run: tar -cf source_filesystem-linux-x86_64.tar -C .archive/tebako/output source_filesystem
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: source_filesystem-linux-x86_64
+          path: source_filesystem-linux-x86_64.tar
+          retention-days: 5
 
       - name: smoke test
         run: build/bin/metanorma-linux-x86_64 help
