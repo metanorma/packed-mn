@@ -140,6 +140,15 @@ jobs:
           name: metanorma-darwin-x86_64
           path: build/bin/metanorma-darwin-x86_64
 
+      - name: save source filesystem
+        run: tar -cf source_filesystem-darwin-x86_64.tar -C .archive/tebako/output source_filesystem
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: source_filesystem-darwin-x86_64
+          path: source_filesystem-darwin-x86_64.tar
+          retention-days: 5
+
       - name: Run help
         run: build/bin/metanorma-darwin-x86_64 help
 
