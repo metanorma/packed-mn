@@ -27,7 +27,7 @@ env:
   TEBAKO_DIR: .archive/tebako
   DEPS: deps
 # Versions
-  TEBAKO_TAG: "v0.3.5"
+  TEBAKO_TAG: "v0.3.6"
   RUBY_VER:   "2.7.5"
   RUBY_HASH:  "2755b900a21235b443bb16dadd9032f784d4a88f143d852bc5d154f22b8781f1"
   BUNDLER_VER: "2.2.3"
@@ -188,7 +188,7 @@ jobs:
           echo "cc -v: $($CC -v)"
           echo "CXX -v: $($CXX -v)"
 
-      - name: package metanorma
+      - name: Package metanorma
         run: make build/bin/metanorma-linux-x86_64
 
       - uses: actions/upload-artifact@v2
@@ -196,14 +196,10 @@ jobs:
           name: metanorma-linux-x86_64
           path: build/bin/metanorma-linux-x86_64
 
-      - name: save source filesystem
-        run: tar -cf source_filesystem-linux-x86_64.tar -C .archive/tebako/output source_filesystem
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: source_filesystem-linux-x86_64
-          path: source_filesystem-linux-x86_64.tar
-          retention-days: 5
+      - name: Verify packaging
+        run: |
+          build/bin/metanorma-linux-x86_64 --tebako-extract extracted_source_filesystem
+          diff -r extracted_source_filesystem .archive/tebako/output/source_filesystem
 
       - name: smoke test
         run: build/bin/metanorma-linux-x86_64 help
