@@ -3,7 +3,14 @@ SHELL := bash
 
 .PHONY: build test clean
 
-PLATFORM := $(shell echo $$OSTYPE)
+UNAME_S := $(shell uname -s)
+
+ifeq ($(UNAME_S),Darwin)
+    PLATFORM := darwin
+else
+	PLATFORM := $(shell echo $$OSTYPE)
+endif
+
 ARCH := $(shell uname -m)
 
 TEST_FLAVOR ?= iso
@@ -13,13 +20,6 @@ BUILD_DIR := build
 TEBAKO_TAG := v0.3.7
 
 all: $(BUILD_DIR)/bin/metanorma-$(PLATFORM)-$(ARCH)
-
-gogo: 
-	echo "$$OSTYPE"
-	echo $(UNAME_S)
-	echo $(BUILD_DIR)
-	echo $(PLATFORM)
-	echo $(ARCH)
 
 test:
 	parallel -j+0 --joblog parallel.log --eta make test-flavor TEST_FLAVOR={} "&>" test_{}.log ::: $(TEST_PROCESSORS); \
@@ -61,8 +61,9 @@ $(BUILD_DIR)/.package-ready: $(BUILD_DIR)/package/metanorma $(BUILD_DIR)/package
 $(BUILD_DIR)/bin/metanorma-$(PLATFORM)-$(ARCH): .archive/tebako/bin/tebako $(BUILD_DIR)/.package-ready
 	mkdir -p $(dir $@);
 	$< press -r "$(BUILD_DIR)/package" -e "metanorma" -o "$@";
+ifneq ($(PLATFORM),darwin)
 	strip $@;
-	chmod +x $@
+endif
 
 clean:
 	rm -rf $(BUILD_DIR)
