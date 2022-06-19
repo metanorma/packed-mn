@@ -23,14 +23,12 @@ env:
   BUILD_TYPE: Release
   CC: clang
   CXX: clang++
-# The folders
   TEBAKO_DIR: .archive/tebako
   DEPS: deps
-# Versions
-  TEBAKO_TAG: "v0.3.6"
+  TEBAKO_TAG: "v0.3.7"
   RUBY_VER:   "2.7.5"
   RUBY_HASH:  "2755b900a21235b443bb16dadd9032f784d4a88f143d852bc5d154f22b8781f1"
-  BUNDLER_VER: "2.2.3"
+  BUNDLER_VER: "2.3.15"
 
 jobs:
   setup:
@@ -48,11 +46,12 @@ jobs:
           gnu-getopt gnu-sed bash ncurses
 
       - name: Checkout tebako packaging environment
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: tamatebako/tebako
           path: ${{ env.TEBAKO_DIR }}
           ref: ${{ env.TEBAKO_TAG }}
+          submodules: true
 
       - name: Create deps folder
         run: mkdir -p -v ${{ env.TEBAKO_DIR }}/${{ env.DEPS }}
@@ -72,7 +71,7 @@ jobs:
     runs-on: macos-10.15
     needs: setup
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       # ---------- Start of tebako prerequisites
       - name: Select XCode 12.1.1 & SDK 10.15
@@ -82,7 +81,7 @@ jobs:
           xcode-version: '12.1.1'
 
       - name: Checkout tebako packaging environment
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 1
 
@@ -99,7 +98,7 @@ jobs:
           bundler: ${{ env.BUNDLER_VER }}
 
       - name: Checkout tebako packaging environment
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: tamatebako/tebako
           path: ${{ env.TEBAKO_DIR }}
@@ -177,7 +176,7 @@ jobs:
             test-flavor: jcgm
             experimental: true
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - run: rm Gemfile
 

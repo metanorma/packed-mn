@@ -18,19 +18,17 @@ on:
   workflow_dispatch:
 
 env:
-  CACHE_VER: 07
+  CACHE_VER: 01
   OS_VER: "ubuntu-18.04"
   BUILD_TYPE: Release
   CC: clang
   CXX: clang++
-# The folders
   TEBAKO_DIR: .archive/tebako
   DEPS: deps
-# Versions
-  TEBAKO_TAG: "v0.3.6"
+  TEBAKO_TAG: "v0.3.7"
   RUBY_VER:   "2.7.5"
   RUBY_HASH:  "2755b900a21235b443bb16dadd9032f784d4a88f143d852bc5d154f22b8781f1"
-  BUNDLER_VER: "2.2.3"
+  BUNDLER_VER: "2.3.15"
   BUNDLE_BUILD__SASSC: "--enable-static-stdlib"
 
 jobs:
@@ -80,7 +78,7 @@ jobs:
           sudo make install
 
       - name: Checkout tebako packaging environment
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: tamatebako/tebako
           path: ${{ env.TEBAKO_DIR }}
@@ -104,7 +102,7 @@ jobs:
     runs-on: ubuntu-18.04
     needs: setup
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       # ---------- Start of tebako prerequisites
       # Note. This step is required on ubuntu-18 only. GHA ubuntu-20 works off-the-shelf
@@ -155,11 +153,12 @@ jobs:
           bundler: ${{ env.BUNDLER_VER }}
 
       - name: Checkout tebako packaging environment
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: tamatebako/tebako
           path: ${{ env.TEBAKO_DIR }}
           ref: ${{ env.TEBAKO_TAG }}
+          submodules: true
 
       - name: Create deps folder
         run: mkdir -p -v ${{ env.TEBAKO_DIR }}/${{ env.DEPS }}
@@ -189,7 +188,9 @@ jobs:
           echo "CXX -v: $($CXX -v)"
 
       - name: Package metanorma
-        run: make build/bin/metanorma-linux-x86_64
+        run: |
+          make build/bin/metanorma-linux-gnu-x86_64
+          mv -T build/bin/metanorma-linux-gnu-x86_64 build/bin/metanorma-linux-x86_64
 
       - uses: actions/upload-artifact@v2
         with:
@@ -239,7 +240,7 @@ jobs:
             test-flavor: jcgm
             experimental: true
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - run: rm Gemfile
 
