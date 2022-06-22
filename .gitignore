@@ -3,6 +3,7 @@
 /build
 /parallel.log
 /relaton
-/site
+/site*
+/samples
 /Gemfile.lock
 /vendor/cacert.pem.mozilla
