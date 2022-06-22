@@ -1,36 +1,39 @@
-name: macos
+name: alpine
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, feature/alpine ]
     tags: [ v* ]
     paths-ignore:
-      - .github/workflows/linux.yml
+      - .github/workflows/ubuntu.yml
+      - .github/workflows/macos.yml
       - .github/workflows/windows.yml
-      - .github/workflows/alpine.yml
       - .github/workflows/release_tag.yml
       - Makefile.win
   pull_request:
     paths-ignore:
-      - .github/workflows/linux.yml
+      - .github/workflows/ubuntu.yml
+      - .github/workflows/macos.yml
       - .github/workflows/windows.yml
-      - .github/workflows/alpine.yml
       - .github/workflows/release_tag.yml
       - Makefile.win
   workflow_dispatch:
 
 env:
-  CACHE_VER: 01
-  OS_VER: "macos-10.15"
+  CACHE_VER: 02
+  OS_VER: "alpine-3.15"
   BUILD_TYPE: Release
-  CC: clang
-  CXX: clang++
+  CC: gcc
+  CXX: g++
+# The folders
   TEBAKO_DIR: .archive/tebako
   DEPS: deps
+# Versions
   TEBAKO_TAG: "v0.3.7"
   RUBY_VER:   "2.7.5"
   RUBY_HASH:  "2755b900a21235b443bb16dadd9032f784d4a88f143d852bc5d154f22b8781f1"
   BUNDLER_VER: "2.3.15"
+  VCPKG_FORCE_SYSTEM_BINARIES: 1
 
 concurrency:
   group: '${{ github.workflow }}-${{ github.job }}-${{ github.head_ref || github.ref_name }}'
@@ -60,21 +63,33 @@ jobs:
           fi
           echo "::set-output name=foreign_pr::${fpr}"
           echo "::set-output name=head_tag::${tag}"
-  setup:
-    runs-on: macos-10.15
-    needs: prepare
-    if: "(github.event_name == 'push' && needs.prepare.outputs.head_tag == '') || github.event_name == 'pull_request'"
-    steps:
-      - name: Select XCode 12.1.1 & SDK 10.15
-        uses: maxim-lobanov/setup-xcode@v1
-        with:
-          xcode-version: '12.1.1'
 
+  setup:
+    runs-on: ubuntu-latest
+    needs: prepare
+    container:
+      image: alpine:3.15
+    steps:
       - name: Install packages
         run: |
-          brew install \
-          bison flex binutils libarchive double-conversion boost jemalloc fmt glog \
-          gnu-getopt gnu-sed bash ncurses
+          apk --no-cache --upgrade add build-base cmake git bash     \
+            autoconf boost-static boost-dev flex-dev bison           \
+            binutils-dev libarchive-dev libevent-dev acl-dev sed     \
+            lz4-dev openssl-dev zlib-dev gflags-dev                  \
+            libunwind-dev libdwarf-dev elfutils-dev                  \
+            libevent-static openssl-libs-static lz4-static xz-dev    \
+            zlib-static libunwind-static acl-static tar libffi-dev   \
+            gdbm-dev yaml-dev yaml-static ncurses-dev ncurses-static \
+            readline-dev readline-static
+
+      - name: Build libjemalloc
+        run: |
+          wget -q https://github.com/jemalloc/jemalloc/releases/download/5.2.1/jemalloc-5.2.1.tar.bz2
+          tar -xf jemalloc-5.2.1.tar.bz2
+          cd jemalloc-5.2.1
+          ./configure
+          make -j4
+          make install
 
       - name: Checkout tebako packaging environment
         uses: actions/checkout@v3
@@ -82,7 +97,6 @@ jobs:
           repository: tamatebako/tebako
           path: ${{ env.TEBAKO_DIR }}
           ref: ${{ env.TEBAKO_TAG }}
-          submodules: true
 
       - name: Create deps folder
         run: mkdir -p -v ${{ env.TEBAKO_DIR }}/${{ env.DEPS }}
@@ -99,34 +113,39 @@ jobs:
         run: ${{ env.TEBAKO_DIR }}/bin/tebako setup
 
   build:
-    runs-on: macos-10.15
+    runs-on: ubuntu-latest
     needs: setup
+    container:
+      image: alpine:3.15
     steps:
-      - uses: actions/checkout@v3
-
       # ---------- Start of tebako prerequisites
-      - name: Select XCode 12.1.1 & SDK 10.15
-        uses: maxim-lobanov/setup-xcode@v1
-
-        with:
-          xcode-version: '12.1.1'
-
-      - name: Checkout tebako packaging environment
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 1
-
       - name: Install packages
         run: |
-          brew install \
-          bison flex binutils libarchive double-conversion boost jemalloc fmt glog \
-          gnu-getopt gnu-sed bash ncurses
+          apk --no-cache --upgrade add build-base cmake git bash     \
+            autoconf boost-static boost-dev flex-dev bison make      \
+            binutils-dev libarchive-dev libevent-dev acl-dev sed     \
+            lz4-dev openssl-dev zlib-dev xz ninja zip unzip curl     \
+            libunwind-dev libdwarf-dev gflags-dev elfutils-dev       \
+            libevent-static openssl-libs-static lz4-static xz-dev    \
+            zlib-static libunwind-static acl-static tar libffi-dev   \
+            gdbm-dev yaml-dev yaml-static ncurses-dev ncurses-static \
+            readline-dev readline-static p7zip ruby-dev gcompat      \
+            gettext-dev python3 pkgconfig gperf
 
-      - name: Install Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: ${{ env.RUBY_VER }}
-          bundler: ${{ env.BUNDLER_VER }}
+      - name: Install bundler
+        run: gem install bundler -v ${{ env.BUNDLER_VER }}
+
+      - name: Build libjemalloc
+        run: |
+          wget -q https://github.com/jemalloc/jemalloc/releases/download/5.2.1/jemalloc-5.2.1.tar.bz2
+          tar -xf jemalloc-5.2.1.tar.bz2
+          cd jemalloc-5.2.1
+          ./configure
+          make -j4
+          make install
+
+      - name: Checkout packed-mn
+        uses: actions/checkout@v3
 
       - name: Checkout tebako packaging environment
         uses: actions/checkout@v3
@@ -134,6 +153,7 @@ jobs:
           repository: tamatebako/tebako
           path: ${{ env.TEBAKO_DIR }}
           ref: ${{ env.TEBAKO_TAG }}
+          submodules: true
 
       - name: Create deps folder
         run: mkdir -p -v ${{ env.TEBAKO_DIR }}/${{ env.DEPS }}
@@ -163,66 +183,71 @@ jobs:
           echo "CXX -v: $($CXX -v)"
 
       - name: package metanorma
-        run: make build/bin/metanorma-darwin-x86_64
+        run: make build/bin/metanorma-linux-musl-x86_64
 
       - uses: actions/upload-artifact@v2
         with:
-          name: metanorma-darwin-x86_64
-          path: build/bin/metanorma-darwin-x86_64
-
-      - name: Verify packaging
-        run: |
-          build/bin/metanorma-darwin-x86_64 --tebako-extract extracted_source_filesystem
-          diff -r extracted_source_filesystem .archive/tebako/output/source_filesystem
-
-      - name: Smoke test
-        run: build/bin/metanorma-darwin-x86_64 help
+          name: metanorma-linux-musl-x86_64
+          path: build/bin/metanorma-linux-musl-x86_64
 
   test:
     needs: build
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
+    container:
+      image: alpine:latest
     continue-on-error: ${{ matrix.experimental }}
     strategy:
       fail-fast: false
-      max-parallel: 5
+      max-parallel: 3
       matrix:
-        os: [ macos-11.0 ]
         experimental: [ false ]
         test-flavor:
           - iso
           - cc
-          - iec
-          - ogc
-          - itu
-          - bipm
-          - ietf
-          - un
-          - iho
-          - csa
-        include:
-          - os: macos-11.0
-            test-flavor: m3aawg
-            experimental: true
-          - os: macos-11.0
-            test-flavor: jcgm
-            experimental: true
+#          - iec
+#          - ogc
+#          - itu
+#          - bipm
+#          - ietf
+#          - un
+#          - iho
+#          - csa
+#        include:
+#          - test-flavor: m3aawg
+#            experimental: true
+#          - test-flavor: jcgm
+#            experimental: true
     steps:
+      - name: Install packages
+        run:  |
+          apk --no-cache --upgrade add git libstdc++ xz libarchive \
+            openjdk10-jre-headless openssl ca-certificates curl ruby
+        
       - uses: actions/checkout@v3
 
       - run: rm Gemfile
 
+      - run: |
+          curl -Lks 'https://git.io/rg-ssl' | ruby
+
+      - run: |
+          openssl version -d
+          ls -l /etc/ssl
+          cp -R /etc/ssl /etc/ssl1.1
+          openssl version -d
+
       - uses: actions/download-artifact@v2
         with:
-          name: metanorma-darwin-x86_64
+          name: metanorma-linux-musl-x86_64
           path: build/bin
-
-      - run: chmod a+x build/bin/metanorma-darwin-x86_64
 
       - uses: actions/cache@v2
         with:
           path: ~/.relaton
-          key: relaton-macos-${{ matrix.test-flavor }}
-          restore-keys: relaton-macos-${{ matrix.test-flavor }}
+          key: relaton-linux-${{ matrix.test-flavor }}
+          restore-keys: relaton-linux-${{ matrix.test-flavor }}
+
+      - run: chmod +x build/bin/metanorma-linux-musl-x86_64
 
       - name: Fetch samples (${{ matrix.test-flavor }})
         uses: actions/checkout@v3
@@ -236,7 +261,7 @@ jobs:
       - name: Test (${{ matrix.test-flavor }})
         timeout-minutes: 45
         run: |
-          build/bin/metanorma-darwin-x86_64 \
+          build/bin/metanorma-linux-musl-x86_64 \
             site generate samples \
             -c samples/metanorma.yml \
             -o site-${{ matrix.test-flavor }} \
@@ -247,36 +272,35 @@ jobs:
           name: site-${{ matrix.test-flavor }}
           path: site-${{ matrix.test-flavor }}
 
-  release:
-    if: startsWith(github.ref, 'refs/tags/')
-    runs-on: macos-latest
-    needs: test
-    steps:
-      - uses: actions/download-artifact@v2
-        with:
-          name: metanorma-darwin-x86_64
-          path: build/bin
+#  release:
+#    if: startsWith(github.ref, 'refs/tags/')
+#    runs-on: ubuntu-latest
+#    needs: test
+#    steps:
+#      - uses: actions/download-artifact@v2
+#        with:
+#          name: metanorma-linux-musl-x86_64
+#          path: build/bin
 
-      - name: Package binary into archive
-        run: |
-          chmod a+x build/bin/metanorma-darwin-x86_64
-          cp build/bin/metanorma-darwin-x86_64 metanorma-darwin-x86_64
-          tar -czvf metanorma-darwin-x86_64.tgz metanorma-darwin-x86_64
+#      - name: Package binary into archive
+#        run: |
+#          chmod +x build/bin/metanorma-linux-musl-x86_64
+#          mv build/bin/metanorma-linux-musl-x86_64 metanorma-linux-musl-x86_64
+#          tar -czvf metanorma-linux-musl-x86_64.tgz metanorma-linux-musl-x86_64
 
-      - name: Calculate SHA256 hash
-        run: |
-          brew install coreutils
-          sha256sum metanorma-darwin-x86_64.tgz | cut -d ' ' -f1 > metanorma-darwin-x86_64.tgz.sha256.txt
+#      - name: Calculate SHA256 hash
+#        run: |
+#          sha256sum metanorma-linux-musl-x86_64.tgz | cut -d ' ' -f1 > metanorma-linux-musl-x86_64.tgz.sha256.txt
 
-      - uses: softprops/action-gh-release@v1
-        with:
-          files: |
-            metanorma-darwin-x86_64.tgz
-            metanorma-darwin-x86_64.tgz.sha256.txt
+#      - uses: softprops/action-gh-release@v1
+#        with:
+#          files: |
+#            metanorma-linux-musl-x86_64.tgz
+#            metanorma-linux-musl-x86_64.tgz.sha256.txt
 
-      - uses: peter-evans/repository-dispatch@v1
-        with:
-          token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
-          repository: metanorma/homebrew-metanorma
-          event-type: ${{ github.repository }}
-          client-payload: '{ "ref": "${{ github.ref }}" }'
+#      - uses: peter-evans/repository-dispatch@v1
+#        with:
+#          token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
+#          repository: metanorma/metanorma-snap
+#          event-type: ${{ github.repository }}
+#          client-payload: '{ "ref": "${{ github.ref }}" }'
