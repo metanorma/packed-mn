@@ -2,7 +2,7 @@ name: alpine
 
 on:
   push:
-    branches: [ main, feature/alpine ]
+    branches: [ main ]
     tags: [ v* ]
     paths-ignore:
       - .github/workflows/ubuntu.yml
@@ -193,6 +193,8 @@ jobs:
   test:
     needs: build
     runs-on: ubuntu-latest
+    env:
+      SSL_CERT_DIR: /etc/ssl/certs
     container:
       image: alpine:latest
     continue-on-error: ${{ matrix.experimental }}
@@ -204,37 +206,28 @@ jobs:
         test-flavor:
           - iso
           - cc
-#          - iec
-#          - ogc
-#          - itu
-#          - bipm
-#          - ietf
-#          - un
-#          - iho
-#          - csa
-#        include:
-#          - test-flavor: m3aawg
-#            experimental: true
-#          - test-flavor: jcgm
-#            experimental: true
+          - iec
+          - ogc
+          - itu
+          - bipm
+          - ietf
+          - un
+          - iho
+          - csa
+        include:
+          - test-flavor: m3aawg
+            experimental: true
+          - test-flavor: jcgm
+            experimental: true
     steps:
       - name: Install packages
         run:  |
           apk --no-cache --upgrade add git libstdc++ xz libarchive \
-            openjdk10-jre-headless openssl ca-certificates curl ruby
-        
+            openjdk10-jre-headless openssl
+
       - uses: actions/checkout@v3
 
       - run: rm Gemfile
-
-      - run: |
-          curl -Lks 'https://git.io/rg-ssl' | ruby
-
-      - run: |
-          openssl version -d
-          ls -l /etc/ssl
-          cp -R /etc/ssl /etc/ssl1.1
-          openssl version -d
 
       - uses: actions/download-artifact@v2
         with:
