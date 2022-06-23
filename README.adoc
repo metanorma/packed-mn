@@ -1,6 +1,7 @@
 = Metanorma-CLI single executable binary
 
-image:https://github.com/metanorma/packed-mn/workflows/linux/badge.svg["Build Status", link="https://github.com/metanorma/packed-mn/actions?workflow=linux"]
+image:https://github.com/metanorma/packed-mn/workflows/ubuntu/badge.svg["Build Status", link="https://github.com/metanorma/packed-mn/actions?workflow=ubuntu"]
+image:https://github.com/metanorma/packed-mn/workflows/alpine/badge.svg["Build Status", link="https://github.com/metanorma/packed-mn/actions?workflow=alpine"]
 image:https://github.com/metanorma/packed-mn/workflows/macos/badge.svg["Build Status", link="https://github.com/metanorma/packed-mn/actions?workflow=macos"]
 image:https://github.com/metanorma/packed-mn/workflows/windows/badge.svg["Build Status", link="https://github.com/metanorma/packed-mn/actions?workflow=windows"]
 
@@ -29,9 +30,9 @@ However, all these packages require a long installation process
 with caveats, such as being prone to network failures and a network
 of dependencies to install.
 
-This repo attempts to package dependencies using `ruby-packer`, a
-tool that packages a Ruby interpreter with gems and dependencies
-into a RAM disk.
+This repo attempts to package dependencies using `tebako` and `ocra`, 
+tools that package a Ruby interpreter with gems and dependencies
+into a RAM disk in Linux/MacOS and Windows environments.
 
 Our goal is to make installation quick and dependable for our users.
 
