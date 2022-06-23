@@ -138,9 +138,9 @@ jobs:
           fetch-depth: 1
 
       - name: Test (${{ matrix.test-flavor }})
-        timeout-minutes: 30
+        timeout-minutes: 45
         run: |
-          build\metanorma.exe site generate samples -c samples\metanorma.yml -o site-${{ matrix.test-flavor }}--agree-to-terms
+          build\metanorma.exe site generate samples -c samples\metanorma.yml -o site-${{ matrix.test-flavor }} --agree-to-terms
 
       - run: |
           Get-ChildItem -Path ".\site-${{ matrix.test-flavor }}" -Recurse -Force | Where-Object { $_.PSIsContainer -eq $false -and $_.Length -eq 0 }  | Remove-Item
