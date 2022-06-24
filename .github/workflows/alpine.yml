@@ -82,6 +82,12 @@ jobs:
             gdbm-dev yaml-dev yaml-static ncurses-dev ncurses-static \
             readline-dev readline-static
 
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup environment
+        run: cat common.env alpine.env >> $GITHUB_ENV
+
       - name: Build libjemalloc
         run: |
           wget -q https://github.com/jemalloc/jemalloc/releases/download/5.2.1/jemalloc-5.2.1.tar.bz2
@@ -132,6 +138,12 @@ jobs:
             readline-dev readline-static p7zip ruby-dev gcompat      \
             gettext-dev python3 pkgconfig gperf
 
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup environment
+        run: cat common.env alpine.env >> $GITHUB_ENV
+
       - name: Install bundler
         run: gem install bundler -v ${{ env.BUNDLER_VER }}
 
@@ -143,9 +155,6 @@ jobs:
           ./configure
           make -j4
           make install
-
-      - name: Checkout packed-mn
-        uses: actions/checkout@v3
 
       - name: Checkout tebako packaging environment
         uses: actions/checkout@v3
