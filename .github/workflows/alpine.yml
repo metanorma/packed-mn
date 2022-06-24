@@ -19,22 +19,6 @@ on:
       - Makefile.win
   workflow_dispatch:
 
-env:
-  CACHE_VER: 02
-  OS_VER: "alpine-3.15"
-  BUILD_TYPE: Release
-  CC: gcc
-  CXX: g++
-# The folders
-  TEBAKO_DIR: .archive/tebako
-  DEPS: deps
-# Versions
-  TEBAKO_TAG: "v0.3.7"
-  RUBY_VER:   "2.7.5"
-  RUBY_HASH:  "2755b900a21235b443bb16dadd9032f784d4a88f143d852bc5d154f22b8781f1"
-  BUNDLER_VER: "2.3.15"
-  VCPKG_FORCE_SYSTEM_BINARIES: 1
-
 concurrency:
   group: '${{ github.workflow }}-${{ github.job }}-${{ github.head_ref || github.ref_name }}'
   cancel-in-progress: true
