@@ -214,23 +214,7 @@ end
 
 # explicitly load all dependent gems
 # ruby packer cannot use gem load path correctly.
-require 'isodoc'
-require 'metanorma-iso'
-require 'metanorma-standoc'
-require 'metanorma-generic'
-require 'metanorma-csa'
-require 'metanorma-cc'
-require 'metanorma-iec'
-require 'metanorma-ietf'
-require 'metanorma-itu'
-require 'metanorma-m3aawg'
-require 'metanorma-ogc'
-require 'metanorma-un'
-require 'metanorma'
-require 'nokogiri'
-require 'git'
 require 'metanorma/cli'
-require 'thor'
 
 # start up the CLI
 Metanorma::Cli.start(ARGV)
