@@ -207,6 +207,7 @@ jobs:
           - un
           - iho
           - csa
+          - ieee
         include:
           - test-flavor: m3aawg
             experimental: true

@@ -196,6 +196,7 @@ jobs:
           - un
           - iho
           - csa
+          - ieee
         include:
           - os: macos-latest
             test-flavor: m3aawg
