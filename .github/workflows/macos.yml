@@ -48,7 +48,7 @@ jobs:
           echo "::set-output name=foreign_pr::${fpr}"
           echo "::set-output name=head_tag::${tag}"
   setup:
-    runs-on: macos-10.15
+    runs-on: macos-latest
     needs: prepare
     if: "(github.event_name == 'push' && needs.prepare.outputs.head_tag == '') || github.event_name == 'pull_request'"
     steps:
@@ -92,7 +92,7 @@ jobs:
         run: ${{ env.TEBAKO_DIR }}/bin/tebako setup
 
   build:
-    runs-on: macos-10.15
+    runs-on: macos-latest
     needs: setup
     steps:
       - name: Checkout
@@ -183,7 +183,7 @@ jobs:
       fail-fast: false
       max-parallel: 5
       matrix:
-        os: [ macos-11.0 ]
+        os: [ macos-latest ]
         experimental: [ false ]
         test-flavor:
           - iso
@@ -197,10 +197,10 @@ jobs:
           - iho
           - csa
         include:
-          - os: macos-11.0
+          - os: macos-latest
             test-flavor: m3aawg
             experimental: true
-          - os: macos-11.0
+          - os: macos-latest
             test-flavor: jcgm
             experimental: true
     steps:
