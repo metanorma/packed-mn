@@ -23,7 +23,6 @@ build/cacert.pem.mozilla:
 
 build/metanorma.exe: build/cacert.pem.mozilla build/metanorma.ico build/metanorma build/Gemfile build/Gemfile.lock
 ifeq (,$(wildcard build/metanorma.exe))
-	gem update --system
 	gem install ocra --conservative
 	pushd build & ocra --console --gem-full --add-all-core --icon metanorma.ico \
 			--dll ruby_builtin_dlls/libgmp-10.dll \
