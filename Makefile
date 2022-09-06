@@ -14,10 +14,10 @@ endif
 ARCH := $(shell uname -m)
 
 TEST_FLAVOR ?= iso
-TEST_PROCESSORS ?= iso cc iec un m3aawg jcgm csa bipm iho ogc itu ietf
+TEST_PROCESSORS ?= iso cc iec un m3aawg jcgm csa bipm iho ogc itu ietf ieee
 
 BUILD_DIR := build
-TEBAKO_TAG := v0.3.7
+TEBAKO_TAG := v0.3.8
 
 all: $(BUILD_DIR)/bin/metanorma-$(PLATFORM)-$(ARCH)
 

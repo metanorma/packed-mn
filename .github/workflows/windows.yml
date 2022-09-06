@@ -67,7 +67,7 @@ jobs:
       with:
         ruby-version: '3.0'
 
-    - run: gem install bundler -v 2.3.20
+    - run: gem install bundler
 
     - uses: nick-invision/retry@v1
       with:
@@ -107,6 +107,7 @@ jobs:
           - un
           - iho
           - csa
+          - ieee
         include:
           - test-flavor: m3aawg
             experimental: true

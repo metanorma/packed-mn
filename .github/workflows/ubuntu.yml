@@ -254,6 +254,7 @@ jobs:
           - un
           - iho
           - csa
+          - ieee
         include:
           - os: ubuntu-18.04
             test-flavor: m3aawg
