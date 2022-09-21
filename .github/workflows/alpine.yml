@@ -207,12 +207,10 @@ jobs:
           - un
           - iho
           - csa
+          - m3aawg
+          - jcgm
           - ieee
-        include:
-          - test-flavor: m3aawg
-            experimental: true
-          - test-flavor: jcgm
-            experimental: true
+          - ieee-private
     steps:
       - name: Install packages
         run:  |
