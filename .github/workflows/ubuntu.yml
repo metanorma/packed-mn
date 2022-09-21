@@ -254,21 +254,10 @@ jobs:
           - un
           - iho
           - csa
+          - m3aawg
+          - jcgm
           - ieee
           - ieee-private
-        include:
-          - os: ubuntu-18.04
-            test-flavor: m3aawg
-            experimental: true
-          - os: ubuntu-18.04
-            test-flavor: jcgm
-            experimental: true
-          - os: ubuntu-20.04
-            test-flavor: m3aawg
-            experimental: true
-          - os: ubuntu-20.04
-            test-flavor: jcgm
-            experimental: true
     steps:
       - name: Checkout
         uses: actions/checkout@v3

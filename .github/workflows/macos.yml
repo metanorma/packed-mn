@@ -195,15 +195,10 @@ jobs:
           - un
           - iho
           - csa
+          - m3aawg
+          - jcgm
           - ieee
           - ieee-private
-        include:
-          - os: macos-11
-            test-flavor: m3aawg
-            experimental: true
-          - os: macos-11
-            test-flavor: jcgm
-            experimental: true
     steps:
       - uses: actions/checkout@v3
 
