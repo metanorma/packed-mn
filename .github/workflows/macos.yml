@@ -196,6 +196,7 @@ jobs:
           - iho
           - csa
           - ieee
+          - ieee-private
         include:
           - os: macos-11
             test-flavor: m3aawg

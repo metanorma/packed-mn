@@ -255,6 +255,7 @@ jobs:
           - iho
           - csa
           - ieee
+          - ieee-private
         include:
           - os: ubuntu-18.04
             test-flavor: m3aawg

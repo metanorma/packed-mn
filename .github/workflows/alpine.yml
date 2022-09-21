@@ -208,6 +208,7 @@ jobs:
           - iho
           - csa
           - ieee
+          - ieee-private
         include:
           - test-flavor: m3aawg
             experimental: true
