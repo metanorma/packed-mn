@@ -32,7 +32,7 @@ jobs:
       foreign_pr: ${{ steps.check.outputs.foreign_pr }}
     steps:
       - name: Checkout
-      - uses: actions/checkout@v3
+        uses: actions/checkout@v3
       - name: Retrieve tags
         run: git fetch --depth=1 origin +refs/tags/*:refs/tags/* || true
       - name: Set output variables
