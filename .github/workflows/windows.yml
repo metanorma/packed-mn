@@ -63,11 +63,10 @@ jobs:
       with:
         token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
 
-    - uses: actions/setup-ruby@v1
+    - uses: ruby/setup-ruby@v1
       with:
-        ruby-version: '3.0'
-
-    - run: gem install bundler
+        ruby-version: '2.7'
+        rubygems: '3.3.22'
 
     - uses: nick-invision/retry@v1
       with:
