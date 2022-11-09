@@ -82,7 +82,7 @@ jobs:
 
       - name: Tebako setup cache
         id: cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ${{ env.TEBAKO_DIR }}/${{ env.DEPS }}
           key: ${{ env.OS_VER }}-${{ env.CC }}-${{ env.TEBAKO_TAG }}-${{ env.RUBY_HASH }}-v${{ env.CACHE_VER }}
@@ -136,7 +136,7 @@ jobs:
 
       - name: Tebako setup cache
         id: cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ${{ env.TEBAKO_DIR }}/${{ env.DEPS }}
           key: ${{ env.OS_VER }}-${{ env.CC }}-${{ env.TEBAKO_TAG }}-${{ env.RUBY_HASH }}-v${{ env.CACHE_VER }}
@@ -211,7 +211,7 @@ jobs:
 
       - run: chmod a+x build/bin/metanorma-darwin-x86_64
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: ~/.relaton
           key: relaton-macos-${{ matrix.test-flavor }}
