@@ -50,7 +50,7 @@ jobs:
           echo "head_tag=${tag}" >> $GITHUB_OUTPUT
 
   setup:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     needs: prepare
     if: "(github.event_name == 'push' && needs.prepare.outputs.head_tag == '') || github.event_name == 'pull_request'"
     steps:
@@ -59,15 +59,6 @@ jobs:
 
       - name: Setup environment
         run: cat common.env ubuntu.env >> $GITHUB_ENV
-
-      # Note. This step is required on ubuntu-18 only. GHA ubuntu-20 works off-the-shelf
-      - name: Switch to gcc-9
-        run: |
-          sudo update-alternatives \
-            --install /usr/bin/gcc gcc /usr/bin/gcc-9 100 \
-            --slave /usr/bin/g++ g++ /usr/bin/g++-9 \
-            --slave /usr/bin/gcov gcov /usr/bin/gcov-9
-          sudo update-alternatives --set gcc /usr/bin/gcc-9
 
       - name: Install packages
         run: |
@@ -79,17 +70,7 @@ jobs:
             libboost-program-options-dev libboost-regex-dev \
             libboost-system-dev libboost-thread-dev libunwind-dev libdwarf-dev \
             libelf-dev libfuse-dev libgoogle-glog-dev libffi-dev libgdbm-dev \
-            libyaml-dev libncurses-dev libreadline-dev libsqlite3-dev
-
-      # Note. ppa:team-xbmc is required on ubuntu-18 only. GHA ubuntu-20 will
-      # work with 'sudo apt-get install libfmt-dev'
-      - name: Update libfmt (bionic)
-        run: |
-          sudo apt-get -y remove libfmt-dev
-          sudo apt-get -y install software-properties-common
-          sudo add-apt-repository ppa:team-xbmc/ppa
-          sudo apt-get -y update
-          sudo apt-get -y install libfmt-dev
+            libyaml-dev libncurses-dev libreadline-dev libsqlite3-dev libfmt-dev
 
       - name: Install libjemalloc 5
         run: |
@@ -123,7 +104,7 @@ jobs:
         run: ${{ env.TEBAKO_DIR }}/bin/tebako setup
 
   build:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     needs: setup
     steps:
       - name: Checkout
@@ -133,15 +114,6 @@ jobs:
         run: cat common.env ubuntu.env >> $GITHUB_ENV
 
       # ---------- Start of tebako prerequisites
-      # Note. This step is required on ubuntu-18 only. GHA ubuntu-20 works off-the-shelf
-      - name: Switch to gcc-9
-        run: |
-          sudo update-alternatives \
-            --install /usr/bin/gcc gcc /usr/bin/gcc-9 100 \
-            --slave /usr/bin/g++ g++ /usr/bin/g++-9 \
-            --slave /usr/bin/gcov gcov /usr/bin/gcov-9
-          sudo update-alternatives --set gcc /usr/bin/gcc-9
-
       - name: Install packages
         run: |
           sudo apt-get -y update
@@ -152,17 +124,7 @@ jobs:
             libboost-program-options-dev libboost-regex-dev \
             libboost-system-dev libboost-thread-dev libunwind-dev libdwarf-dev \
             libelf-dev libfuse-dev libgoogle-glog-dev libffi-dev libgdbm-dev \
-            libyaml-dev libncurses-dev libreadline-dev libsqlite3-dev
-
-      # Note. ppa:team-xbmc is required on ubuntu-18 only. GHA ubuntu-20 will
-      # work with 'sudo apt-get install libfmt-dev'
-      - name: Update libfmt (bionic)
-        run: |
-          sudo apt-get -y remove libfmt-dev
-          sudo apt-get -y install software-properties-common
-          sudo add-apt-repository ppa:team-xbmc/ppa
-          sudo apt-get -y update
-          sudo apt-get -y install libfmt-dev
+            libyaml-dev libncurses-dev libreadline-dev libsqlite3-dev libfmt-dev
 
       - name: Install libjemalloc 5
         run: |
@@ -241,7 +203,7 @@ jobs:
       fail-fast: false
       max-parallel: 3
       matrix:
-        os: [ ubuntu-18.04, ubuntu-20.04 ]
+        os: [ ubuntu-20.04 ]
         experimental: [ false ]
         test-flavor:
           - iso
