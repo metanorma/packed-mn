@@ -46,8 +46,8 @@ jobs:
           elif [[ "${{ github.ref }}" == refs/pull/* ]] && [ "${{ github.event.pull_request.head.repo.full_name }}" != "${{ github.event.pull_request.base.repo.full_name }}" ]; then
             fpr="yes"
           fi
-          echo "::set-output name=foreign_pr::${fpr}"
-          echo "::set-output name=head_tag::${tag}"
+          echo "foreign_pr=${fpr}" >> $GITHUB_OUTPUT
+          echo "head_tag=${tag}" >> $GITHUB_OUTPUT
 
   setup:
     runs-on: ubuntu-18.04
