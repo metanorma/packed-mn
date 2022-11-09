@@ -120,7 +120,7 @@ jobs:
           name: metanorma-windows
           path: build
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: ~/.relaton
           key: relaton-windows-${{ matrix.test-flavor }}
