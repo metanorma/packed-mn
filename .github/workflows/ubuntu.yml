@@ -64,7 +64,7 @@ jobs:
         run: |
           sudo apt-get -y update
           sudo apt-get -y install \
-            binutils-dev libarchive-dev libevent-dev libjemalloc-dev acl-dev \
+            binutils-dev libevent-dev libjemalloc-dev acl-dev \
             libdouble-conversion-dev libiberty-dev liblz4-dev liblzma-dev \
             libssl-dev libboost-context-dev libboost-filesystem-dev \
             libboost-program-options-dev libboost-regex-dev \
@@ -109,7 +109,7 @@ jobs:
         run: |
           sudo apt-get -y update
           sudo apt-get -y install \
-            binutils-dev libarchive-dev libevent-dev acl-dev \
+            binutils-dev libevent-dev acl-dev \
             libdouble-conversion-dev libiberty-dev liblz4-dev liblzma-dev \
             libssl-dev libboost-context-dev libboost-filesystem-dev \
             libboost-program-options-dev libboost-regex-dev \
@@ -117,7 +117,7 @@ jobs:
             libelf-dev libfuse-dev libgoogle-glog-dev libffi-dev libgdbm-dev \
             libyaml-dev libncurses-dev libreadline-dev libsqlite3-dev libfmt-dev \
             libjemalloc-dev
-            
+
       - name: Install Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -164,7 +164,7 @@ jobs:
           make build/bin/metanorma-linux-gnu-x86_64
           mv -T build/bin/metanorma-linux-gnu-x86_64 build/bin/metanorma-linux-x86_64
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: metanorma-linux-x86_64
           path: build/bin/metanorma-linux-x86_64
@@ -208,7 +208,7 @@ jobs:
 
       - run: rm Gemfile
 
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: metanorma-linux-x86_64
           path: build/bin
@@ -239,7 +239,7 @@ jobs:
             -o site-${{ matrix.test-flavor }} \
             --agree-to-terms
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: site-${{ matrix.test-flavor }}
           path: site-${{ matrix.test-flavor }}
@@ -249,7 +249,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: test
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: metanorma-linux-x86_64
           path: build/bin
