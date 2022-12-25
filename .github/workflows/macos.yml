@@ -66,7 +66,7 @@ jobs:
       - name: Install packages
         run: |
           brew install \
-          bison flex binutils libarchive double-conversion boost jemalloc fmt glog \
+          bison flex binutils double-conversion boost jemalloc fmt glog \
           gnu-getopt gnu-sed bash ncurses libffi
 
       - name: Checkout tebako packaging environment
@@ -115,7 +115,7 @@ jobs:
       - name: Install packages
         run: |
           brew install \
-          bison flex binutils libarchive double-conversion boost jemalloc fmt glog \
+          bison flex binutils double-conversion boost jemalloc fmt glog \
           gnu-getopt gnu-sed bash ncurses libffi
 
       - name: Install Ruby
@@ -161,7 +161,7 @@ jobs:
       - name: package metanorma
         run: make build/bin/metanorma-darwin-x86_64
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: metanorma-darwin-x86_64
           path: build/bin/metanorma-darwin-x86_64
@@ -204,7 +204,7 @@ jobs:
 
       - run: rm Gemfile
 
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: metanorma-darwin-x86_64
           path: build/bin
@@ -235,7 +235,7 @@ jobs:
             -o site-${{ matrix.test-flavor }} \
             --agree-to-terms
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: site-${{ matrix.test-flavor }}
           path: site-${{ matrix.test-flavor }}
@@ -245,7 +245,7 @@ jobs:
     runs-on: macos-11
     needs: test
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: metanorma-darwin-x86_64
           path: build/bin
