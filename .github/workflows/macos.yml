@@ -209,6 +209,8 @@ jobs:
           name: metanorma-darwin-x86_64
           path: build/bin
 
+      - run: brew install gflags
+
       - run: chmod a+x build/bin/metanorma-darwin-x86_64
 
       - uses: actions/cache@v3
