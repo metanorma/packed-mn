@@ -85,7 +85,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ${{ env.TEBAKO_DIR }}/${{ env.DEPS }}
-          key: ${{ env.OS_VER }}-${{ env.CC }}-${{ env.TEBAKO_TAG }}-${{ env.RUBY_HASH }}-v${{ env.CACHE_VER }}
+          key: MacOS-${{ env.OS_VER }}-${{ env.CC }}-${{ hashFiles('**/common.env') }}-${{ hashFiles('**/macos.env') }}-v${{ env.CACHE_VER }}
 
       - name: Tebako setup
         if: steps.cache.outputs.cache-hit != 'true'
@@ -107,11 +107,6 @@ jobs:
         with:
           xcode-version: ${{ env.XCODE_VERSION }}
 
-      - name: Checkout tebako packaging environment
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 1
-
       - name: Install packages
         run: |
           brew install \
@@ -130,6 +125,7 @@ jobs:
           repository: tamatebako/tebako
           path: ${{ env.TEBAKO_DIR }}
           ref: ${{ env.TEBAKO_TAG }}
+          submodules: true
 
       - name: Create deps folder
         run: mkdir -p -v ${{ env.TEBAKO_DIR }}/${{ env.DEPS }}
@@ -139,7 +135,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ${{ env.TEBAKO_DIR }}/${{ env.DEPS }}
-          key: ${{ env.OS_VER }}-${{ env.CC }}-${{ env.TEBAKO_TAG }}-${{ env.RUBY_HASH }}-v${{ env.CACHE_VER }}
+          key: MacOS-${{ env.OS_VER }}-${{ env.CC }}-${{ hashFiles('**/common.env') }}-v${{ env.CACHE_VER }}
 
       - name: Tebako cache check
         if: steps.cache.outputs.cache-hit != 'true'

@@ -6,7 +6,7 @@ on:
 
 jobs:
   push-tag:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     if: startsWith(github.event.client_payload.ref, 'refs/tags/v')
     steps:
     - uses: actions/checkout@v3
@@ -25,8 +25,8 @@ jobs:
 
     - uses: ruby/setup-ruby@v1
       with:
-        ruby-version: 2.7.5
-        bundler: 2.3.15
+        ruby-version: 2.7.7
+        bundler: 2.3.22
 
     - run: gem install bundler
 
