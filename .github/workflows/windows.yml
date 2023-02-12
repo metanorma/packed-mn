@@ -68,7 +68,7 @@ jobs:
         ruby-version: '2.7'
         rubygems: '3.3.22'
 
-    - uses: nick-invision/retry@v1
+    - uses: nick-invision/retry@v2
       with:
         polling_interval_seconds: 5
         timeout_minutes: 5
