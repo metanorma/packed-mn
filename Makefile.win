@@ -25,7 +25,7 @@ build/metanorma.exe: build/cacert.pem.mozilla build/metanorma.ico build/metanorm
 ifeq (,$(wildcard build/metanorma.exe))
 	rem fix https://github.com/metanorma/packed-mn/issues/185
 	rem remove after https://github.com/rouge-ruby/rouge/pull/1911 release
-	patch -u $(shell bundle show rouge)/lib/rouge.rb -i ocra/patch/rouge-win-path.patch
+	rem patch -u $(shell bundle show rouge)/lib/rouge.rb -i ocra/patch/rouge-win-path.patch
 	gem install ocra --conservative
 	pushd build & ocra --console --gemfile Gemfile --gem-full --add-all-core --icon metanorma.ico \
 			--dll ruby_builtin_dlls/libgmp-10.dll \
