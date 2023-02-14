@@ -17,7 +17,7 @@ TEST_FLAVOR ?= iso
 TEST_PROCESSORS ?= iso cc iec un m3aawg jcgm csa bipm iho ogc itu ietf ieee
 
 BUILD_DIR := build
-TEBAKO_TAG := v0.4.0pre
+TEBAKO_TAG := v0.4.0
 
 all: $(BUILD_DIR)/bin/metanorma-$(PLATFORM)-$(ARCH)
 
