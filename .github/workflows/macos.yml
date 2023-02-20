@@ -264,3 +264,10 @@ jobs:
           files: |
             metanorma-darwin-x86_64.tgz
             metanorma-darwin-x86_64.tgz.sha256.txt
+
+      - uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
+          repository: metanorma/homebrew-metanorma
+          event-type: ${{ github.repository }}
+          client-payload: '{ "ref": "${{ github.ref }}" }'
