@@ -1,6 +1,8 @@
 name: macos
 
 on:
+  schedule:
+    - cron: "0 6 * * 2"
   push:
     branches: [ main ]
     tags: [ v* ]
