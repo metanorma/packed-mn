@@ -67,7 +67,7 @@ jobs:
         run: |
           brew install \
           bison flex binutils double-conversion boost jemalloc fmt glog \
-          gnu-getopt gnu-sed bash ncurses libffi
+          gnu-getopt gnu-sed bash ncurses libffi pkg-config
 
       - name: Checkout tebako packaging environment
         uses: actions/checkout@v3
@@ -111,7 +111,7 @@ jobs:
         run: |
           brew install \
           bison flex binutils double-conversion boost jemalloc fmt glog \
-          gnu-getopt gnu-sed bash ncurses libffi
+          gnu-getopt gnu-sed bash ncurses libffi pkg-config
 
       - name: Install Ruby
         uses: ruby/setup-ruby@v1
