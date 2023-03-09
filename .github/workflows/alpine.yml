@@ -239,7 +239,7 @@ jobs:
       - name: Install packages
         run:  |
           apk --no-cache --upgrade add git libstdc++ xz libarchive \
-            openjdk10-jre-headless openssl
+            openjdk10-jre-headless openssl fontconfig ttf-dejavu
 
       - uses: actions/checkout@v3
 
