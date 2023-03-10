@@ -130,9 +130,9 @@ unless Gem.win_platform? # because on windows we use ocra
     self.singleton_class.send(:alias_method, :convert_orig, :convert)
     self.singleton_class.send(:remove_method, :convert)
 
-    def self.convert(input_file, output_file, input_format, opts = {})
+    def self.convert(input_file, opts = {})
       opts[:xsl_file] = extract_memfs(opts[:xsl_file]) if opts[:xsl_file]
-      convert_orig(extract_memfs(input_file), output_file, input_format, opts)
+      convert_orig(extract_memfs(input_file), opts)
     end
   end
   # END of HACK
