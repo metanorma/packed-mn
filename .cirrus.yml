@@ -1,0 +1,73 @@
+# Copyright (c) 2023 [Ribose Inc](https://www.ribose.com).
+# All rights reserved.
+# This file is a part of metanorma
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in the
+#    documentation and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+# TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+# PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS
+# BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+
+task:
+  name: macos-arm64
+  only_if: $CIRRUS_BRANCH == 'main' || $CIRRUS_PR != '' || $CIRRUS_TAG != ''
+  macos_instance:
+    image: ghcr.io/cirruslabs/macos-monterey-base:latest
+
+  install_script: |
+    brew install gnu-getopt gnu-sed bash pkg-config bison flex binutils   \
+    libffi double-conversion boost jemalloc fmt glog openssl@1.1 libevent \
+    libsodium lz4 xz gdbm zlib ncurses gflags
+
+  pre-setup_script: |
+    cat common.env >> $CIRRUS_ENV
+    cat macos.env >> $CIRRUS_ENV
+    cat macos-arm64.env >> $CIRRUS_ENV
+
+  pre-cache_script: |
+    git clone --depth 1 --recurse-submodules --shallow-submodules -b $TEBAKO_TAG \
+              https://github.com/tamatebako/tebako.git $TEBAKO_DIR
+    mkdir -p $TEBAKO_DIR/$DEPS
+
+  tebako_cache:
+    folder: $TEBAKO_DIR/$DEPS
+    reupload_on_changes: false
+    fingerprint_script:
+      - sw_vers
+      - cat common.env
+      - cat macos.env
+      - cat macos-arm64.env
+
+  tebako-setup_script: |
+    $TEBAKO_DIR/bin/tebako setup
+
+  upload_caches:
+    - tebako
+
+  package-metanorma_script: |
+    make build/bin/metanorma-darwin-arm64
+
+  verify-packaging_script: |
+    build/bin/metanorma-darwin-arm64 --tebako-extract extracted_source_filesystem
+    diff -r extracted_source_filesystem .archive/tebako/output/source_filesystem
+
+  smoke-test_script: |
+    build/bin/metanorma-darwin-arm64 help
+
+  metanorma_artifacts:
+    path: build/bin/metanorma-darwin-arm64
