@@ -23,8 +23,21 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
+
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# cirrus-ci allows very limited resources for the free tier
+# an attempt to execute all tests causes 2-4 hours ci run
+# so we will just keep two flavors for testing
+# it is hardcoded in .cirrus.star script
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+# This setting affects (is supposed to affect) the script in .cirrus.star
+#env:
+#  public-only: "true"
+
 task:
-  name: macos-arm64
+  name: darwin_arm64
   only_if: $CIRRUS_BRANCH == 'main' || $CIRRUS_PR != '' || $CIRRUS_TAG != ''
   macos_instance:
     image: ghcr.io/cirruslabs/macos-monterey-base:latest
@@ -34,40 +47,108 @@ task:
     libffi double-conversion boost jemalloc fmt glog openssl@1.1 libevent \
     libsodium lz4 xz gdbm zlib ncurses gflags
 
-  pre-setup_script: |
+  pre_setup_script: |
     cat common.env >> $CIRRUS_ENV
     cat macos.env >> $CIRRUS_ENV
     cat macos-arm64.env >> $CIRRUS_ENV
 
-  pre-cache_script: |
+  pre_cache_script: |
     git clone --depth 1 --recurse-submodules --shallow-submodules -b $TEBAKO_TAG \
               https://github.com/tamatebako/tebako.git $TEBAKO_DIR
     mkdir -p $TEBAKO_DIR/$DEPS
 
   tebako_cache:
     folder: $TEBAKO_DIR/$DEPS
-    reupload_on_changes: false
+    reupload_on_changes: "false"
     fingerprint_script:
       - sw_vers
       - cat common.env
       - cat macos.env
       - cat macos-arm64.env
 
-  tebako-setup_script: |
+  tebako_setup_script: |
     $TEBAKO_DIR/bin/tebako setup
 
   upload_caches:
     - tebako
 
-  package-metanorma_script: |
+  package_metanorma_script: |
     make build/bin/metanorma-darwin-arm64
 
-  verify-packaging_script: |
+  verify_packaging_script: |
     build/bin/metanorma-darwin-arm64 --tebako-extract extracted_source_filesystem
     diff -r extracted_source_filesystem .archive/tebako/output/source_filesystem
 
-  smoke-test_script: |
+  smoke_test_script: |
     build/bin/metanorma-darwin-arm64 help
 
-  metanorma_artifacts:
-    path: build/bin/metanorma-darwin-arm64
+  metanorma_darwin_arm64_artifacts:
+    path: build/**
+
+task:
+  name: linux_aarch64
+  only_if: $CIRRUS_BRANCH == 'main' || $CIRRUS_PR != '' || $CIRRUS_TAG != ''
+  arm_container:
+# Needs ~10 Gb to package metanorma and Cirrus-ci allows 4GB per CPU only
+    image: ubuntu:20.04
+    cpu: 3
+    memory: 12G
+
+  env:
+    CMAKE_VERSION: 3.20.5
+
+  install_script: |
+    DEBIAN_FRONTEND=noninteractive apt-get -y update
+    DEBIAN_FRONTEND=noninteractive \
+    apt-get -y install sudo git curl build-essential pkg-config bison flex autoconf \
+      binutils-dev libevent-dev acl-dev libfmt-dev libjemalloc-dev libiberty-dev    \
+      libdouble-conversion-dev liblz4-dev liblzma-dev libssl-dev libunwind-dev      \
+      libboost-context-dev libboost-filesystem-dev libboost-program-options-dev     \
+      libboost-regex-dev libboost-system-dev libboost-thread-dev libdwarf-dev       \
+      libelf-dev libfuse-dev libgoogle-glog-dev libffi-dev libgdbm-dev libyaml-dev  \
+      libncurses-dev libreadline-dev clang ruby
+
+  pre_setup_script: |
+    cat common.env >> $CIRRUS_ENV
+    cat ubuntu.env >> $CIRRUS_ENV
+
+  setup_cmake_script: |
+    mkdir -p cmake-install
+    pushd cmake-install
+    curl -L -o cmake.sh \
+    https://github.com/Kitware/CMake/releases/download/v"$CMAKE_VERSION"/cmake-"$CMAKE_VERSION"-linux-aarch64.sh
+    sudo sh cmake.sh --skip-license --prefix="/usr/local"
+    popd
+
+  pre_cache_script: |
+    git clone --depth 1 --recurse-submodules --shallow-submodules -b $TEBAKO_TAG \
+              https://github.com/tamatebako/tebako.git $TEBAKO_DIR
+    mkdir -p $TEBAKO_DIR/$DEPS
+
+  tebako_cache:
+    folder: $TEBAKO_DIR/$DEPS
+    reupload_on_changes: "false"
+    fingerprint_script:
+      - echo $CIRRUS_OS
+      - cat common.env
+      - cat ubuntu.env
+
+  tebako_setup_script: |
+    $TEBAKO_DIR/bin/tebako setup
+
+  upload_caches:
+    - tebako
+
+  package_metanorma_script: |
+    make build/bin/metanorma-linux-gnu-aarch64
+    mv -T build/bin/metanorma-linux-gnu-aarch64 build/bin/metanorma-linux-aarch64
+
+  verify_packaging_script: |
+    build/bin/metanorma-linux-aarch64 --tebako-extract extracted_source_filesystem
+    diff -r extracted_source_filesystem .archive/tebako/output/source_filesystem
+
+  smoke_test_script: |
+    build/bin/metanorma-linux-aarch64 help
+
+  metanorma_linux_aarch64_artifacts:
+    path: build/**
