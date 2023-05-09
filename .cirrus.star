@@ -33,7 +33,7 @@ def main():
 # cirrus-ci allows very limited resources for the free tier
 # an attempt to execute all tests causes 2-4 hours ci run
 # so we will just keep two flavors for testing
-    flavors = flavors[:2]
+    flavors = flavors[:3]
 
     instances = {
         "darwin_arm64": {

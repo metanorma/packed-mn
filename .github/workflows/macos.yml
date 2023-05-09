@@ -54,7 +54,7 @@ jobs:
   setup:
     runs-on: macos-11
     needs: prepare
-    if: "(github.event_name == 'push' && needs.prepare.outputs.head_tag == '') || github.event_name == 'pull_request'"
+    if: "(github.event_name == 'push' && needs.prepare.outputs.head_tag == '') || github.event_name == 'pull_request' || github.event_name == 'schedule'"
     steps:
       - name: Checkout
         uses: actions/checkout@v3

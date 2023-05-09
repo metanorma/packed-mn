@@ -5,8 +5,8 @@ image:https://github.com/metanorma/packed-mn/workflows/alpine/badge.svg["Build S
 image:https://github.com/metanorma/packed-mn/workflows/macos/badge.svg["Build Status", link="https://github.com/metanorma/packed-mn/actions?workflow=macos"]
 image:https://github.com/metanorma/packed-mn/workflows/windows/badge.svg["Build Status", link="https://github.com/metanorma/packed-mn/actions?workflow=windows"]
 
-image:https://api.cirrus-ci.com/github/metanorma/packed-mn.svg?task=darwin_arm64["Build Status", link="https://api.cirrus-ci.com/github/metanorma/packed-mn.svg?task=darwin_arm64"]
-image:https://api.cirrus-ci.com/github/metanorma/packed-mn.svg?task=linux_aarch64["Build Status", link="https://api.cirrus-ci.com/github/metanorma/packed-mn.svg?task=linux_aarch64"]
+image:https://api.cirrus-ci.com/github/metanorma/packed-mn.svg?task=darwin_arm64["Build Status", link="https://cirrus-ci.com/github/metanorma/packed-mn"]
+image:https://api.cirrus-ci.com/github/metanorma/packed-mn.svg?task=linux_aarch64["Build Status", link="https://cirrus-ci.com/github/metanorma/packed-mn"]
 
 
 == Purpose
@@ -33,7 +33,7 @@ However, all these packages require a long installation process
 with caveats, such as being prone to network failures and a network
 of dependencies to install.
 
-This repo attempts to package dependencies using `tebako` and `ocra`, 
+This repo attempts to package dependencies using `tebako` and `ocra`,
 tools that package a Ruby interpreter with gems and dependencies
 into a RAM disk in Linux/MacOS and Windows environments.
 
