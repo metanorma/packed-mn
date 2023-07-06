@@ -58,9 +58,9 @@ $(BUILD_DIR)/package/vendor:
 $(BUILD_DIR)/.package-ready: $(BUILD_DIR)/package/metanorma $(BUILD_DIR)/package/Gemfile $(BUILD_DIR)/package/vendor
 	touch $@
 
-$(BUILD_DIR)/bin/metanorma-$(PLATFORM)-$(ARCH): .archive/tebako/bin/tebako $(BUILD_DIR)/.package-ready
+$(BUILD_DIR)/bin/metanorma-$(PLATFORM)-$(ARCH): $(BUILD_DIR)/.package-ready
 	mkdir -p $(dir $@);
-	$< press -r "$(BUILD_DIR)/package" -e "metanorma" -o "$@";
+	tebako press -r "$(BUILD_DIR)/package" -e "metanorma" -o "$@" -p ".archive/tebako" -R 2.7.7;
 ifneq ($(PLATFORM),darwin)
 	strip $@;
 endif

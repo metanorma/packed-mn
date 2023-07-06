@@ -4,7 +4,7 @@ on:
   schedule:
     - cron: "0 5 * * 2"
   push:
-    branches: [ main ]
+    branches: [ main, maxirmx-tebako-0.5.0 ]
     tags: [ v* ]
     paths-ignore:
       - .github/workflows/ubuntu.yml
@@ -53,70 +53,9 @@ jobs:
           echo "foreign_pr=${fpr}" >> $GITHUB_OUTPUT
           echo "head_tag=${tag}" >> $GITHUB_OUTPUT
 
-  setup:
-    runs-on: ubuntu-latest
-    needs: prepare
-    container:
-      image: alpine:3.16
-    steps:
-      - name: Install packages
-        run: |
-          apk --no-cache --upgrade add build-base cmake git bash     \
-            autoconf boost-static boost-dev flex-dev bison           \
-            binutils-dev libevent-dev acl-dev sed                    \
-            lz4-dev openssl-dev zlib-dev gflags-dev                  \
-            libunwind-dev libdwarf-dev elfutils-dev                  \
-            libevent-static openssl-libs-static lz4-static xz-dev    \
-            zlib-static libunwind-static acl-static tar libffi-dev   \
-            gdbm-dev yaml-dev yaml-static ncurses-dev ncurses-static \
-            readline-dev readline-static
-
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Setup environment
-        run: cat common.env alpine.env >> $GITHUB_ENV
-
-      - name: Checkout tebako packaging environment
-        uses: actions/checkout@v3
-        with:
-          repository: tamatebako/tebako
-          path: ${{ env.TEBAKO_DIR }}
-          ref: ${{ env.TEBAKO_TAG }}
-          submodules: true
-
-      - name: Install clang and patch system includes
-        if: ${{ env.CC == 'clang' }}
-        run: |
-          apk --no-cache --upgrade add clang
-          ${{ env.TEBAKO_DIR }}/tools/ci-scripts/patch-system-includes.sh
-
-      - name: Build libjemalloc
-        run: |
-          wget -q https://github.com/jemalloc/jemalloc/releases/download/5.2.1/jemalloc-5.2.1.tar.bz2
-          tar -xf jemalloc-5.2.1.tar.bz2
-          cd jemalloc-5.2.1
-          ./configure
-          make -j4
-          make install
-
-      - name: Create deps folder
-        run: mkdir -p -v ${{ env.TEBAKO_DIR }}/${{ env.DEPS }}
-
-      - name: Tebako setup cache
-        id: cache
-        uses: actions/cache@v3
-        with:
-          path: ${{ env.TEBAKO_DIR }}/${{ env.DEPS }}
-          key: Alpine-${{ env.OS_VER }}-${{ env.CC }}-${{ hashFiles('**/common.env') }}-${{ hashFiles('**/alpine.env') }}-v${{ env.CACHE_VER }}
-
-      - name: Tebako setup
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: ${{ env.TEBAKO_DIR }}/bin/tebako setup
-
   build:
     runs-on: ubuntu-latest
-    needs: setup
+    needs: prepare
     container:
       image: alpine:3.16
     steps:
@@ -143,19 +82,17 @@ jobs:
       - name: Install bundler
         run: gem install bundler -v ${{ env.BUNDLER_VER }}
 
-      - name: Checkout tebako packaging environment
+      - name: Checkout tebako tools
         uses: actions/checkout@v3
         with:
-          repository: tamatebako/tebako
-          path: ${{ env.TEBAKO_DIR }}
-          ref: ${{ env.TEBAKO_TAG }}
-          submodules: true
+          repository: tamatebako/tebako-tools
+          path: tebako-tools
 
       - name: Install clang and patch system includes
         if: ${{ env.CC == 'clang' }}
         run: |
           apk --no-cache --upgrade add clang
-          ${{ env.TEBAKO_DIR }}/tools/ci-scripts/patch-system-includes.sh
+          tebako-tools/ci-scripts/patch-system-includes.sh
 
       - name: Build libjemalloc
         run: |
@@ -166,22 +103,17 @@ jobs:
           make -j4
           make install
 
-      - name: Create deps folder
-        run: mkdir -p -v ${{ env.TEBAKO_DIR }}/${{ env.DEPS }}
-
       - name: Tebako setup cache
-        id: cache
         uses: actions/cache@v3
         with:
-          path: ${{ env.TEBAKO_DIR }}/${{ env.DEPS }}
+          path: .archive/tebako
           key: Alpine-${{ env.OS_VER }}-${{ env.CC }}-${{ hashFiles('**/common.env') }}-${{ hashFiles('**/alpine.env') }}-v${{ env.CACHE_VER }}
 
-      - name: Tebako cache check
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: |
-          echo "Failed to load cache"
-          false
-      # ------- End of tebako prerequisites
+
+      - name: Install tebako
+        run: gem install tebako
+
+        # ------- End of tebako prerequisites
 
       - uses: metanorma/metanorma-build-scripts/gh-rubygems-setup-action@main
         with:
