@@ -50,7 +50,6 @@ task:
   pre_setup_script: |
     cat common.env >> $CIRRUS_ENV
     cat macos.env >> $CIRRUS_ENV
-    cat macos-arm64.env >> $CIRRUS_ENV
 
   pre_cache_script: |
     git clone --depth 1 --recurse-submodules --shallow-submodules -b $TEBAKO_TAG \
@@ -64,7 +63,6 @@ task:
       - sw_vers
       - cat common.env
       - cat macos.env
-      - cat macos-arm64.env
 
   tebako_setup_script: |
     $TEBAKO_DIR/bin/tebako setup
