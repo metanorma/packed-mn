@@ -51,13 +51,8 @@ task:
     cat common.env >> $CIRRUS_ENV
     cat macos.env >> $CIRRUS_ENV
 
-  pre_cache_script: |
-    git clone --depth 1 --recurse-submodules --shallow-submodules -b $TEBAKO_TAG \
-              https://github.com/tamatebako/tebako.git $TEBAKO_DIR
-    mkdir -p $TEBAKO_DIR/$DEPS
-
   tebako_cache:
-    folder: $TEBAKO_DIR/$DEPS
+    folder: $TEBAKO_DIR
     reupload_on_changes: "false"
     fingerprint_script:
       - sw_vers
@@ -65,13 +60,13 @@ task:
       - cat macos.env
 
   tebako_setup_script: |
-    $TEBAKO_DIR/bin/tebako setup
-
-  upload_caches:
-    - tebako
+    gem install tebako
 
   package_metanorma_script: |
     make build/bin/metanorma-darwin-arm64
+
+  upload_caches:
+    - tebako
 
   verify_packaging_script: |
     build/bin/metanorma-darwin-arm64 --tebako-extract extracted_source_filesystem
@@ -118,13 +113,8 @@ task:
     sudo sh cmake.sh --skip-license --prefix="/usr/local"
     popd
 
-  pre_cache_script: |
-    git clone --depth 1 --recurse-submodules --shallow-submodules -b $TEBAKO_TAG \
-              https://github.com/tamatebako/tebako.git $TEBAKO_DIR
-    mkdir -p $TEBAKO_DIR/$DEPS
-
   tebako_cache:
-    folder: $TEBAKO_DIR/$DEPS
+    folder: $TEBAKO_DIR
     reupload_on_changes: "false"
     fingerprint_script:
       - echo $CIRRUS_OS
@@ -132,14 +122,14 @@ task:
       - cat ubuntu.env
 
   tebako_setup_script: |
-    $TEBAKO_DIR/bin/tebako setup
-
-  upload_caches:
-    - tebako
+    sudo gem install tebako
 
   package_metanorma_script: |
     make build/bin/metanorma-linux-gnu-aarch64
     mv -T build/bin/metanorma-linux-gnu-aarch64 build/bin/metanorma-linux-aarch64
+
+  upload_caches:
+    - tebako
 
   verify_packaging_script: |
     build/bin/metanorma-linux-aarch64 --tebako-extract extracted_source_filesystem
