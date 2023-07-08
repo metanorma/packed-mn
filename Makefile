@@ -16,8 +16,13 @@ ARCH := $(shell uname -m)
 TEST_FLAVOR ?= iso
 TEST_PROCESSORS ?= iso cc iec un m3aawg jcgm csa bipm iho ogc itu ietf ieee
 
+ifdef RUBY_VER
+RUBY_VERSION := $(RUBY_VER)
+else
+RUBY_VERSION := '3.0.6'
+endif
+
 BUILD_DIR := build
-TEBAKO_TAG := v0.4.1
 
 all: $(BUILD_DIR)/bin/metanorma-$(PLATFORM)-$(ARCH)
 
@@ -32,16 +37,6 @@ test-flavor:
 		-c $(BUILD_DIR)/$(TEST_FLAVOR)/metanorma.yml \
 		-o site/$(TEST_FLAVOR) \
 		--agree-to-terms
-
-.archive/tebako/.git:
-	mkdir -p .archive
-	git clone --recurse-submodules -b "$(TEBAKO_TAG)" https://github.com/tamatebako/tebako $(dir $@)
-
-.archive/tebako/bin/tebako: .archive/tebako/.git
-
-.archive/tebako/deps/bin/mkdwarfs: .archive/tebako/bin/tebako
-	mkdir -p -v $(dir $(dir $@))
-	$< setup
 
 $(BUILD_DIR)/package/Gemfile:
 	mkdir -p $(dir $@);
@@ -60,7 +55,7 @@ $(BUILD_DIR)/.package-ready: $(BUILD_DIR)/package/metanorma $(BUILD_DIR)/package
 
 $(BUILD_DIR)/bin/metanorma-$(PLATFORM)-$(ARCH): $(BUILD_DIR)/.package-ready
 	mkdir -p $(dir $@);
-	tebako press -r "$(BUILD_DIR)/package" -e "metanorma" -o "$@" -p ".archive/tebako" -R 2.7.7;
+	tebako press -r "$(BUILD_DIR)/package" -e "metanorma" -o "$@" -p ".archive/tebako" -R $(RUBY_VERSION);
 ifneq ($(PLATFORM),darwin)
 	strip $@;
 endif
