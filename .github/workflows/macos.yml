@@ -4,7 +4,7 @@ on:
   schedule:
     - cron: "0 6 * * 2"
   push:
-    branches: [ main, maxirmx-tebako-0.5.0 ]
+    branches: [ main ]
     tags: [ v* ]
     paths-ignore:
       - .github/workflows/ubuntu.yml
@@ -84,7 +84,7 @@ jobs:
       - name: Process cache
         uses: actions/cache@v3
         with:
-          path: .archive/tebako
+          path: ${{ env.TEBAKO_DIR }}
           key: MacOS-${{ env.OS_VER }}-${{ env.CC }}-${{ hashFiles('**/common.env') }}-${{ hashFiles('**/macos.env') }}-v${{ env.CACHE_VER }}
 
       - name: Install tebako
