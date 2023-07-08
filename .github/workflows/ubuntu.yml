@@ -93,18 +93,6 @@ jobs:
       - name: Install tebako
         run: sudo gem install tebako
 
-        # ------- End of tebako prerequisites
-
-      - uses: metanorma/metanorma-build-scripts/gh-rubygems-setup-action@main
-        with:
-          token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
-
-      - run: |
-          curl -Lks 'https://git.io/rg-ssl' | ruby
-          echo "perl -v: $(perl -v)"
-          echo "cc -v: $($CC -v)"
-          echo "CXX -v: $($CXX -v)"
-
       - name: Package metanorma
         run: |
           make build/bin/metanorma-linux-gnu-x86_64

@@ -59,7 +59,6 @@ jobs:
     container:
       image: alpine:3.16
     steps:
-      # ---------- Start of tebako prerequisites
       - name: Install packages
         run: |
           apk --no-cache --upgrade add build-base cmake git bash     \
@@ -109,21 +108,8 @@ jobs:
           path: ${{ env.TEBAKO_DIR }}
           key: Alpine-${{ env.OS_VER }}-${{ env.CC }}-${{ hashFiles('**/common.env') }}-${{ hashFiles('**/alpine.env') }}-v${{ env.CACHE_VER }}
 
-
       - name: Install tebako
         run: gem install tebako
-
-        # ------- End of tebako prerequisites
-
-      - uses: metanorma/metanorma-build-scripts/gh-rubygems-setup-action@main
-        with:
-          token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
-
-      - run: |
-          curl -Lks 'https://git.io/rg-ssl' | ruby
-          echo "perl -v: $(perl -v)"
-          echo "cc -v: $($CC -v)"
-          echo "CXX -v: $($CXX -v)"
 
       - name: package metanorma
         run: make build/bin/metanorma-linux-musl-x86_64
@@ -164,7 +150,7 @@ jobs:
       - name: Install packages
         run:  |
           apk --no-cache --upgrade add git libstdc++ xz libarchive \
-            openjdk10-jre-headless openssl fontconfig ttf-dejavu
+            openjdk10-jre-headless openssl fontconfig ttf-dejavu tar
 
       - uses: actions/checkout@v3
 
