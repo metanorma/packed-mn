@@ -83,7 +83,7 @@ jobs:
       - name: Process cache
         uses: actions/cache@v3
         with:
-          path: ${{ env.TEBAKO_DIR }}
+          path: ${{ env.TEBAKO_DIR }}/${{ env.DEPS }}
           key: MacOS-${{ env.OS_VER }}-${{ env.CC }}-${{ hashFiles('**/common.env') }}-${{ hashFiles('**/macos.env') }}-v${{ env.CACHE_VER }}
 
       - name: Install tebako
