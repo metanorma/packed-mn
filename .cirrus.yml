@@ -52,7 +52,7 @@ task:
     cat macos.env >> $CIRRUS_ENV
 
   tebako_cache:
-    folder: $TEBAKO_DIR
+    folder: $TEBAKO_DIR/$DEPS
     reupload_on_changes: "false"
     fingerprint_script:
       - sw_vers
@@ -65,6 +65,9 @@ task:
   package_metanorma_script: |
     make build/bin/metanorma-darwin-arm64
 
+  pre_upload_caches_script: |
+    rm -rf $TEBAKO_DIR/$DEPS/src/_ruby_*
+
   upload_caches:
     - tebako
 
@@ -76,7 +79,7 @@ task:
     build/bin/metanorma-darwin-arm64 help
 
   metanorma_darwin_arm64_artifacts:
-    path: build/**
+    path: build/bin/metanorma-darwin-arm64
 
 task:
   name: linux_aarch64
@@ -99,7 +102,7 @@ task:
       libboost-context-dev libboost-filesystem-dev libboost-program-options-dev     \
       libboost-regex-dev libboost-system-dev libboost-thread-dev libdwarf-dev       \
       libelf-dev libfuse-dev libgoogle-glog-dev libffi-dev libgdbm-dev libyaml-dev  \
-      libncurses-dev libreadline-dev clang ruby
+      libncurses-dev libreadline-dev clang ruby-dev
 
   pre_setup_script: |
     cat common.env >> $CIRRUS_ENV
@@ -114,7 +117,7 @@ task:
     popd
 
   tebako_cache:
-    folder: $TEBAKO_DIR
+    folder: $TEBAKO_DIR/$DEPS
     reupload_on_changes: "false"
     fingerprint_script:
       - echo $CIRRUS_OS
@@ -122,11 +125,15 @@ task:
       - cat ubuntu.env
 
   tebako_setup_script: |
+    gem install bundler -v $BUNDLER_VER
     sudo gem install tebako
 
   package_metanorma_script: |
     make build/bin/metanorma-linux-gnu-aarch64
     mv -T build/bin/metanorma-linux-gnu-aarch64 build/bin/metanorma-linux-aarch64
+
+  pre_upload_caches_script: |
+    rm -rf $TEBAKO_DIR/$DEPS/src/_ruby_*
 
   upload_caches:
     - tebako
@@ -139,4 +146,4 @@ task:
     build/bin/metanorma-linux-aarch64 help
 
   metanorma_linux_aarch64_artifacts:
-    path: build/**
+    path: build/bin/metanorma-linux-aarch64
