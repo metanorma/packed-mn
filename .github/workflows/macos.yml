@@ -63,7 +63,6 @@ jobs:
       - name: Setup environment
         run: cat common.env macos.env >> $GITHUB_ENV
 
-      # ---------- Start of tebako prerequisites
       - name: Select XCode
         uses: maxim-lobanov/setup-xcode@v1
         with:
@@ -89,18 +88,6 @@ jobs:
 
       - name: Install tebako
         run: gem install tebako
-
-      # ------- End of tebako prerequisites
-
-      - uses: metanorma/metanorma-build-scripts/gh-rubygems-setup-action@main
-        with:
-          token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
-
-      - run: |
-          curl -Lks 'https://git.io/rg-ssl' | ruby
-          echo "perl -v: $(perl -v)"
-          echo "cc -v: $($CC -v)"
-          echo "CXX -v: $($CXX -v)"
 
       - name: package metanorma
         run: make build/bin/metanorma-darwin-x86_64
