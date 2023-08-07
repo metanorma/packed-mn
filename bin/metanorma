@@ -5,91 +5,18 @@ require 'rubygems'
 require 'openssl'
 require 'open-uri'
 require 'net/https'
-require 'tempfile'
-require 'pathname'
 
-COMPILER_MEMFS = '/__tebako_memfs__'
+require 'jing'
+require 'optout'
 
 # Limit Relaton to concurrent fetches of 1
 ENV["RELATON_FETCH_PARALLEL"] = "1"
 
-def full_gem_path(gem)
-  Gem::Specification.find_by_name(gem).full_gem_path
-end
-
 unless Gem.win_platform? # because on windows we use ocra
-  # https://github.com/pmq20/ruby-packer/blob/master/lib/compiler/constants.rb#L10
-  COMPILER_MEMFS_LIB_CACHE = Pathname.new(Dir.mktmpdir("packed-mn-"))
-  at_exit {
-    FileUtils.remove_dir(COMPILER_MEMFS_LIB_CACHE.to_path, true)
-  }
-
-  class String
-    def is_quoted
-      self.start_with?('"') && self.end_with?('"')
-    end
-
-    def unquote
-      self.chomp('"').reverse.chomp('"').reverse
-    end
-
-    def quote
-      "\"#{self}\""
-    end
-  end
-
-  def extract_memfs(file, wild=false, extract_path=COMPILER_MEMFS_LIB_CACHE)
-    is_quoted = file.is_quoted
-    file = file.unquote if is_quoted
-
-    return file unless File.exist?(file) && file.start_with?(COMPILER_MEMFS)
-
-    memfs_extracted_file = extract_path + File.basename(file)
-    unless memfs_extracted_file.exist?
-      files = if wild
-        Dir.glob("#{File.dirname(file)}/*#{File.extname(file)}")
-      else
-        [file]
-      end
-      FileUtils.cp_r files, extract_path
-    end
-
-    is_quoted ? memfs_extracted_file.to_path.quote : memfs_extracted_file.to_path
-  end
-
-  # HACK: extract temp libraries to use with ffi
-  # Wrapper for FFI.map_library_name method
-  require 'ffi'
-
-  module FFI
-    # https://stackoverflow.com/questions/29907157/how-to-alias-a-class-method-in-rails-model/29907207
-    self.singleton_class.send(:alias_method, :map_library_name_orig, :map_library_name)
-
-    # http://tech.tulentsev.com/2012/02/ruby-how-to-override-class-method-with-a-module/
-    def self.map_library_name(lib)
-      map_library_name_orig(extract_memfs(lib))
-    end
-  end
-  # END of HACK
-
-  # HACK unpack jing jar
-  require 'jing'
-  require 'optout'
-
+  # This code was bundled with ruby-packer/tebako hack but is not related
   class Jing
     def self.option_builder
       @@option_builder
-    end
-
-    def validate(xml)
-      @options[:xmlfile] = extract_memfs(xml)
-      @options[:schema] = extract_memfs(@options[:schema], true)
-
-      out = execute(@options)
-      return [] if $?.success? and out.empty?
-      errors = parse_output(out)
-      raise ExecutionError, out if errors.none? # There must have been a problem that was not schema related
-      errors
     end
   end
 
@@ -102,88 +29,12 @@ unless Gem.win_platform? # because on windows we use ocra
   Jing.option_builder[:jar] = Optout::Option.create(:jar, '-jar',
     :index => 1,
     :validator => Optout::File.exists,
-    :default => extract_memfs(Jing::DEFAULT_JAR)
+    :default => Jing::DEFAULT_JAR
   )
-  # END of HACK
-
-  # HACK unpack mn2pdf.jar
-  require 'mn2pdf'
-  module Mn2pdf
-    remove_const('MN2PDF_JAR_PATH')
-    MN2PDF_JAR_PATH = extract_memfs(File.join(full_gem_path('mn2pdf'), 'bin', 'mn2pdf.jar'))
-
-    self.singleton_class.send(:alias_method, :convert_orig, :convert)
-    self.singleton_class.send(:remove_method, :convert)
-
-    def self.convert(url_path, output_path, xsl_stylesheet, options)
-      convert_orig(extract_memfs(url_path), output_path, extract_memfs(xsl_stylesheet), options)
-    end
-  end
-  # END of HACK
-
-  # HACK unpack mnconvert.jar
-  require 'mnconvert'
-  module MnConvert
-    remove_const('MNCONVERT_JAR_PATH')
-    MNCONVERT_JAR_PATH = extract_memfs(File.join(full_gem_path('mnconvert'), 'bin', 'mnconvert.jar'))
-
-    self.singleton_class.send(:alias_method, :convert_orig, :convert)
-    self.singleton_class.send(:remove_method, :convert)
-
-    def self.convert(input_file, opts = {})
-      opts[:xsl_file] = extract_memfs(opts[:xsl_file]) if opts[:xsl_file]
-      convert_orig(extract_memfs(input_file), opts)
-    end
-  end
-  # END of HACK
-
-  # HACK fix path for 7zip load
-  sevenz_lib = RUBY_PLATFORM.downcase.match(/mswin|mingw/) ? "7z*.dll" : "7z.so"
-  sevenz_path = File.join(full_gem_path('seven-zip'), 'lib', 'seven_zip_ruby', sevenz_lib)
-  FileUtils.mkdir_p(COMPILER_MEMFS_LIB_CACHE / 'seven_zip_ruby')
-  FileUtils.cp(sevenz_path, COMPILER_MEMFS_LIB_CACHE / 'seven_zip_ruby')
-  $LOAD_PATH.unshift(COMPILER_MEMFS_LIB_CACHE)
-  # END of HACK
-
-  # HACK unpack style files for sassc
-
-  require 'sassc'
-
-  module SassC
-    class Engine
-      @@loaded_pathes = []
-      @@loaded_pathes_semaphore = Mutex::new
-      def load_paths()
-        paths = (@options[:load_paths] || []) + SassC.load_paths
-          np = []
-          paths.each { |p|
-            if p.start_with?(COMPILER_MEMFS)
-              m = p.sub(COMPILER_MEMFS, COMPILER_MEMFS_LIB_CACHE.to_s)
-              @@loaded_pathes_semaphore.synchronize {
-                unless @@loaded_pathes.include?(m)
-                  FileUtils.mkdir_p(m)
-                  FileUtils.cp_r(File.join(p, "."), m) if File.exists?(p)
-                  @@loaded_pathes << m
-                end
-              }
-              np << m
-            else
-              np << p
-            end
-          }
-        np.join(File::PATH_SEPARATOR) unless np.empty?
-      end
-    end
-  end
-  # END of HACK/sassc
-
 end
 
 if Gem.win_platform?
   # HACK unpack jing chcp 65001
-  require 'jing'
-  require 'optout'
-
   class Jing
     def execute(options)
       cmd = @@option_builder.shell(options)
