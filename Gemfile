@@ -27,4 +27,4 @@ group :development do
   gem "byebug"
 end
 
-gem "metanorma-cli", "= 1.7.6"
+gem "metanorma-cli", "= 1.8.0.pre"
