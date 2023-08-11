@@ -45,7 +45,7 @@ task:
   install_script: |
     brew install gnu-getopt gnu-sed bash pkg-config bison flex binutils   \
     libffi double-conversion boost jemalloc fmt glog openssl@1.1 libevent \
-    libsodium lz4 xz gdbm zlib ncurses gflags
+    libsodium lz4 xz gdbm zlib ncurses gflags libyaml
 
   pre_setup_script: |
     cat common.env >> $CIRRUS_ENV
