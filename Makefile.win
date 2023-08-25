@@ -25,14 +25,6 @@ build/metanorma.exe: build/cacert.pem.mozilla build/metanorma.ico build/metanorm
 ifeq (,$(wildcard build/metanorma.exe))
 	gem install aibika --conservative
 	pushd build & aibika --console --gemfile Gemfile --gem-full --add-all-core --icon metanorma.ico \
-			--dll ruby_builtin_dlls/libgmp-10.dll \
-			--dll ruby_builtin_dlls/libffi-8.dll \
-			--dll ruby_builtin_dlls/zlib1.dll \
-			--dll ruby_builtin_dlls/libiconv-2.dll \
-			--dll ruby_builtin_dlls/libssl-1_1-x64.dll \
-			--dll ruby_builtin_dlls/libcrypto-1_1-x64.dll \
-			--dll ruby_builtin_dlls/libyaml-0-2.dll \
-			--dll ruby_builtin_dlls/libwinpthread-1.dll \
 			--no-autoload \
 			metanorma cacert.pem.mozilla & popd
 endif
