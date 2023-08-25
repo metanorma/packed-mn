@@ -33,7 +33,7 @@ However, all these packages require a long installation process
 with caveats, such as being prone to network failures and a network
 of dependencies to install.
 
-This repo attempts to package dependencies using `tebako` and `ocra`,
+This repo attempts to package dependencies using `tebako` and `aibika`,
 tools that package a Ruby interpreter with gems and dependencies
 into a RAM disk in Linux/MacOS and Windows environments.
 
