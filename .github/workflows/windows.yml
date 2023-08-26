@@ -67,8 +67,7 @@ jobs:
 
     - uses: ruby/setup-ruby@v1
       with:
-        ruby-version: '2.7'
-        rubygems: '3.3.22'
+        ruby-version: '3.1'
 
     - uses: nick-invision/retry@v2
       with:
