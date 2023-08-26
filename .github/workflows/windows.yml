@@ -133,11 +133,6 @@ jobs:
         run: |
           build\metanorma.exe site generate samples -c samples\metanorma.yml --agree-to-terms
 
-      - run: |
-          Get-ChildItem -Path ".\_site" -Recurse -Force
-          Get-ChildItem -Path ".\_site" -Recurse -Force | Where-Object { $_.PSIsContainer -eq $false -and $_.Length -eq 0 }
-          Get-ChildItem -Path ".\_site" -Recurse -Force | Where-Object { $_.PSIsContainer -eq $false -and $_.Length -eq 0 }  | Remove-Item
-
       - uses: actions/upload-artifact@v3
         with:
           name: site-${{ matrix.flavor.id }}
