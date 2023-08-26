@@ -119,7 +119,7 @@ jobs:
           key: relaton-windows-${{ matrix.flavor.id }}
           restore-keys: relaton-windows-${{ matrix.flavor.id }}
 
-      - name: Fetch samples (${{ matrix.test-flavor }})
+      - name: Fetch samples (${{ matrix.flavor.id }})
         uses: actions/checkout@v3
         with:
           submodules: recursive
@@ -128,18 +128,20 @@ jobs:
           path: ${{ github.workspace }}/samples
           fetch-depth: 1
 
-      - name: Test (${{ matrix.test-flavor }})
+      - name: Test (${{ matrix.flavor.id }})
         timeout-minutes: 45
         run: |
           build\metanorma.exe site generate samples -c samples\metanorma.yml --agree-to-terms
 
       - run: |
-          Get-ChildItem -Path ".\site-${{ matrix.test-flavor }}" -Recurse -Force | Where-Object { $_.PSIsContainer -eq $false -and $_.Length -eq 0 }  | Remove-Item
+          Get-ChildItem -Path ".\_site" -Recurse -Force
+          Get-ChildItem -Path ".\_site" -Recurse -Force | Where-Object { $_.PSIsContainer -eq $false -and $_.Length -eq 0 }
+          Get-ChildItem -Path ".\_site" -Recurse -Force | Where-Object { $_.PSIsContainer -eq $false -and $_.Length -eq 0 }  | Remove-Item
 
       - uses: actions/upload-artifact@v3
         with:
-          name: site
-          path: site-${{ matrix.flavor.id }}
+          name: site-${{ matrix.flavor.id }}
+          path: _site
 
   release:
     if: startsWith(github.ref, 'refs/tags/')
