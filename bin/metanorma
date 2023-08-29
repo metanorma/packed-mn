@@ -12,7 +12,7 @@ require 'optout'
 # Limit Relaton to concurrent fetches of 1
 ENV["RELATON_FETCH_PARALLEL"] = "1"
 
-unless Gem.win_platform? # because on windows we use ocra
+unless Gem.win_platform? # because on windows we use aibika
   # This code was bundled with ruby-packer/tebako hack but is not related
   class Jing
     def self.option_builder
