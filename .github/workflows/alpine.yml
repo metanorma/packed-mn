@@ -2,7 +2,7 @@ name: alpine
 
 on:
   schedule:
-    - cron: "0 5 * * 2"
+    - cron: "0 2 * * 2"
   push:
     branches: [ main ]
     tags: [ v* ]

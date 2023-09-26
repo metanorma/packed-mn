@@ -2,7 +2,7 @@ name: ubuntu
 
 on:
   schedule:
-    - cron: "0 7 * * 2"
+    - cron: "0 2 * * 2"
   push:
     branches: [ main ]
     tags: [ v* ]
