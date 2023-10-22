@@ -38,7 +38,7 @@ def main():
     instances = {
         "darwin_arm64": {
             "macos_instance": {
-                "image": "ghcr.io/cirruslabs/macos-monterey-xcode"
+                "image": "ghcr.io/cirruslabs/macos-monterey-xcode:latest"
             }
         },
         "linux_aarch64": {
@@ -58,6 +58,9 @@ def main():
     linux_install = {
         "install_script": "DEBIAN_FRONTEND=noninteractive apt-get -y update && " +
                           "DEBIAN_FRONTEND=noninteractive apt-get -y install wget unzip git default-jre"
+    }
+    macos_install = {
+        "install_script": "brew update  && brew upgrade ca-certificates"
     }
     tasks = [ ]
 
@@ -80,6 +83,8 @@ def main():
 
                 if host == "linux_aarch64":
                     flow.update(linux_install)
+                else:
+                    flow.update(macos_install)
 
                 flow2 = {
                     "load_mentanorma_script": "wget -nv " + m_remote + " && unzip " + m_zip,
