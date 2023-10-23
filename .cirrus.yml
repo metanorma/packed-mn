@@ -43,9 +43,10 @@ task:
     image: ghcr.io/cirruslabs/macos-monterey-base:latest
 
   install_script: |
-    brew install gnu-getopt gnu-sed bash pkg-config bison flex binutils   \
-    libffi double-conversion boost jemalloc fmt glog openssl@1.1 libevent \
-    libsodium lz4 xz gdbm zlib ncurses gflags libyaml
+    brew update
+    brew install gnu-sed bash pkg-config bison flex binutils   \
+    libffi double-conversion boost jemalloc fmt glog libevent  \
+    libsodium lz4 xz gdbm zlib ncurses libyaml openssl@3
 
   pre_setup_script: |
     cat common.env >> $CIRRUS_ENV
@@ -91,18 +92,22 @@ task:
     memory: 12G
 
   env:
-    CMAKE_VERSION: 3.20.5
+    CMAKE_VERSION: 3.26.5
+    CC: clang-12
+    CXX: ckang-12++
+    DEBIAN_FRONTEND: noninteractive
 
   install_script: |
-    DEBIAN_FRONTEND=noninteractive apt-get -y update
-    DEBIAN_FRONTEND=noninteractive \
+    apt-get -y update
     apt-get -y install sudo git curl build-essential pkg-config bison flex autoconf \
       binutils-dev libevent-dev acl-dev libfmt-dev libjemalloc-dev libiberty-dev    \
       libdouble-conversion-dev liblz4-dev liblzma-dev libssl-dev libunwind-dev      \
-      libboost-context-dev libboost-filesystem-dev libboost-program-options-dev     \
-      libboost-regex-dev libboost-system-dev libboost-thread-dev libdwarf-dev       \
-      libelf-dev libfuse-dev libgoogle-glog-dev libffi-dev libgdbm-dev libyaml-dev  \
-      libncurses-dev libreadline-dev clang ruby-dev
+      libboost-filesystem-dev libboost-program-options-dev libboost-system-dev      \
+      libboost-iostreams-dev  libboost-date-time-dev libboost-context-dev           \
+      libboost-regex-dev libboost-thread-dev libbrotli-dev libdwarf-dev libelf-dev  \
+      libgoogle-glog-dev libffi-dev libgdbm-dev libyaml-dev libncurses-dev          \
+      libreadline-dev libutfcpp-dev libncurses-dev libreadline-dev gcc-10 g++-10    \
+      clang-12 clang++-12 ruby-dev ruby-bundler
 
   pre_setup_script: |
     cat common.env >> $CIRRUS_ENV

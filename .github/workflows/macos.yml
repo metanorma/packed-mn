@@ -70,9 +70,10 @@ jobs:
 
       - name: Install packages
         run: |
+          brew update
           brew install \
           bison flex binutils double-conversion boost jemalloc fmt glog \
-          gnu-getopt gnu-sed bash ncurses libffi pkg-config
+          gnu-sed bash ncurses libffi pkg-config
 
       - name: Install Ruby
         uses: ruby/setup-ruby@v1
