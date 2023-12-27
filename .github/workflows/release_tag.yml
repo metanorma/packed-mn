@@ -3,21 +3,34 @@ name: release-tag
 on:
   repository_dispatch:
     types: [ metanorma/metanorma-cli ]
+  workflow_dispatch:
+    inputs:
+      next_version:
+        description: |
+          Next release version. Possible values: x.y.z, major, minor, patch (or pre|rc|etc).
+          Also, you can pass 'skip' to skip 'git tag' and do 'gem push' for the current version
+        required: true
+        type: string
 
 jobs:
   push-tag:
     runs-on: ubuntu-20.04
-    if: startsWith(github.event.client_payload.ref, 'refs/tags/v')
+    if: startsWith(github.event.client_payload.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
     steps:
     - uses: actions/checkout@v3
       with:
         token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
 
     - name: Parse metanorma-cli version
+      if: github.event_name == 'repository_dispatch'
       env:
         METANORMA_CLI_TAG: ${{ github.event.client_payload.ref }}
       run: |
         echo METANORMA_CLI_VERSION=${METANORMA_CLI_TAG#*/v} >> ${GITHUB_ENV}
+
+    - name: Take metanorma-cli version from input
+      if: github.event_name == 'workflow_dispatch'
+      echo "METANORMA_CLI_VERSION=${{ inputs.next_version }}" >> ${GITHUB_ENV}
 
     - uses: metanorma/metanorma-build-scripts/gh-rubygems-setup-action@main
       with:
@@ -27,8 +40,6 @@ jobs:
       with:
         ruby-version: 2.7.7
         bundler: 2.3.22
-
-    - run: gem install bundler
 
     - name: Update version
       run: |
