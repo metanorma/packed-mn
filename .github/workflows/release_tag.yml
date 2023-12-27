@@ -30,7 +30,7 @@ jobs:
 
     - name: Take metanorma-cli version from input
       if: github.event_name == 'workflow_dispatch'
-      echo "METANORMA_CLI_VERSION=${{ inputs.next_version }}" >> ${GITHUB_ENV}
+      run: echo "METANORMA_CLI_VERSION=${{ inputs.next_version }}" >> ${GITHUB_ENV}
 
     - uses: metanorma/metanorma-build-scripts/gh-rubygems-setup-action@main
       with:
