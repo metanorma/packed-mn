@@ -192,14 +192,14 @@ jobs:
             metanorma-linux-x86_64.tgz
             metanorma-linux-x86_64.tgz.sha256.txt
 
-      - uses: peter-evans/repository-dispatch@v1
+      - uses: peter-evans/repository-dispatch@v2
         with:
           token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
           repository: metanorma/metanorma-snap
           event-type: ${{ github.repository }}
           client-payload: '{ "ref": "${{ github.ref }}" }'
 
-      - uses: peter-evans/repository-dispatch@v1
+      - uses: peter-evans/repository-dispatch@v2
         with:
           token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
           repository: metanorma/homebrew-metanorma

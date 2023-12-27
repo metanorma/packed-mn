@@ -189,7 +189,7 @@ jobs:
             metanorma-darwin-x86_64.tgz
             metanorma-darwin-x86_64.tgz.sha256.txt
 
-      - uses: peter-evans/repository-dispatch@v1
+      - uses: peter-evans/repository-dispatch@v2
         with:
           token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
           repository: metanorma/homebrew-metanorma
