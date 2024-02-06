@@ -36,7 +36,7 @@ jobs:
       foreign_pr: ${{ steps.check.outputs.foreign_pr }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Retrieve tags
         run: git fetch --depth=1 origin +refs/tags/*:refs/tags/* || true
       - name: Set output variables
@@ -57,7 +57,7 @@ jobs:
     needs: prepare
     if: "(github.event_name == 'push' && needs.prepare.outputs.head_tag == '') || github.event_name == 'pull_request'"
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - run: |
         gem -v
@@ -105,7 +105,7 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJson(needs.build-matrix.outputs.samples-matrix) }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - run: Remove-Item Gemfile
 
@@ -121,7 +121,7 @@ jobs:
           restore-keys: relaton-windows-${{ matrix.flavor.id }}
 
       - name: Fetch samples (${{ matrix.flavor.id }})
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: recursive
           repository: metanorma/mn-samples-${{ matrix.flavor.id }}

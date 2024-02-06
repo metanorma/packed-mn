@@ -36,7 +36,7 @@ jobs:
       foreign_pr: ${{ steps.check.outputs.foreign_pr }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Retrieve tags
         run: git fetch --depth=1 origin +refs/tags/*:refs/tags/* || true
@@ -59,38 +59,19 @@ jobs:
     if: "(github.event_name == 'push' && needs.prepare.outputs.head_tag == '') || github.event_name == 'pull_request' || github.event_name == 'schedule'"
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup environment
-        run: cat common.env ubuntu.env >> $GITHUB_ENV
+        run: cat common.env >> $GITHUB_ENV
 
-      # ---------- Start of tebako prerequisites
-      - name: Install packages
-        run: |
-          sudo apt-get -y update
-          sudo apt-get -y install                                                   \
-          binutils-dev libevent-dev acl-dev libfmt-dev libjemalloc-dev              \
-          libdouble-conversion-dev libiberty-dev liblz4-dev liblzma-dev libssl-dev  \
-          libboost-filesystem-dev libboost-program-options-dev libboost-system-dev  \
-          libboost-iostreams-dev  libboost-date-time-dev libboost-context-dev       \
-          libboost-regex-dev libboost-thread-dev libbrotli-dev libunwind-dev        \
-          libdwarf-dev libelf-dev libgoogle-glog-dev libffi-dev libgdbm-dev         \
-          libyaml-dev libncurses-dev libreadline-dev libutfcpp-dev
-
-      - name: Install Ruby
-        uses: ruby/setup-ruby@v1
+      - name: Setup Tebako
+        uses: tamatebako/tebako/.github/actions/setup-tebako@main
         with:
-          ruby-version: ${{ env.RUBY_VER }}
-          bundler: ${{ env.BUNDLER_VER }}
-
-      - name: Tebako setup cache
-        uses: actions/cache@v3
-        with:
-          path: ${{ env.TEBAKO_DIR }}/${{ env.DEPS }}
-          key: ${{ env.OS_VER }}-${{ env.CC }}-${{ hashFiles('**/common.env') }}-${{ hashFiles('**/ubuntu.env') }}-v${{ env.CACHE_VER }}
-
-      - name: Install tebako
-        run: sudo gem install tebako
+          cache: build
+          cache_ver: ${{ env.CACHE_VER }}
+          cache_path: ${{ env.TEBAKO_DIR }}
+          ruby_version: ${{ env.RUBY_VER }}
+          bundler_version: ${{ env.BUNDLER_VER }}
 
       - name: Package metanorma
         run: |
@@ -127,7 +108,7 @@ jobs:
       matrix: ${{ fromJson(needs.build-matrix.outputs.samples-matrix) }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - run: rm Gemfile
 
@@ -145,7 +126,7 @@ jobs:
       - run: chmod +x build/bin/metanorma-linux-x86_64
 
       - name: Fetch samples (${{ matrix.flavor.id }})
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: recursive
           repository: metanorma/mn-samples-${{ matrix.flavor.id }}
