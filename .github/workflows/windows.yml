@@ -71,7 +71,7 @@ jobs:
       with:
         ruby-version: '3.1'
 
-    - uses: nick-invision/retry@v2
+    - uses: nick-invision/retry@v3
       with:
         polling_interval_seconds: 5
         timeout_minutes: 5
