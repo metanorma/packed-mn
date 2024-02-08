@@ -82,7 +82,7 @@ jobs:
         %ChocolateyInstall%\bin\make.exe -f Makefile.win build build/metanorma.exe
       shell: cmd
 
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: metanorma-windows
         path: build/metanorma.exe
@@ -109,12 +109,12 @@ jobs:
 
       - run: Remove-Item Gemfile
 
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: metanorma-windows
           path: build
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: ~/.relaton
           key: relaton-windows-${{ matrix.flavor.id }}
@@ -134,7 +134,7 @@ jobs:
         run: |
           build\metanorma.exe site generate samples -c samples\metanorma.yml --agree-to-terms
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: site-${{ matrix.flavor.id }}
           path: _site
@@ -144,7 +144,7 @@ jobs:
     runs-on: windows-latest
     needs: test
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: metanorma-windows
           path: build

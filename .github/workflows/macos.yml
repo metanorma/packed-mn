@@ -75,7 +75,7 @@ jobs:
       - name: package metanorma
         run: make build/bin/metanorma-darwin-x86_64
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: metanorma-darwin-x86_64
           path: build/bin/metanorma-darwin-x86_64
@@ -108,14 +108,14 @@ jobs:
 
       - run: rm Gemfile
 
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: metanorma-darwin-x86_64
           path: build/bin
 
       - run: chmod a+x build/bin/metanorma-darwin-x86_64
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: ~/.relaton
           key: relaton-macos-${{ matrix.flavor.id }}
@@ -139,7 +139,7 @@ jobs:
             -o site-${{ matrix.flavor.id }} \
             --agree-to-terms
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: site-${{ matrix.flavor.id }}
           path: site-${{ matrix.flavor.id }}
@@ -149,7 +149,7 @@ jobs:
     runs-on: macos-11
     needs: test
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: metanorma-darwin-x86_64
           path: build/bin
