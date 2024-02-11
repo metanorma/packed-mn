@@ -13,6 +13,9 @@ if Gem.win_platform?
 end
 
 gem "ffi"
+if Gem.win_platform?
+  gem "ffi-compiler2", "= 2.0.1"
+end
 # nokogiry asks for psych >= 4
 # psych 5 does not support --enable-bundled-libyaml configuration option
 # that is required by tebako
