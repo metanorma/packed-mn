@@ -41,6 +41,9 @@ task:
   only_if: $CIRRUS_BRANCH == 'main' || $CIRRUS_PR != '' || $CIRRUS_TAG != ''
   macos_instance:
     image: ghcr.io/cirruslabs/macos-monterey-base:latest
+  env:
+    XCODE_VERSION: "12.4"
+    CACHE_VER: "05"
 
   install_script: |
     brew update
@@ -50,7 +53,6 @@ task:
 
   pre_setup_script: |
     cat common.env >> $CIRRUS_ENV
-    cat macos.env >> $CIRRUS_ENV
 
   tebako_cache:
     folder: $TEBAKO_DIR/$DEPS
@@ -58,7 +60,7 @@ task:
     fingerprint_script:
       - sw_vers
       - cat common.env
-      - cat macos.env
+      - echo $CACHE_VER
 
   tebako_setup_script: |
     gem install tebako
@@ -94,8 +96,11 @@ task:
   env:
     CMAKE_VERSION: 3.26.5
     CC: clang-12
-    CXX: ckang-12++
+    CXX: clang++-12
     DEBIAN_FRONTEND: noninteractive
+    BUNDLE_BUILD__SASSC: --enable-static-stdlib
+    CACHE_VER: "05"
+
 
   install_script: |
     apt-get -y update
@@ -111,7 +116,6 @@ task:
 
   pre_setup_script: |
     cat common.env >> $CIRRUS_ENV
-    cat ubuntu.env >> $CIRRUS_ENV
 
   setup_cmake_script: |
     mkdir -p cmake-install
@@ -127,7 +131,7 @@ task:
     fingerprint_script:
       - echo $CIRRUS_OS
       - cat common.env
-      - cat ubuntu.env
+      - echo $CACHE_VER
 
   tebako_setup_script: |
     gem install bundler -v $BUNDLER_VER
