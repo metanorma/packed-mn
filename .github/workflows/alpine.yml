@@ -112,11 +112,14 @@ jobs:
       - name: Install packages
         run: |
           apk --no-cache --upgrade add git libstdc++ xz libarchive \
-            openjdk17-jre-headless openssl fontconfig ttf-dejavu tar
+            openjdk17-jre-headless openssl fontconfig ttf-dejavu tar python3 py3-pip
 
       - uses: actions/checkout@v4
 
       - run: rm Gemfile
+
+      - if: matrix.flavor.id == 'ietf'
+        run: pip3 install xml2rfc --break-system-packages
 
       - uses: actions/download-artifact@v4
         with:

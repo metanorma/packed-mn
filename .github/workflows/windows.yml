@@ -111,6 +111,9 @@ jobs:
 
       - run: Remove-Item Gemfile
 
+      - if: matrix.flavor.id == 'ietf'
+        uses: metanorma/ci/xml2rfc-setup-action@main
+
       - uses: actions/download-artifact@v4
         with:
           name: metanorma-windows
