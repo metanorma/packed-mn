@@ -133,6 +133,14 @@ jobs:
           path: ${{ github.workspace }}/samples
           fetch-depth: 1
 
+      - if: ${{ matrix.flavor.id == 'bipm' }}
+        uses: metanorma/ci/fontist-setup@main
+
+      - if: ${{ matrix.flavor.id == 'bipm' }}
+        run: |
+          fontist update
+          fontist install 'Work Sans Light'
+
       - name: Test (${{ matrix.flavor.id }})
         timeout-minutes: 45
         run: |
