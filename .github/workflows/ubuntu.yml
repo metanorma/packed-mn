@@ -7,7 +7,8 @@ on:
     branches: [ main ]
     tags: [ v* ]
     paths-ignore:
-      - .github/workflows/macos.yml
+      - .github/workflows/macos-x86_64.yml
+      - .github/workflows/macos-arm64.yml
       - .github/workflows/windows.yml
       - .github/workflows/alpine.yml
       - .github/workflows/release_tag.yml
@@ -15,7 +16,8 @@ on:
       - Makefile.win
   pull_request:
     paths-ignore:
-      - .github/workflows/macos.yml
+      - .github/workflows/macos-x86_64.yml
+      - .github/workflows/macos-arm64.yml
       - .github/workflows/windows.yml
       - .github/workflows/alpine.yml
       - .github/workflows/release_tag.yml
