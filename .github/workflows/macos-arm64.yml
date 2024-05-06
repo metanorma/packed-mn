@@ -1,4 +1,4 @@
-name: macos
+name: macos-arm64
 
 on:
   schedule:
@@ -10,6 +10,7 @@ on:
       - .github/workflows/ubuntu.yml
       - .github/workflows/windows.yml
       - .github/workflows/alpine.yml
+      - .github/workflows/macos-x86_64.yml
       - .github/workflows/release_tag.yml
       - .cirrus.*
       - Makefile.win
@@ -18,6 +19,7 @@ on:
       - .github/workflows/ubuntu.yml
       - .github/workflows/windows.yml
       - .github/workflows/alpine.yml
+      - .github/workflows/macos-x86_64.yml
       - .github/workflows/release_tag.yml
       - .cirrus.*
       - Makefile.win
@@ -53,7 +55,7 @@ jobs:
           echo "head_tag=${tag}" >> $GITHUB_OUTPUT
 
   build:
-    runs-on: macos-11
+    runs-on: macos-14
     needs: prepare
     if: "(github.event_name == 'push' && needs.prepare.outputs.head_tag == '') || github.event_name == 'pull_request' || github.event_name == 'schedule'"
     steps:
@@ -73,20 +75,20 @@ jobs:
           bundler_version: ${{ env.BUNDLER_VER }}
 
       - name: package metanorma
-        run: make build/bin/metanorma-darwin-x86_64
+        run: make build/bin/metanorma-darwin-arm64
 
       - uses: actions/upload-artifact@v4
         with:
-          name: metanorma-darwin-x86_64
-          path: build/bin/metanorma-darwin-x86_64
+          name: metanorma-darwin-arm64
+          path: build/bin/metanorma-darwin-arm64
 
       - name: Verify packaging
         run: |
-          build/bin/metanorma-darwin-x86_64 --tebako-extract extracted_source_filesystem
+          build/bin/metanorma-darwin-arm64 --tebako-extract extracted_source_filesystem
           diff -r extracted_source_filesystem .archive/tebako/output/source_filesystem
 
       - name: Smoke test
-        run: build/bin/metanorma-darwin-x86_64 help
+        run: build/bin/metanorma-darwin-arm64 help
 
   build-matrix:
     uses: metanorma/ci/.github/workflows/build-sample-matrix.yml@main
@@ -97,7 +99,7 @@ jobs:
 
   test:
     needs: [build, build-matrix]
-    runs-on: macos-11
+    runs-on: macos-14
     continue-on-error: ${{ matrix.flavor.experimental }}
     strategy:
       max-parallel: 5
@@ -113,10 +115,10 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          name: metanorma-darwin-x86_64
+          name: metanorma-darwin-arm64
           path: build/bin
 
-      - run: chmod a+x build/bin/metanorma-darwin-x86_64
+      - run: chmod a+x build/bin/metanorma-darwin-arm64
 
       - uses: actions/cache@v4
         with:
@@ -136,7 +138,7 @@ jobs:
       - name: Test (${{ matrix.flavor.id }})
         timeout-minutes: 45
         run: |
-          build/bin/metanorma-darwin-x86_64 \
+          build/bin/metanorma-darwin-arm64 \
             site generate samples \
             -c samples/metanorma.yml \
             -o site-${{ matrix.flavor.id }} \
@@ -149,30 +151,30 @@ jobs:
 
   release:
     if: startsWith(github.ref, 'refs/tags/')
-    runs-on: macos-11
+    runs-on: macos-14
     needs: test
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: metanorma-darwin-x86_64
+          name: metanorma-darwin-arm64
           path: build/bin
 
       - name: Package binary into archive
         run: |
-          chmod a+x build/bin/metanorma-darwin-x86_64
-          cp build/bin/metanorma-darwin-x86_64 metanorma-darwin-x86_64
-          tar -czvf metanorma-darwin-x86_64.tgz metanorma-darwin-x86_64
+          chmod a+x build/bin/metanorma-darwin-arm64
+          cp build/bin/metanorma-darwin-arm64 metanorma-darwin-arm64
+          tar -czvf metanorma-darwin-arm64.tgz metanorma-darwin-arm64
 
       - name: Calculate SHA256 hash
         run: |
           brew install coreutils
-          sha256sum metanorma-darwin-x86_64.tgz | cut -d ' ' -f1 > metanorma-darwin-x86_64.tgz.sha256.txt
+          sha256sum metanorma-darwin-arm64.tgz | cut -d ' ' -f1 > metanorma-darwin-arm64.tgz.sha256.txt
 
       - uses: softprops/action-gh-release@v1
         with:
           files: |
-            metanorma-darwin-x86_64.tgz
-            metanorma-darwin-x86_64.tgz.sha256.txt
+            metanorma-darwin-arm64.tgz
+            metanorma-darwin-arm64.tgz.sha256.txt
 
       - uses: peter-evans/repository-dispatch@v2
         with:

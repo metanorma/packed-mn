@@ -1,4 +1,4 @@
-name: windows
+name: macos-x86_64
 
 on:
   schedule:
@@ -8,21 +8,21 @@ on:
     tags: [ v* ]
     paths-ignore:
       - .github/workflows/ubuntu.yml
-      - .github/workflows/macos-x86_64.yml
-      - .github/workflows/macos-arm64.yml
+      - .github/workflows/windows.yml
       - .github/workflows/alpine.yml
+      - .github/workflows/macos-arm64.yml
       - .github/workflows/release_tag.yml
-      - Makefile
       - .cirrus.*
+      - Makefile.win
   pull_request:
     paths-ignore:
       - .github/workflows/ubuntu.yml
-      - .github/workflows/macos-x86_64.yml
-      - .github/workflows/macos-arm64.yml
+      - .github/workflows/windows.yml
       - .github/workflows/alpine.yml
+      - .github/workflows/macos-arm64.yml
       - .github/workflows/release_tag.yml
-      - Makefile
       - .cirrus.*
+      - Makefile.win
   workflow_dispatch:
 
 concurrency:
@@ -55,43 +55,40 @@ jobs:
           echo "head_tag=${tag}" >> $GITHUB_OUTPUT
 
   build:
-    runs-on: windows-2019
+    runs-on: macos-12
     needs: prepare
-    if: "(github.event_name == 'push' && needs.prepare.outputs.head_tag == '') || github.event_name == 'pull_request'"
+    if: "(github.event_name == 'push' && needs.prepare.outputs.head_tag == '') || github.event_name == 'pull_request' || github.event_name == 'schedule'"
     steps:
-    - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - run: |
-        gem -v
-        systeminfo
+      - name: Setup environment
+        run: cat common.env >> $GITHUB_ENV
 
-    - uses: metanorma/metanorma-build-scripts/gh-rubygems-setup-action@main
-      with:
-        token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
+      - name: Setup Tebako
+        uses: tamatebako/tebako/.github/actions/setup-tebako@main
+        with:
+          cache: build
+          cache_ver: ${{ env.CACHE_VER }}
+          cache_path: ${{ env.TEBAKO_DIR }}
+          ruby_version: ${{ env.RUBY_VER }}
+          bundler_version: ${{ env.BUNDLER_VER }}
 
-    - uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: '3.1'
+      - name: package metanorma
+        run: make build/bin/metanorma-darwin-x86_64
 
-    - uses: nick-invision/retry@v3
-      with:
-        polling_interval_seconds: 5
-        timeout_minutes: 5
-        max_attempts: 3
-        command: choco install --no-progress make gnuwin32-coreutils.install gzip wget git
+      - uses: actions/upload-artifact@v4
+        with:
+          name: metanorma-darwin-x86_64
+          path: build/bin/metanorma-darwin-x86_64
 
-    - run: |
-        %ChocolateyInstall%\bin\make.exe -f Makefile.win build build/metanorma.exe
-      shell: cmd
-      env:
-        BUNDLE_DEBUG: true
+      - name: Verify packaging
+        run: |
+          build/bin/metanorma-darwin-x86_64 --tebako-extract extracted_source_filesystem
+          diff -r extracted_source_filesystem .archive/tebako/output/source_filesystem
 
-    - uses: actions/upload-artifact@v4
-      with:
-        name: metanorma-windows
-        path: build/metanorma.exe
-
-    - run: .\build\metanorma.exe help
+      - name: Smoke test
+        run: build/bin/metanorma-darwin-x86_64 help
 
   build-matrix:
     uses: metanorma/ci/.github/workflows/build-sample-matrix.yml@main
@@ -102,7 +99,7 @@ jobs:
 
   test:
     needs: [build, build-matrix]
-    runs-on: windows-2019
+    runs-on: macos-12
     continue-on-error: ${{ matrix.flavor.experimental }}
     strategy:
       max-parallel: 5
@@ -111,21 +108,23 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - run: Remove-Item Gemfile
+      - run: rm Gemfile
 
       - if: matrix.flavor.id == 'ietf'
         uses: metanorma/ci/xml2rfc-setup-action@main
 
       - uses: actions/download-artifact@v4
         with:
-          name: metanorma-windows
-          path: build
+          name: metanorma-darwin-x86_64
+          path: build/bin
+
+      - run: chmod a+x build/bin/metanorma-darwin-x86_64
 
       - uses: actions/cache@v4
         with:
           path: ~/.relaton
-          key: relaton-windows-${{ matrix.flavor.id }}
-          restore-keys: relaton-windows-${{ matrix.flavor.id }}
+          key: relaton-macos-${{ matrix.flavor.id }}
+          restore-keys: relaton-macos-${{ matrix.flavor.id }}
 
       - name: Fetch samples (${{ matrix.flavor.id }})
         uses: actions/checkout@v4
@@ -139,37 +138,47 @@ jobs:
       - name: Test (${{ matrix.flavor.id }})
         timeout-minutes: 45
         run: |
-          build\metanorma.exe site generate samples -c samples\metanorma.yml --agree-to-terms
+          build/bin/metanorma-darwin-x86_64 \
+            site generate samples \
+            -c samples/metanorma.yml \
+            -o site-${{ matrix.flavor.id }} \
+            --agree-to-terms
 
       - uses: actions/upload-artifact@v4
         with:
           name: site-${{ matrix.flavor.id }}
-          path: _site
+          path: site-${{ matrix.flavor.id }}
 
   release:
     if: startsWith(github.ref, 'refs/tags/')
-    runs-on: windows-latest
+    runs-on: macos-12
     needs: test
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: metanorma-windows
-          path: build
+          name: metanorma-darwin-x86_64
+          path: build/bin
 
-      - run: cp build/metanorma.exe metanorma-windows-x86_64.exe
+      - name: Package binary into archive
+        run: |
+          chmod a+x build/bin/metanorma-darwin-x86_64
+          cp build/bin/metanorma-darwin-x86_64 metanorma-darwin-x86_64
+          tar -czvf metanorma-darwin-x86_64.tgz metanorma-darwin-x86_64
 
-      - run: Get-FileHash -Algorithm SHA256 metanorma-windows-x86_64.exe | Select -ExpandProperty "Hash" | Out-File metanorma-windows-x86_64.exe.sha256.txt
+      - name: Calculate SHA256 hash
+        run: |
+          brew install coreutils
+          sha256sum metanorma-darwin-x86_64.tgz | cut -d ' ' -f1 > metanorma-darwin-x86_64.tgz.sha256.txt
 
       - uses: softprops/action-gh-release@v1
         with:
           files: |
-            metanorma-windows-x86_64.exe
-            metanorma-windows-x86_64.exe.sha256.txt
+            metanorma-darwin-x86_64.tgz
+            metanorma-darwin-x86_64.tgz.sha256.txt
 
-      - name: Trigger chocolatey-metanorma
-        uses: peter-evans/repository-dispatch@v1
+      - uses: peter-evans/repository-dispatch@v2
         with:
           token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
-          repository: metanorma/chocolatey-metanorma
+          repository: metanorma/homebrew-metanorma
           event-type: ${{ github.repository }}
           client-payload: '{ "ref": "${{ github.ref }}" }'

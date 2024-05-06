@@ -37,54 +37,6 @@
 #  public-only: "true"
 
 task:
-  name: darwin_arm64
-  only_if: $CIRRUS_BRANCH == 'main' || $CIRRUS_PR != '' || $CIRRUS_TAG != ''
-  macos_instance:
-    image: ghcr.io/cirruslabs/macos-monterey-base:latest
-  env:
-    XCODE_VERSION: "12.4"
-    CACHE_VER: "05"
-
-  install_script: |
-    brew update
-    brew install gnu-sed bash pkg-config bison flex binutils   \
-    libffi double-conversion boost jemalloc fmt glog libevent  \
-    libsodium lz4 xz gdbm zlib ncurses libyaml openssl@3
-
-  pre_setup_script: |
-    cat common.env >> $CIRRUS_ENV
-
-  tebako_cache:
-    folder: $TEBAKO_DIR/$DEPS
-    reupload_on_changes: "false"
-    fingerprint_script:
-      - sw_vers
-      - cat common.env
-      - echo $CACHE_VER
-
-  tebako_setup_script: |
-    gem install tebako
-
-  package_metanorma_script: |
-    make build/bin/metanorma-darwin-arm64
-
-  pre_upload_caches_script: |
-    rm -rf $TEBAKO_DIR/$DEPS/src/_ruby_*
-
-  upload_caches:
-    - tebako
-
-  verify_packaging_script: |
-    build/bin/metanorma-darwin-arm64 --tebako-extract extracted_source_filesystem
-    diff -r extracted_source_filesystem .archive/tebako/output/source_filesystem
-
-  smoke_test_script: |
-    build/bin/metanorma-darwin-arm64 help
-
-  metanorma_darwin_arm64_artifacts:
-    path: build/bin/metanorma-darwin-arm64
-
-task:
   name: linux_aarch64
   only_if: $CIRRUS_BRANCH == 'main' || $CIRRUS_PR != '' || $CIRRUS_TAG != ''
   arm_container:
