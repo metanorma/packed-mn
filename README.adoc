@@ -2,10 +2,10 @@
 
 image:https://github.com/metanorma/packed-mn/workflows/ubuntu/badge.svg["Build Status", link="https://github.com/metanorma/packed-mn/actions?workflow=ubuntu"]
 image:https://github.com/metanorma/packed-mn/workflows/alpine/badge.svg["Build Status", link="https://github.com/metanorma/packed-mn/actions?workflow=alpine"]
-image:https://github.com/metanorma/packed-mn/workflows/macos/badge.svg["Build Status", link="https://github.com/metanorma/packed-mn/actions?workflow=macos"]
+image:https://github.com/metanorma/packed-mn/workflows/macos-arm64/badge.svg["Build Status", link="https://github.com/metanorma/packed-mn/actions?workflow=macos-arm64"]
+image:https://github.com/metanorma/packed-mn/workflows/macos-x86_64/badge.svg["Build Status", link="https://github.com/metanorma/packed-mn/actions?workflow=macos-x86_64"]
 image:https://github.com/metanorma/packed-mn/workflows/windows/badge.svg["Build Status", link="https://github.com/metanorma/packed-mn/actions?workflow=windows"]
 
-image:https://api.cirrus-ci.com/github/metanorma/packed-mn.svg?task=darwin_arm64["Build Status", link="https://cirrus-ci.com/github/metanorma/packed-mn"]
 image:https://api.cirrus-ci.com/github/metanorma/packed-mn.svg?task=linux_aarch64["Build Status", link="https://cirrus-ci.com/github/metanorma/packed-mn"]
 
 
