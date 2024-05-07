@@ -36,11 +36,6 @@ def main():
     flavors = flavors[:3]
 
     instances = {
-        "darwin_arm64": {
-            "macos_instance": {
-                "image": "ghcr.io/cirruslabs/macos-monterey-xcode:latest"
-            }
-        },
         "linux_aarch64": {
             "arm_container": {
                 "image": "ubuntu:20.04",
@@ -59,12 +54,9 @@ def main():
         "install_script": "DEBIAN_FRONTEND=noninteractive apt-get -y update && " +
                           "DEBIAN_FRONTEND=noninteractive apt-get -y install wget unzip git default-jre"
     }
-    macos_install = {
-        "install_script": "brew update  && brew upgrade ca-certificates"
-    }
     tasks = [ ]
 
-    for host in [ "darwin_arm64", "linux_aarch64" ]:
+    for host in [ "linux_aarch64" ]:
         m_nm = "metanorma_" + host
         # cirrus-ci does not like '-' but metanorma makefile uses it
         m_bin = m_nm.replace("_", "-")
@@ -83,8 +75,6 @@ def main():
 
                 if host == "linux_aarch64":
                     flow.update(linux_install)
-                else:
-                    flow.update(macos_install)
 
                 flow2 = {
                     "load_mentanorma_script": "wget -nv " + m_remote + " && unzip " + m_zip,
