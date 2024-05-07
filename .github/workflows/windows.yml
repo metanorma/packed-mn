@@ -72,6 +72,7 @@ jobs:
     - uses: ruby/setup-ruby@v1
       with:
         ruby-version: '3.1'
+        bundler: '2.4'
 
     - uses: nick-invision/retry@v3
       with:
