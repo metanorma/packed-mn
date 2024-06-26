@@ -78,7 +78,7 @@ task:
     popd
 
   tebako_cache:
-    folder: $TEBAKO_DIR/$DEPS
+    folder: $TEBAKO_PREFIX/$DEPS
     reupload_on_changes: "false"
     fingerprint_script:
       - echo $CIRRUS_OS
@@ -94,14 +94,14 @@ task:
     mv -T build/bin/metanorma-linux-gnu-aarch64 build/bin/metanorma-linux-aarch64
 
   pre_upload_caches_script: |
-    rm -rf $TEBAKO_DIR/$DEPS/src/_ruby_*
+    rm -rf $TEBAKO_PREFIX/$DEPS/src/_ruby_*
 
   upload_caches:
     - tebako
 
   verify_packaging_script: |
     build/bin/metanorma-linux-aarch64 --tebako-extract extracted_source_filesystem
-    diff -r extracted_source_filesystem .archive/tebako/o/s
+    diff -r extracted_source_filesystem $TEBAKO_PREFIX/o/s
 
   smoke_test_script: |
     build/bin/metanorma-linux-aarch64 help

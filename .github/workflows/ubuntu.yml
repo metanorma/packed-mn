@@ -56,16 +56,13 @@ jobs:
           echo "head_tag=${tag}" >> $GITHUB_OUTPUT
 
   build:
-    runs-on: ubuntu-20.04
-    container: ghcr.io/tamatebako/tebako-ubuntu-20.04:latest
+    runs-on: ubuntu-latest
+    container: ghcr.io/tamatebako/amd64-tebako-ubuntu-20.04:latest
     needs: prepare
     if: "(github.event_name == 'push' && needs.prepare.outputs.head_tag == '') || github.event_name == 'pull_request' || github.event_name == 'schedule'"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Setup environment
-        run: cat common.env >> $GITHUB_ENV
 
       - name: Package metanorma
         run: |
@@ -80,7 +77,7 @@ jobs:
       - name: Verify packaging
         run: |
           build/bin/metanorma-linux-x86_64 --tebako-extract extracted_source_filesystem
-          diff -r extracted_source_filesystem .archive/tebako/o/s
+          diff -r extracted_source_filesystem $TEBAKO_PREFIX/o/s
 
       - name: smoke test
         run: build/bin/metanorma-linux-x86_64 help

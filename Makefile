@@ -19,7 +19,7 @@ TEST_PROCESSORS ?= iso cc iec un m3aawg jcgm csa bipm iho ogc itu ietf ieee
 ifdef RUBY_VER
 RUBY_VERSION := $(RUBY_VER)
 else
-RUBY_VERSION := '3.1.4'
+RUBY_VERSION := '3.1.6'
 endif
 
 BUILD_DIR := build
@@ -55,13 +55,13 @@ $(BUILD_DIR)/.package-ready: $(BUILD_DIR)/package/metanorma $(BUILD_DIR)/package
 
 $(BUILD_DIR)/bin/metanorma-$(PLATFORM)-$(ARCH): $(BUILD_DIR)/.package-ready
 	mkdir -p $(dir $@);
-	tebako press -r "$(BUILD_DIR)/package" -e "metanorma" -o "$@" -p "${TEBAKO_DIR}" -R $(RUBY_VERSION);
+	tebako press -r "$(BUILD_DIR)/package" -e "metanorma" -o "$@" -p "${TEBAKO_PREFIX}" -R $(RUBY_VERSION);
 ifneq ($(PLATFORM),darwin)
 	strip $@;
 endif
 
 clean:
-	rm -rf ${TEBAKO_DIR}
+	rm -rf ${TEBAKO_PREFIX}
 
 distclean: clean
 	rm -rf .archive

@@ -70,7 +70,7 @@ jobs:
         with:
           cache: build
           cache_ver: ${{ env.CACHE_VER }}
-          cache_path: ${{ env.TEBAKO_DIR }}
+          cache_path: ${{ env.TEBAKO_PREFIX }}
           ruby_version: ${{ env.RUBY_VER }}
           bundler_version: ${{ env.BUNDLER_VER }}
 
@@ -85,7 +85,7 @@ jobs:
       - name: Verify packaging
         run: |
           build/bin/metanorma-darwin-x86_64 --tebako-extract extracted_source_filesystem
-          diff -r extracted_source_filesystem .archive/tebako/o/s
+          diff -r extracted_source_filesystem ${{ env.TEBAKO_PREFIX }}/o/s
 
       - name: Smoke test
         run: build/bin/metanorma-darwin-x86_64 help
