@@ -57,6 +57,7 @@ jobs:
 
   build:
     runs-on: ubuntu-20.04
+    container: ghcr.io/tamatebako/tebako-ubuntu-20.04:latest
     needs: prepare
     if: "(github.event_name == 'push' && needs.prepare.outputs.head_tag == '') || github.event_name == 'pull_request' || github.event_name == 'schedule'"
     steps:
@@ -65,15 +66,6 @@ jobs:
 
       - name: Setup environment
         run: cat common.env >> $GITHUB_ENV
-
-      - name: Setup Tebako
-        uses: tamatebako/tebako/.github/actions/setup-tebako@main
-        with:
-          cache: build
-          cache_ver: ${{ env.CACHE_VER }}
-          cache_path: ${{ env.TEBAKO_DIR }}
-          ruby_version: ${{ env.RUBY_VER }}
-          bundler_version: ${{ env.BUNDLER_VER }}
 
       - name: Package metanorma
         run: |

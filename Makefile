@@ -55,13 +55,13 @@ $(BUILD_DIR)/.package-ready: $(BUILD_DIR)/package/metanorma $(BUILD_DIR)/package
 
 $(BUILD_DIR)/bin/metanorma-$(PLATFORM)-$(ARCH): $(BUILD_DIR)/.package-ready
 	mkdir -p $(dir $@);
-	tebako press -r "$(BUILD_DIR)/package" -e "metanorma" -o "$@" -p ".archive/tebako" -R $(RUBY_VERSION);
+	tebako press -r "$(BUILD_DIR)/package" -e "metanorma" -o "$@" -p "${TEBAKO_DIR}" -R $(RUBY_VERSION);
 ifneq ($(PLATFORM),darwin)
 	strip $@;
 endif
 
 clean:
-	rm -rf $(BUILD_DIR)
+	rm -rf ${TEBAKO_DIR}
 
 distclean: clean
 	rm -rf .archive
