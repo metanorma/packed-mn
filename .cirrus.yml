@@ -101,7 +101,7 @@ task:
 
   verify_packaging_script: |
     build/bin/metanorma-linux-aarch64 --tebako-extract extracted_source_filesystem
-    diff -r extracted_source_filesystem .archive/tebako/o/source_filesystem
+    diff -r extracted_source_filesystem .archive/tebako/o/s
 
   smoke_test_script: |
     build/bin/metanorma-linux-aarch64 help

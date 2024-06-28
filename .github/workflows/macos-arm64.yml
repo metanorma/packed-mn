@@ -85,7 +85,7 @@ jobs:
       - name: Verify packaging
         run: |
           build/bin/metanorma-darwin-arm64 --tebako-extract extracted_source_filesystem
-          diff -r extracted_source_filesystem .archive/tebako/o/source_filesystem
+          diff -r extracted_source_filesystem .archive/tebako/o/s
 
       - name: Smoke test
         run: build/bin/metanorma-darwin-arm64 help
