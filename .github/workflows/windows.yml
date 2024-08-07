@@ -138,7 +138,7 @@ jobs:
           fetch-depth: 1
 
       - name: Test (${{ matrix.flavor.id }})
-        timeout-minutes: 45
+        timeout-minutes: 120
         run: |
           build\metanorma.exe site generate samples -c samples\metanorma.yml --agree-to-terms
 

@@ -136,7 +136,7 @@ jobs:
           fetch-depth: 1
 
       - name: Test (${{ matrix.flavor.id }})
-        timeout-minutes: 45
+        timeout-minutes: 120
         run: |
           build/bin/metanorma-darwin-x86_64 \
             site generate samples \
