@@ -86,7 +86,6 @@ task:
       - echo $CACHE_VER
 
   tebako_setup_script: |
-    gem install bundler -v $BUNDLER_VER
     sudo gem install tebako
 
   package_metanorma_script: |
