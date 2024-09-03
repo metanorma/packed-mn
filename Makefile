@@ -55,7 +55,7 @@ $(BUILD_DIR)/.package-ready: $(BUILD_DIR)/package/metanorma $(BUILD_DIR)/package
 
 $(BUILD_DIR)/bin/metanorma-$(PLATFORM)-$(ARCH): $(BUILD_DIR)/.package-ready
 	mkdir -p $(dir $@);
-	tebako press -r "$(BUILD_DIR)/package" -e "metanorma" -o "$@" -p "${TEBAKO_PREFIX}" -R $(RUBY_VERSION);
+	tebako press -r "$(BUILD_DIR)/package" -e "metanorma" -o "$@" -p "${TEBAKO_PREFIX}" -R $(RUBY_VERSION) --patchelf;
 ifneq ($(PLATFORM),darwin)
 	strip $@;
 endif
