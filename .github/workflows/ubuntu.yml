@@ -91,7 +91,7 @@ jobs:
 
   test:
     needs: [build, build-matrix]
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     continue-on-error: ${{ matrix.flavor.experimental }}
     strategy:
       max-parallel: 5
