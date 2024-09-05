@@ -159,13 +159,18 @@ jobs:
 
       - run: cp build/metanorma.exe metanorma-windows-x86_64.exe
 
-      - run: Get-FileHash -Algorithm SHA256 metanorma-windows-x86_64.exe | Select -ExpandProperty "Hash" | Out-File metanorma-windows-x86_64.exe.sha256.txt
+      - run: |
+          Get-FileHash -Algorithm SHA256 metanorma-windows-x86_64.exe | Select -ExpandProperty "Hash" | Out-File metanorma-windows-x86_64.exe.sha256.txt
+          Compress-Archive -Path metanorma-windows-x86_64.exe -DestinationPath metanorma-windows-x86_64.zip
 
       - uses: softprops/action-gh-release@v1
         with:
           files: |
+            # chocolatey
             metanorma-windows-x86_64.exe
             metanorma-windows-x86_64.exe.sha256.txt
+            # for winget
+            metanorma-windows-x86_64.zip
 
       - name: Trigger chocolatey-metanorma
         uses: peter-evans/repository-dispatch@v1
