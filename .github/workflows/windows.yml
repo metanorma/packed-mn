@@ -181,3 +181,11 @@ jobs:
           repository: metanorma/chocolatey-metanorma
           event-type: ${{ github.repository }}
           client-payload: '{ "ref": "${{ github.ref }}" }'
+
+      - name: Trigger winget-metanorma
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
+          repository: metanorma/winget-metanorma
+          event-type: ${{ github.repository }}
+          client-payload: '{ "ref": "${{ github.ref }}" }'
