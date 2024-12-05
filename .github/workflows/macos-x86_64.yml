@@ -55,7 +55,7 @@ jobs:
           echo "head_tag=${tag}" >> $GITHUB_OUTPUT
 
   build:
-    runs-on: macos-12
+    runs-on: macos-13
     needs: prepare
     if: "(github.event_name == 'push' && needs.prepare.outputs.head_tag == '') || github.event_name == 'pull_request' || github.event_name == 'schedule'"
     steps:
@@ -99,7 +99,7 @@ jobs:
 
   test:
     needs: [build, build-matrix]
-    runs-on: macos-12
+    runs-on: macos-13
     continue-on-error: ${{ matrix.flavor.experimental }}
     strategy:
       max-parallel: 5
@@ -151,7 +151,7 @@ jobs:
 
   release:
     if: startsWith(github.ref, 'refs/tags/')
-    runs-on: macos-12
+    runs-on: macos-13
     needs: test
     steps:
       - uses: actions/download-artifact@v4
