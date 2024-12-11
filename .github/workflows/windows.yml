@@ -161,7 +161,7 @@ jobs:
 
       - run: |
           Get-FileHash -Algorithm SHA256 metanorma-windows-x86_64.exe | Select -ExpandProperty "Hash" | Out-File metanorma-windows-x86_64.exe.sha256.txt
-          Compress-Archive -Path metanorma.exe -DestinationPath metanorma-windows-x86_64.zip
+          Compress-Archive -Path .\build\metanorma.exe -DestinationPath metanorma-windows-x86_64.zip
           Get-FileHash -Algorithm SHA256 metanorma-windows-x86_64.zip | Select -ExpandProperty "Hash" | Out-File metanorma-windows-x86_64.zip.sha256.txt
 
       - uses: softprops/action-gh-release@v1
