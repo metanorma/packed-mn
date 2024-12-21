@@ -57,7 +57,7 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    container: ghcr.io/tamatebako/tebako-ubuntu-20.04:latest
+    container: ghcr.io/tamatebako/tebako-ubuntu-20.04:0.9.3
     needs: prepare
     if: "(github.event_name == 'push' && needs.prepare.outputs.head_tag == '') || github.event_name == 'pull_request' || github.event_name == 'schedule'"
     steps:
