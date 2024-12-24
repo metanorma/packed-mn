@@ -73,6 +73,7 @@ jobs:
           cache_path: ${{ env.TEBAKO_PREFIX }}
           ruby_version: ${{ env.RUBY_VER }}
           bundler_version: ${{ env.BUNDLER_VER }}
+          xcode: 15.2
 
       - name: package metanorma
         run: make build/bin/metanorma-darwin-x86_64
