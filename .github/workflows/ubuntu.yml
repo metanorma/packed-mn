@@ -56,31 +56,38 @@ jobs:
           echo "head_tag=${tag}" >> $GITHUB_OUTPUT
 
   build:
-    runs-on: ubuntu-latest
+    name: build for ${{ matrix.arch.suffix }} architecture
+    runs-on: ${{ matrix.arch.host }}
     container: ghcr.io/tamatebako/tebako-ubuntu-20.04:latest
     needs: prepare
     if: "(github.event_name == 'push' && needs.prepare.outputs.head_tag == '') || github.event_name == 'pull_request' || github.event_name == 'schedule'"
+    strategy:
+      fail-fast: false
+      matrix:
+        arch:
+          - { host: ubuntu-22.04, suffix: x86_64 }
+          - { host: ubuntu-22.04-arm, suffix: aarch64 }
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Package metanorma
         run: |
-          make build/bin/metanorma-linux-gnu-x86_64
-          mv -T build/bin/metanorma-linux-gnu-x86_64 build/bin/metanorma-linux-x86_64
+          make build/bin/metanorma-linux-gnu-${{ matrix.arch.suffix }}
+          mv -T build/bin/metanorma-linux-gnu-${{ matrix.arch.suffix }} build/bin/metanorma-linux-${{ matrix.arch.suffix }}
 
       - uses: actions/upload-artifact@v4
         with:
-          name: metanorma-linux-x86_64
-          path: build/bin/metanorma-linux-x86_64
+          name: metanorma-linux-${{ matrix.arch.suffix }}
+          path: build/bin/metanorma-linux-${{ matrix.arch.suffix }}
 
       - name: Verify packaging
         run: |
-          build/bin/metanorma-linux-x86_64 --tebako-extract extracted_source_filesystem
+          build/bin/metanorma-linux-${{ matrix.arch.suffix }} --tebako-extract extracted_source_filesystem
           diff -r extracted_source_filesystem $TEBAKO_PREFIX/o/s
 
       - name: smoke test
-        run: build/bin/metanorma-linux-x86_64 help
+        run: build/bin/metanorma-linux-${{ matrix.arch.suffix }} help
 
   build-matrix:
     uses: metanorma/ci/.github/workflows/build-sample-matrix.yml@main
@@ -90,13 +97,18 @@ jobs:
       public-only: true
 
   test:
+    name: test ${{ matrix.flavor.id }} on ${{ matrix.arch.suffix }} architecture
     needs: [build, build-matrix]
-    runs-on: ubuntu-22.04
+    runs-on: ${{ matrix.arch.host }}
     continue-on-error: ${{ matrix.flavor.experimental }}
     strategy:
       max-parallel: 5
       fail-fast: false
-      matrix: ${{ fromJson(needs.build-matrix.outputs.samples-matrix) }}
+      matrix:
+        flavor: ${{ fromJson(needs.build-matrix.outputs.samples-matrix).flavor }}
+        arch:
+          - { host: ubuntu-22.04, suffix: x86_64 }
+          - { host: ubuntu-22.04-arm, suffix: aarch64 }
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -108,7 +120,7 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          name: metanorma-linux-x86_64
+          name: metanorma-linux-${{ matrix.arch.suffix }}
           path: build/bin
 
       - uses: actions/cache@v4
@@ -117,7 +129,7 @@ jobs:
           key: relaton-linux-${{ matrix.flavor.id }}
           restore-keys: relaton-linux-${{ matrix.flavor.id }}
 
-      - run: chmod +x build/bin/metanorma-linux-x86_64
+      - run: chmod +x build/bin/metanorma-linux-${{ matrix.arch.suffix }}
 
       - name: Fetch samples (${{ matrix.flavor.id }})
         uses: actions/checkout@v4
@@ -131,42 +143,54 @@ jobs:
       - name: Test (${{ matrix.flavor.id }})
         timeout-minutes: 120
         run: |
-          build/bin/metanorma-linux-x86_64 \
+          build/bin/metanorma-linux-${{ matrix.arch.suffix }} \
             site generate samples \
             -c samples/metanorma.yml \
             --agree-to-terms
 
       - uses: actions/upload-artifact@v4
         with:
-          name: site-${{ matrix.flavor.id }}
+          name: site-${{ matrix.arch.suffix }}-${{ matrix.flavor.id }}
           path: _site
 
   release:
+    name: release for ${{ matrix.arch.suffix }} architecture
     if: startsWith(github.ref, 'refs/tags/')
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.arch.host }}
     needs: test
+    strategy:
+      fail-fast: false
+      matrix:
+        arch:
+          - { host: ubuntu-22.04, suffix: x86_64 }
+          - { host: ubuntu-22.04-arm, suffix: aarch64 }
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: metanorma-linux-x86_64
+          name: metanorma-linux-${{ matrix.arch.suffix }}
           path: build/bin
 
       - name: Package binary into archive
         run: |
-          chmod +x build/bin/metanorma-linux-x86_64
-          mv build/bin/metanorma-linux-x86_64 metanorma-linux-x86_64
-          tar -czvf metanorma-linux-x86_64.tgz metanorma-linux-x86_64
+          chmod +x build/bin/metanorma-linux-${{ matrix.arch.suffix }}
+          mv build/bin/metanorma-linux-${{ matrix.arch.suffix }} metanorma-linux-${{ matrix.arch.suffix }}
+          tar -czvf metanorma-linux-${{ matrix.arch.suffix }}.tgz metanorma-linux-${{ matrix.arch.suffix }}
 
       - name: Calculate SHA256 hash
         run: |
-          sha256sum metanorma-linux-x86_64.tgz | cut -d ' ' -f1 > metanorma-linux-x86_64.tgz.sha256.txt
+          sha256sum metanorma-linux-${{ matrix.arch.suffix }}.tgz | cut -d ' ' -f1 > metanorma-linux-${{ matrix.arch.suffix }}.tgz.sha256.txt
 
       - uses: softprops/action-gh-release@v1
         with:
           files: |
-            metanorma-linux-x86_64.tgz
-            metanorma-linux-x86_64.tgz.sha256.txt
+            metanorma-linux-${{ matrix.arch.suffix }}.tgz
+            metanorma-linux-${{ matrix.arch.suffix }}.tgz.sha256.txt
 
+  dispatch:
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    needs: release
+    steps:
       - uses: peter-evans/repository-dispatch@v2
         with:
           token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
