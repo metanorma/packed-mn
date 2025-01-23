@@ -6,9 +6,6 @@ image:https://github.com/metanorma/packed-mn/workflows/macos-arm64/badge.svg["Bu
 image:https://github.com/metanorma/packed-mn/workflows/macos-x86_64/badge.svg["Build Status", link="https://github.com/metanorma/packed-mn/actions?workflow=macos-x86_64"]
 image:https://github.com/metanorma/packed-mn/workflows/windows/badge.svg["Build Status", link="https://github.com/metanorma/packed-mn/actions?workflow=windows"]
 
-image:https://api.cirrus-ci.com/github/metanorma/packed-mn.svg?task=linux_aarch64["Build Status", link="https://cirrus-ci.com/github/metanorma/packed-mn"]
-
-
 == Purpose
 
 Metanorma is a sophisticated document publishing tool for
