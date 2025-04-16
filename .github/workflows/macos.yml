@@ -1,4 +1,4 @@
-name: macos-arm64
+name: macos
 
 on:
   schedule:
@@ -10,7 +10,6 @@ on:
       - .github/workflows/ubuntu.yml
       - .github/workflows/windows.yml
       - .github/workflows/alpine.yml
-      - .github/workflows/macos-x86_64.yml
       - .github/workflows/release_tag.yml
       - .cirrus.*
       - Makefile.win
@@ -19,7 +18,6 @@ on:
       - .github/workflows/ubuntu.yml
       - .github/workflows/windows.yml
       - .github/workflows/alpine.yml
-      - .github/workflows/macos-x86_64.yml
       - .github/workflows/release_tag.yml
       - .cirrus.*
       - Makefile.win
@@ -55,9 +53,19 @@ jobs:
           echo "head_tag=${tag}" >> $GITHUB_OUTPUT
 
   build:
-    runs-on: macos-14
     needs: prepare
-    if: "(github.event_name == 'push' && needs.prepare.outputs.head_tag == '') || github.event_name == 'pull_request' || github.event_name == 'schedule'"
+    if: (github.event_name == 'push' && needs.prepare.outputs.head_tag == '') || github.event_name == 'pull_request' || github.event_name == 'schedule'
+    strategy:
+      matrix:
+        arch: [arm64, x86_64]
+        include:
+          - arch: arm64
+            runner: macos-14
+            binary: metanorma-darwin-arm64
+          - arch: x86_64
+            runner: macos-13
+            binary: metanorma-darwin-x86_64
+    runs-on: ${{ matrix.runner }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -73,22 +81,32 @@ jobs:
           cache_path: ${{ env.TEBAKO_PREFIX }}
           ruby_version: ${{ env.RUBY_VER }}
           bundler_version: ${{ env.BUNDLER_VER }}
+          xcode: ${{ matrix.arch == 'x86_64' && '15.2' || '' }}
 
       - name: package metanorma
-        run: make build/bin/metanorma-darwin-arm64
+        run: make build/bin/${{ matrix.binary }}
+
+      - name: Package binary for release
+        run: |
+          cp build/bin/${{ matrix.binary }} ${{ matrix.binary }}
+          tar -czvf ${{ matrix.binary }}.tgz ${{ matrix.binary }}
+          brew install coreutils
+          sha256sum ${{ matrix.binary }}.tgz | cut -d ' ' -f1 > ${{ matrix.binary }}.tgz.sha256.txt
 
       - uses: actions/upload-artifact@v4
         with:
-          name: metanorma-darwin-arm64
-          path: build/bin/metanorma-darwin-arm64
+          name: ${{ matrix.binary }}
+          path: |
+            ${{ matrix.binary }}.tgz
+            ${{ matrix.binary }}.tgz.sha256.txt
 
       - name: Verify packaging
         run: |
-          build/bin/metanorma-darwin-arm64 --tebako-extract extracted_source_filesystem
+          build/bin/${{ matrix.binary }} --tebako-extract extracted_source_filesystem
           diff -r extracted_source_filesystem ${{ env.TEBAKO_PREFIX }}/o/s
 
       - name: Smoke test
-        run: build/bin/metanorma-darwin-arm64 help
+        run: build/bin/${{ matrix.binary }} help
 
   build-matrix:
     uses: metanorma/ci/.github/workflows/build-sample-matrix.yml@main
@@ -99,12 +117,21 @@ jobs:
 
   test:
     needs: [build, build-matrix]
-    runs-on: macos-14
-    continue-on-error: ${{ matrix.flavor.experimental }}
     strategy:
       max-parallel: 5
       fail-fast: false
-      matrix: ${{ fromJson(needs.build-matrix.outputs.samples-matrix) }}
+      matrix:
+        arch: [arm64, x86_64]
+        flavor: ${{ fromJson(needs.build-matrix.outputs.samples-matrix) }}
+        include:
+          - arch: arm64
+            runner: macos-14
+            binary: metanorma-darwin-arm64
+          - arch: x86_64
+            runner: macos-13
+            binary: metanorma-darwin-x86_64
+    runs-on: ${{ matrix.runner }}
+    continue-on-error: ${{ matrix.flavor.experimental }}
     steps:
       - uses: actions/checkout@v4
 
@@ -115,15 +142,18 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          name: metanorma-darwin-arm64
-          path: build/bin
+          name: ${{ matrix.binary }}
+          path: .
 
-      - run: chmod a+x build/bin/metanorma-darwin-arm64
+      - name: Extract binary from tarball
+        run: |
+          tar -xzvf ${{ matrix.binary }}.tgz
+          chmod a+x ${{ matrix.binary }}
 
       - uses: actions/cache@v4
         with:
           path: ~/.relaton
-          key: relaton-macos-${{ matrix.flavor.id }}
+          key: relaton-macos-${{ matrix.flavor.id }}-${{ matrix.arch }}
           restore-keys: relaton-macos-${{ matrix.flavor.id }}
 
       - name: Fetch samples (${{ matrix.flavor.id }})
@@ -138,43 +168,45 @@ jobs:
       - name: Test (${{ matrix.flavor.id }})
         timeout-minutes: 120
         run: |
-          build/bin/metanorma-darwin-arm64 \
+          ./${{ matrix.binary }} \
             site generate samples \
             -c samples/metanorma.yml \
-            -o site-${{ matrix.flavor.id }} \
+            -o site-${{ matrix.flavor.id }}-${{ matrix.arch }} \
             --agree-to-terms
 
       - uses: actions/upload-artifact@v4
         with:
-          name: site-${{ matrix.flavor.id }}
-          path: site-${{ matrix.flavor.id }}
+          name: site-${{ matrix.flavor.id }}-${{ matrix.arch }}
+          path: site-${{ matrix.flavor.id }}-${{ matrix.arch }}
 
   release:
     if: startsWith(github.ref, 'refs/tags/')
-    runs-on: macos-14
+    runs-on: ubuntu-latest
     needs: test
     steps:
-      - uses: actions/download-artifact@v4
+      - name: Download arm64 artifacts
+        uses: actions/download-artifact@v4
         with:
           name: metanorma-darwin-arm64
-          path: build/bin
+          path: artifacts
 
-      - name: Package binary into archive
-        run: |
-          chmod a+x build/bin/metanorma-darwin-arm64
-          cp build/bin/metanorma-darwin-arm64 metanorma-darwin-arm64
-          tar -czvf metanorma-darwin-arm64.tgz metanorma-darwin-arm64
+      - name: Download x86_64 artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: metanorma-darwin-x86_64
+          path: artifacts
 
-      - name: Calculate SHA256 hash
+      - name: Move files to root for release
         run: |
-          brew install coreutils
-          sha256sum metanorma-darwin-arm64.tgz | cut -d ' ' -f1 > metanorma-darwin-arm64.tgz.sha256.txt
+          find artifacts -name "*.tgz" -o -name "*.tgz.sha256.txt" -exec cp {} . \;
 
       - uses: softprops/action-gh-release@v1
         with:
           files: |
             metanorma-darwin-arm64.tgz
             metanorma-darwin-arm64.tgz.sha256.txt
+            metanorma-darwin-x86_64.tgz
+            metanorma-darwin-x86_64.tgz.sha256.txt
 
       - uses: peter-evans/repository-dispatch@v2
         with:
