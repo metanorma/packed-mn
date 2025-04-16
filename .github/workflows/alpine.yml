@@ -8,8 +8,7 @@ on:
     tags: [ v* ]
     paths-ignore:
       - .github/workflows/ubuntu.yml
-      - .github/workflows/macos-x86_64.yml
-      - .github/workflows/macos-arm64.yml
+      - .github/workflows/macos.yml
       - .github/workflows/windows.yml
       - .github/workflows/release_tag.yml
       - .cirrus.*
@@ -17,8 +16,7 @@ on:
   pull_request:
     paths-ignore:
       - .github/workflows/ubuntu.yml
-      - .github/workflows/macos-x86_64.yml
-      - .github/workflows/macos-arm64.yml
+      - .github/workflows/macos.yml
       - .github/workflows/windows.yml
       - .github/workflows/release_tag.yml
       - .cirrus.*

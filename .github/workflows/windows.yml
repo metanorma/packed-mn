@@ -8,8 +8,7 @@ on:
     tags: [ v* ]
     paths-ignore:
       - .github/workflows/ubuntu.yml
-      - .github/workflows/macos-x86_64.yml
-      - .github/workflows/macos-arm64.yml
+      - .github/workflows/macos.yml
       - .github/workflows/alpine.yml
       - .github/workflows/release_tag.yml
       - Makefile
@@ -17,8 +16,7 @@ on:
   pull_request:
     paths-ignore:
       - .github/workflows/ubuntu.yml
-      - .github/workflows/macos-x86_64.yml
-      - .github/workflows/macos-arm64.yml
+      - .github/workflows/macos.yml
       - .github/workflows/alpine.yml
       - .github/workflows/release_tag.yml
       - Makefile
@@ -57,7 +55,7 @@ jobs:
   build:
     runs-on: windows-2019
     needs: prepare
-    if: "(github.event_name == 'push' && needs.prepare.outputs.head_tag == '') || github.event_name == 'pull_request'"
+    if: (github.event_name == 'push' && needs.prepare.outputs.head_tag == '') || github.event_name == 'pull_request'
     steps:
     - uses: actions/checkout@v4
 
