@@ -119,16 +119,11 @@ jobs:
       max-parallel: 5
       fail-fast: false
       matrix:
-        arch: [arm64, x86_64]
-        flavor: ${{ fromJson(needs.build-matrix.outputs.samples-matrix) }}
-        include:
-          - arch: arm64
-            runner: macos-14
-            binary: metanorma-darwin-arm64
-          - arch: x86_64
-            runner: macos-13
-            binary: metanorma-darwin-x86_64
-    runs-on: ${{ matrix.runner }}
+        flavor: ${{ fromJson(needs.build-matrix.outputs.samples-matrix).flavor }}
+        arch:
+          - { runner: macos-14, suffix: arm64, binary: metanorma-darwin-arm64 }
+          - { runner: macos-13, suffix: x86_64, binary: metanorma-darwin-x86_64 }
+    runs-on: ${{ matrix.arch.runner }}
     continue-on-error: ${{ matrix.flavor.experimental }}
     steps:
       - uses: actions/checkout@v4
@@ -140,18 +135,18 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          name: ${{ matrix.binary }}
+          name: ${{ matrix.arch.binary }}
           path: .
 
       - name: Extract binary from tarball
         run: |
-          tar -xzvf ${{ matrix.binary }}.tgz
-          chmod a+x ${{ matrix.binary }}
+          tar -xzvf ${{ matrix.arch.binary }}.tgz
+          chmod a+x ${{ matrix.arch.binary }}
 
       - uses: actions/cache@v4
         with:
           path: ~/.relaton
-          key: relaton-macos-${{ matrix.flavor.id }}-${{ matrix.arch }}
+          key: relaton-macos-${{ matrix.flavor.id }}-${{ matrix.arch.suffix }}
           restore-keys: relaton-macos-${{ matrix.flavor.id }}
 
       - name: Fetch samples (${{ matrix.flavor.id }})
@@ -166,16 +161,16 @@ jobs:
       - name: Test (${{ matrix.flavor.id }})
         timeout-minutes: 120
         run: |
-          ./${{ matrix.binary }} \
+          ./${{ matrix.arch.binary }} \
             site generate samples \
             -c samples/metanorma.yml \
-            -o site-${{ matrix.flavor.id }}-${{ matrix.arch }} \
+            -o site-${{ matrix.flavor.id }}-${{ matrix.arch.suffix }} \
             --agree-to-terms
 
       - uses: actions/upload-artifact@v4
         with:
-          name: site-${{ matrix.flavor.id }}-${{ matrix.arch }}
-          path: site-${{ matrix.flavor.id }}-${{ matrix.arch }}
+          name: site-${{ matrix.flavor.id }}-${{ matrix.arch.suffix }}
+          path: site-${{ matrix.flavor.id }}-${{ matrix.arch.suffix }}
 
   release:
     if: startsWith(github.ref, 'refs/tags/')
@@ -206,7 +201,8 @@ jobs:
             metanorma-darwin-x86_64.tgz
             metanorma-darwin-x86_64.tgz.sha256.txt
 
-      - uses: peter-evans/repository-dispatch@v2
+      - name: Trigger homebrew-metanorma
+        uses: peter-evans/repository-dispatch@v2
         with:
           token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
           repository: metanorma/homebrew-metanorma
