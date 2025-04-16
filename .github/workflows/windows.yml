@@ -12,7 +12,6 @@ on:
       - .github/workflows/alpine.yml
       - .github/workflows/release_tag.yml
       - Makefile
-      - .cirrus.*
   pull_request:
     paths-ignore:
       - .github/workflows/ubuntu.yml
@@ -20,7 +19,6 @@ on:
       - .github/workflows/alpine.yml
       - .github/workflows/release_tag.yml
       - Makefile
-      - .cirrus.*
   workflow_dispatch:
 
 concurrency:
