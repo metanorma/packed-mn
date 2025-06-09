@@ -7,21 +7,17 @@ on:
     branches: [ main ]
     tags: [ v* ]
     paths-ignore:
-      - .github/workflows/macos-x86_64.yml
-      - .github/workflows/macos-arm64.yml
+      - .github/workflows/macos.yml
       - .github/workflows/windows.yml
       - .github/workflows/alpine.yml
       - .github/workflows/release_tag.yml
-      - .cirrus.*
       - Makefile.win
   pull_request:
     paths-ignore:
-      - .github/workflows/macos-x86_64.yml
-      - .github/workflows/macos-arm64.yml
+      - .github/workflows/macos.yml
       - .github/workflows/windows.yml
       - .github/workflows/alpine.yml
       - .github/workflows/release_tag.yml
-      - .cirrus.*
       - Makefile.win
   workflow_dispatch:
 
@@ -60,7 +56,7 @@ jobs:
     runs-on: ${{ matrix.arch.host }}
     container: ghcr.io/tamatebako/tebako-ubuntu-20.04:latest
     needs: prepare
-    if: "(github.event_name == 'push' && needs.prepare.outputs.head_tag == '') || github.event_name == 'pull_request' || github.event_name == 'schedule'"
+    if: (github.event_name == 'push' && needs.prepare.outputs.head_tag == '') || github.event_name == 'pull_request' || github.event_name == 'schedule'
     strategy:
       fail-fast: false
       matrix:
