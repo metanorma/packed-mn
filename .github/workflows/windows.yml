@@ -51,7 +51,7 @@ jobs:
           echo "head_tag=${tag}" >> $GITHUB_OUTPUT
 
   build:
-    runs-on: windows-2019
+    runs-on: windows-2022
     needs: prepare
     if: (github.event_name == 'push' && needs.prepare.outputs.head_tag == '') || github.event_name == 'pull_request'
     steps:
@@ -99,7 +99,7 @@ jobs:
 
   test:
     needs: [build, build-matrix]
-    runs-on: windows-2019
+    runs-on: windows-2022
     continue-on-error: ${{ matrix.flavor.experimental }}
     strategy:
       max-parallel: 5
