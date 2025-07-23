@@ -163,7 +163,7 @@ jobs:
         run: |
           sha256sum metanorma-linux-musl-x86_64.tgz | cut -d ' ' -f1 > metanorma-linux-musl-x86_64.tgz.sha256.txt
 
-      - uses: softprops/action-gh-release@v1
+      - uses: softprops/action-gh-release@v2
         with:
           files: |
             metanorma-linux-musl-x86_64.tgz

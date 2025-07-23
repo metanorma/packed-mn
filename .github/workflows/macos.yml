@@ -193,7 +193,7 @@ jobs:
         run: |
           find artifacts -name "*.tgz" -o -name "*.tgz.sha256.txt" -exec cp {} . \;
 
-      - uses: softprops/action-gh-release@v1
+      - uses: softprops/action-gh-release@v2
         with:
           files: |
             metanorma-darwin-arm64.tgz
@@ -202,7 +202,7 @@ jobs:
             metanorma-darwin-x86_64.tgz.sha256.txt
 
       - name: Trigger homebrew-metanorma
-        uses: peter-evans/repository-dispatch@v2
+        uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
           repository: metanorma/homebrew-metanorma
