@@ -159,7 +159,7 @@ jobs:
           Compress-Archive -Path .\build\metanorma.exe -DestinationPath metanorma-windows-x86_64.zip
           Get-FileHash -Algorithm SHA256 metanorma-windows-x86_64.zip | Select -ExpandProperty "Hash" | Out-File metanorma-windows-x86_64.zip.sha256.txt
 
-      - uses: softprops/action-gh-release@v1
+      - uses: softprops/action-gh-release@v2
         with:
           files: |
             # chocolatey
@@ -170,7 +170,7 @@ jobs:
             metanorma-windows-x86_64.zip.sha256.txt
 
       - name: Trigger chocolatey-metanorma
-        uses: peter-evans/repository-dispatch@v1
+        uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
           repository: metanorma/chocolatey-metanorma
@@ -178,7 +178,7 @@ jobs:
           client-payload: '{ "ref": "${{ github.ref }}" }'
 
       - name: Trigger winget-metanorma
-        uses: peter-evans/repository-dispatch@v1
+        uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
           repository: metanorma/winget-metanorma
