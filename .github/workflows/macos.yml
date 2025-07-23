@@ -194,7 +194,8 @@ jobs:
 
       - name: Move files to root for release
         run: |
-          find artifacts -name "*.tgz" -o -name "*.tgz.sha256.txt" -exec cp {} . \;
+          ls -alR .
+          find artifacts \( -name '*.tgz' -o -name '*.tgz.sha256.txt' \) -exec cp {} . \;
 
       - uses: softprops/action-gh-release@v2
         with:
