@@ -62,6 +62,7 @@ end
 
 # explicitly load all dependent gems
 # ruby packer cannot use gem load path correctly.
+require 'ox'
 require 'metanorma/cli'
 
 # start up the CLI
