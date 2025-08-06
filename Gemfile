@@ -18,3 +18,4 @@ group :development do
 end
 
 gem "metanorma-cli", "= 1.13.3"
+gem "ox", "= 2.14.21"
