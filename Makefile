@@ -19,7 +19,7 @@ TEST_PROCESSORS ?= iso cc iec un m3aawg jcgm csa bipm iho ogc itu ietf ieee
 ifdef RUBY_VER
 RUBY_VERSION := $(RUBY_VER)
 else
-RUBY_VERSION := '3.1.6'
+RUBY_VERSION := '3.4.2'
 endif
 
 BUILD_DIR := build
