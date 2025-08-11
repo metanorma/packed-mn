@@ -133,12 +133,24 @@ jobs:
           path: ${{ github.workspace }}/samples
           fetch-depth: 1
 
+      - name: Determine config file
+        id: config
+        run: |
+          if [ -f "samples/metanorma.test.yml" ]; then
+            echo "config_file=samples/metanorma.test.yml" >> $GITHUB_OUTPUT
+          elif [ -f "samples/metanorma.yml" ]; then
+            echo "config_file=samples/metanorma.yml" >> $GITHUB_OUTPUT
+          else
+            echo "Error: Neither metanorma.test.yml nor metanorma.yml found in samples directory"
+            exit 1
+          fi
+
       - name: Test (${{ matrix.flavor.id }})
         timeout-minutes: 120
         run: |
           build/bin/metanorma-linux-musl-x86_64 \
             site generate samples \
-            -c samples/metanorma.yml \
+            -c ${{ steps.config.outputs.config_file }} \
             --agree-to-terms
 
       - uses: actions/upload-artifact@v4
