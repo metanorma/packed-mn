@@ -63,9 +63,9 @@ jobs:
           - arch: arm64
             runner: macos-14
             binary: metanorma-darwin-arm64
-          - arch: x86_64
-            runner: macos-13
-            binary: metanorma-darwin-x86_64
+#          - arch: x86_64
+#            runner: macos-13
+#            binary: metanorma-darwin-x86_64
     runs-on: ${{ matrix.runner }}
     steps:
       - name: Checkout
