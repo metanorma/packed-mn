@@ -126,7 +126,7 @@ jobs:
         flavor: ${{ fromJson(needs.build-matrix.outputs.samples-matrix).flavor }}
         arch:
           - { runner: macos-14, suffix: arm64, binary: metanorma-darwin-arm64 }
-          - { runner: macos-13, suffix: x86_64, binary: metanorma-darwin-x86_64 }
+#         - { runner: macos-13, suffix: x86_64, binary: metanorma-darwin-x86_64 }
     runs-on: ${{ matrix.arch.runner }}
     continue-on-error: ${{ matrix.flavor.experimental }}
     steps:
@@ -199,11 +199,11 @@ jobs:
           name: metanorma-darwin-arm64
           path: artifacts
 
-      - name: Download x86_64 artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: metanorma-darwin-x86_64
-          path: artifacts
+#      - name: Download x86_64 artifacts
+#        uses: actions/download-artifact@v4
+#        with:
+#          name: metanorma-darwin-x86_64
+#          path: artifacts
 
       - name: Move files to root for release
         run: |
@@ -215,8 +215,9 @@ jobs:
           files: |
             metanorma-darwin-arm64.tgz
             metanorma-darwin-arm64.tgz.sha256.txt
-            metanorma-darwin-x86_64.tgz
-            metanorma-darwin-x86_64.tgz.sha256.txt
+
+#            metanorma-darwin-x86_64.tgz
+#            metanorma-darwin-x86_64.tgz.sha256.txt
 
       - name: Trigger homebrew-metanorma
         uses: peter-evans/repository-dispatch@v3
