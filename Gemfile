@@ -13,6 +13,7 @@ if Gem.win_platform?
 end
 
 gem "ffi"
+gem "openssl", "= 3.0.2"
 # nokogiry asks for psych >= 4
 # psych 5 does not support --enable-bundled-libyaml configuration option
 # that is required by tebako
