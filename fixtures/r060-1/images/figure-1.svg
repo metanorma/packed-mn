@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 448.88 238.22">
+  <!-- Generator: Adobe Illustrator 30.2.1, SVG Export Plug-In . SVG Version: 2.1.1 Build 1)  -->
+  <defs>
+    <style>
+      .st0 {
+        font-size: 10px;
+      }
+
+      .st0, .st1, .st2 {
+        font-family: ArialMT, Arial;
+      }
+
+      .st3 {
+        fill: #fff;
+        stroke-width: .75px;
+      }
+
+      .st3, .st4, .st5 {
+        stroke: #000;
+        stroke-miterlimit: 10;
+      }
+
+      .st4, .st5 {
+        fill: none;
+      }
+
+      .st5 {
+        stroke-dasharray: 4;
+      }
+
+      .st1 {
+        font-size: 7px;
+      }
+
+      .st2 {
+        font-size: 6px;
+      }
+    </style>
+  </defs>
+  <g id="lines">
+    <line class="st4" x1="45.94" y1="83.39" x2="332.15" y2="83.39"/>
+    <line class="st4" x1="302.39" y1="83.53" x2="302.39" y2="48.93"/>
+    <line class="st5" x1="388.31" y1="8.07" x2="388.31" y2="198.23"/>
+  </g>
+  <g id="rectangles">
+    <rect class="st3" x="399.36" y="21.01" width="43.72" height="31.6"/>
+    <rect class="st3" x="332.11" y="67.19" width="43.72" height="31.6"/>
+    <rect class="st3" x="280.19" y="17.3" width="43.72" height="31.6"/>
+    <rect class="st3" x="224.88" y="66" width="43.72" height="35.15"/>
+    <rect class="st3" x="169.66" y="66" width="43.72" height="35.15"/>
+    <rect class="st3" x="112.9" y="66" width="43.72" height="35.15"/>
+    <rect class="st3" x="57" y="66" width="43.72" height="35.15"/>
+    <rect class="st3" x="2.11" y="66" width="43.72" height="35.15"/>
+    <rect class="st3" x="399.36" y="64.59" width="43.72" height="31.6"/>
+    <rect class="st3" x="399.36" y="108.39" width="43.72" height="31.6"/>
+    <rect class="st3" x="399.36" y="151.97" width="43.72" height="31.6"/>
+  </g>
+  <g id="arrows">
+    <g>
+      <line class="st4" x1="107.74" y1="137.02" x2="107.74" y2="106.3"/>
+      <polygon points="107.74 101.36 110.58 108.32 107.74 106.67 104.89 108.32 107.74 101.36"/>
+    </g>
+    <g>
+      <line class="st4" x1="164" y1="137.02" x2="164" y2="106.3"/>
+      <polygon points="164 101.36 166.85 108.32 164 106.67 161.15 108.32 164 101.36"/>
+    </g>
+    <g>
+      <line class="st4" x1="219.14" y1="137.02" x2="219.14" y2="106.3"/>
+      <polygon points="219.14 101.36 221.98 108.32 219.14 106.67 216.29 108.32 219.14 101.36"/>
+    </g>
+    <g>
+      <line class="st4" x1="284.9" y1="137.02" x2="284.9" y2="106.3"/>
+      <polygon points="284.9 101.36 287.74 108.32 284.9 106.67 282.05 108.32 284.9 101.36"/>
+    </g>
+  </g>
+  <g id="texts">
+    <text class="st1" transform="translate(287.85 26.39)"><tspan x="0" y="0">Key(s) or </tspan><tspan x="-4.68" y="8.4">Keyboard to </tspan><tspan x="2.33" y="16.8">operate</tspan></text>
+    <text class="st1" transform="translate(410.86 38.68)"><tspan x="0" y="0">Printer</tspan></text>
+    <text class="st1" transform="translate(341.92 80.66)"><tspan x="0" y="0">Primary</tspan><tspan x="1.16" y="8.4">display</tspan></text>
+    <text class="st1" transform="translate(92.95 148.48)"><tspan x="0" y="0">Analogue</tspan><tspan x="5.65" y="8.4">signal</tspan></text>
+    <text class="st0" transform="translate(.6 216.8)"><tspan x="0" y="0">From OIML R 76:</tspan></text>
+    <text class="st0" transform="translate(.6 236.15)"><tspan x="0" y="0">Definition of typical modules within a weighing system (other combinations are possible). </tspan></text>
+    <text class="st1" transform="translate(154.27 148.4)"><tspan x="0" y="0">Digital</tspan><tspan x="-9.33" y="8.4">“raw values”</tspan><tspan x="-2.92" y="16.8">(counts)</tspan></text>
+    <text class="st1" transform="translate(204.55 149.69)"><tspan x="0" y="0">Weighing</tspan><tspan x="6.22" y="8.4">value</tspan><tspan x="1.37" y="16.8">(in mass</tspan><tspan x="6.03" y="25.2">units)</tspan></text>
+    <text class="st1" transform="translate(260.97 151.12)"><tspan x="0" y="0">Net, gross, tare</tspan><tspan x="9.14" y="8.4">and other</tspan><tspan x="12.26" y="16.8">primary</tspan><tspan x="9.14" y="25.2">indication</tspan><tspan x="7.2" y="33.6">(e.g. price)</tspan></text>
+    <text class="st1" transform="translate(227.68 72.84)"><tspan x="0" y="0">Further data</tspan><tspan x="2.14" y="8.4">processing</tspan><tspan x="3.11" y="16.8">(e.g., tare,</tspan><tspan x="10.31" y="25.2">price)</tspan></text>
+    <text class="st1" transform="translate(184.13 77.04)"><tspan x="0" y="0">Data</tspan><tspan x="-9.53" y="8.4">processing</tspan><tspan x="-5.83" y="16.8">(scaling)</tspan></text>
+    <text class="st1" transform="translate(116.08 77.04)"><tspan x="0" y="0">Analogue to</tspan><tspan x="9.54" y="8.4">digital</tspan><tspan x="4.09" y="16.8">converter</tspan></text>
+    <text class="st1" transform="translate(64.08 81.24)"><tspan x="0" y="0">Analogue</tspan><tspan x="1.95" y="8.4">load cell</tspan></text>
+    <text class="st1" transform="translate(6.27 72.84)"><tspan x="0" y="0">Mechanical</tspan><tspan x="-2.92" y="8.4">and electrical</tspan><tspan x=".77" y="16.8">connecting</tspan><tspan x="3.5" y="25.2">elements</tspan></text>
+    <text class="st1" transform="translate(404.49 78.05)"><tspan x="0" y="0">Secondary</tspan><tspan x="5.84" y="8.4">display</tspan></text>
+    <text class="st1" transform="translate(401.18 121.86)"><tspan x="0" y="0">Data storage</tspan><tspan x="9.92" y="8.4">device</tspan></text>
+    <text class="st1" transform="translate(412.47 161.23)"><tspan x="0" y="0">Other</tspan><tspan x="-6.81" y="8.4">peripheral</tspan><tspan x="-3.11" y="16.8">devices</tspan></text>
+    <text class="st2" transform="translate(407.55 9.31)"><tspan x="0" y="0">Peripheral</tspan><tspan x="3.5" y="7.2">devices</tspan></text>
+  </g>
+  <g id="numbers">
+    <text class="st1" transform="translate(22.02 57.4)"><tspan x="0" y="0">1</tspan></text>
+    <text class="st1" transform="translate(76.92 57.4)"><tspan x="0" y="0">2</tspan></text>
+    <text class="st1" transform="translate(132.81 57.4)"><tspan x="0" y="0">3</tspan></text>
+    <text class="st1" transform="translate(189.58 57.4)"><tspan x="0" y="0">4</tspan></text>
+    <text class="st1" transform="translate(244.8 57.4)"><tspan x="0" y="0">5</tspan></text>
+    <text class="st1" transform="translate(300.1 11.7)"><tspan x="0" y="0">6</tspan></text>
+    <text class="st1" transform="translate(352.03 61.72)"><tspan x="0" y="0">7</tspan></text>
+  </g>
+</svg>

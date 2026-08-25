@@ -1,68 +1,157 @@
-= Metanorma-CLI single executable binary
+= packed-mn — Metanorma single-executable packages (tebako v2)
 
-image:https://github.com/metanorma/packed-mn/workflows/ubuntu/badge.svg["Build Status", link="https://github.com/metanorma/packed-mn/actions?workflow=ubuntu"]
-image:https://github.com/metanorma/packed-mn/workflows/alpine/badge.svg["Build Status", link="https://github.com/metanorma/packed-mn/actions?workflow=alpine"]
-image:https://github.com/metanorma/packed-mn/workflows/macos-arm64/badge.svg["Build Status", link="https://github.com/metanorma/packed-mn/actions?workflow=macos-arm64"]
-image:https://github.com/metanorma/packed-mn/workflows/macos-x86_64/badge.svg["Build Status", link="https://github.com/metanorma/packed-mn/actions?workflow=macos-x86_64"]
-image:https://github.com/metanorma/packed-mn/workflows/windows/badge.svg["Build Status", link="https://github.com/metanorma/packed-mn/actions?workflow=windows"]
+image:https://github.com/metanorma/packed-mn/workflows/build/badge.svg["Build Status", link="https://github.com/metanorma/packed-mn/actions/workflows/build.yml"]
 
 == Purpose
 
-Metanorma is a sophisticated document publishing tool for
-standardization bodies.
-It is written in Ruby with a number of dependencies.
+This repository assembles the single-executable Metanorma packages
+published on the releases page. It *assembles* — it compiles nothing.
+Every input is a published, sha256-pinned release artifact, and the whole
+pipeline is one workflow (`.github/workflows/build.yml`):
 
-User organizations of Metanorma run on multiple platforms,
-including Windows, Linux and macOS.
+. *fetch* — the tebako toolchain and the payload slices, verified against
+  the digests pinned in `versions.yaml`;
+. *assemble* — `tebako-pkg bundle` stitches the slices onto the tebako
+  bootstrap;
+. *validate* — structural trailer gates, a `--version` smoke run, and a
+  PDF-compile diagnostic;
+. *publish* — on tags, a GitHub release plus dispatches to the downstream
+  packagers (snap, Homebrew, Chocolatey, winget).
 
-The challenge is how to ensure the distribution and installation of
-Metanorma works on the target system reliably.
+The v1 era (six platform workflows driven by Makefiles, compiling Ruby
+from source on every build) is retired; this repo is now a thin assembly
+layer over the tebako v2 ecosystem.
 
-Today, Metanorma offers:
+== What a package is (tebako v2 in one paragraph)
 
-* Ruby gem
-* Linux setup script
-* macOS Homebrew package
-* Windows Chocolatey package
-* Docker container
+A package is up to three independently distributable parts, glued by the
+`tpkg` trailer:
 
-However, all these packages require a long installation process
-with caveats, such as being prone to network failures and a network
-of dependencies to install.
+* *Bootstrap* — the tiny Rust loader that is the process entry point;
+* *Runtime* — the Ruby interpreter executable plus its environment image
+  (stdlib + gems), two artifacts downloaded once per machine into the
+  shared `~/.tebako` cache, sha256-verified, mounted (never extracted);
+* *Payload slices* — bare `.tfs` filesystem images. packed-mn carries
+  three: the `metanorma` app itself, an OpenJDK runtime (for mn2pdf), and
+  Inkscape (for SVG processing).
 
-This repo attempts to package dependencies using `tebako` and `aibika`,
-tools that package a Ruby interpreter with gems and dependencies
-into a RAM disk in Linux/MacOS and Windows environments.
+The packages built here are *lean*: the payloads ride inside the
+executable, and the runtime pair is resolved on first run from the
+pinned release and then cached forever. The authoritative architecture
+documentation lives in `docs/spec/00–19` of the `tamatebako/tebako`
+repository.
 
-Our goal is to make installation quick and dependable for our users.
+== Inputs — `versions.yaml` is the single source of truth
 
+Every byte the pipeline assembles is pinned in `versions.yaml`:
 
-== Usage
+[cols="1,2",options="header"]
+|===
+| Input | Currently pinned
 
-=== Compile executable
+| tebako toolchain (`tamatebako/tebako`)
+| v0.2.4 (`tebako-pkg`, `tebako-bootstrap`, `tfs` per platform)
 
-For macOS / Linux:
+| Ruby runtime (`tamatebako/tebako-runtime-ruby`)
+| runtime 0.16.9 / ruby 3.3.12 (resolved at first run)
 
-[source,sh]
+| metanorma payload (`tebako-packages/metanorma`)
+| 1.16.9 (release tag `1.16.9-3`)
+
+| OpenJDK slice (`tebako-packages/openjdk`)
+| 21.0.12
+
+| Inkscape slice (`tebako-packages/inkscape`)
+| 1.4.3
+|===
+
+Bumping any input is a one-line edit of `versions.yaml`; the workflow,
+the manifest template, and the release notes all flow from it (nothing
+else in the repo hardcodes a version or a digest). The package manifest
+template lives in `package/package-manifest.yaml` and is rendered by
+`tools/render-manifest` with values from `tools/pins.rb`.
+
+== Using a package
+
+Download the asset for your platform from the release page:
+
+* macOS (Apple Silicon): `metanorma-darwin-arm64.tgz`
+* Linux (x86_64): `metanorma-linux-x86_64.tgz`
+* Windows (x86_64): `metanorma-windows-x86_64.exe` (also as `.zip`)
+
+Unpack (macOS/Linux) and run:
+
+[source,console]
 ----
-$: make build
+$ tar xzf metanorma-darwin-arm64.tgz
+$ ./metanorma-darwin-arm64 --version
 ----
 
-For Windows:
+On first run the package downloads the Ruby runtime pair (interpreter +
+environment image, sha256-verified) into `~/.tebako` and caches it
+machine-wide; later runs start immediately. No compilation machinery, no
+system dependencies.
 
-[source,batch]
+== Development
+
+=== Layout
+
+* `versions.yaml` — pin SSOT (see above)
+* `package/package-manifest.yaml` — L2 package manifest template
+  (`@@PLACEHOLDER@@` values filled from `versions.yaml`)
+* `tools/pins.rb` — reads `versions.yaml`, emits the env a build leg
+  needs (`ruby tools/pins.rb <triplet> <tool-platform> --env`)
+* `tools/render-manifest` — renders the manifest template
+* `tools/sync-payload.rb` — flows a new metanorma payload version from
+  the feedstock registry into `versions.yaml` (used by the dispatch flow)
+* `fixtures/r060-1/` — the OIML document the PDF-compile diagnostic
+  builds
+* `.github/workflows/build.yml` — the whole pipeline
+
+=== Bumping the metanorma payload
+
+The `tebako-packages/metanorma` feedstock sends a
+`repository_dispatch` (`tebako-packages/metanorma`) when it publishes a
+new payload. The `prepare` job then fetches the feedstock registry,
+rewrites the metanorma block of `versions.yaml`, commits to `main`, and
+tags `v<version>` — the tag push runs the full pipeline and publishes
+the release. The same flow can be started by hand with
+`workflow_dispatch` (`payload_version` input). Bumping the OpenJDK /
+Inkscape slices or the tebako/runtime pins is a manual one-line edit of
+`versions.yaml` on a PR.
+
+== Known limitations
+
+* *PDF output is blocked by an upstream tebako gap.* tebako v0.2.4
+  hands mounted payload regions to spawned child processes via
+  `TEBAKO_TFS_MOUNTS` as bare `image:mount` pairs; the child then tries
+  to mount the whole package *file* at the payload's mount point and
+  fails:
++
 ----
-$: make -f Makefile.win build
+libtfs-preload: TEBAKO_TFS_MOUNTS: cannot mount <package> at /opt/openjdk: Invalid argument
 ----
++
+Since `metanorma compile` shells out to the mn2pdf JVM (which lives in
+  the OpenJDK slice) regardless of output format, any compile hits this.
+  The workflow's PDF leg is therefore a non-blocking diagnostic that
+  fails the build on any *other* error signature. The fix is a tebako
+  mounts-grammar extension (the C ABI already has
+  `tebako_fs_mount_from_file_at`); once a tebako release carrying it is
+  pinned in `versions.yaml`, flip the leg's `continue-on-error` off.
 
-This will clear `build/` folder files and compile a new version
-from the `metanorma_entry_point` Ruby script.
+* *Windows executable ships without a file icon.* Resource embedding is
+  pending in the tebako toolchain (the v1 `resources.win/` mechanism
+  does not apply to the Rust bootstrap).
 
-=== Icon file for windows
+* *Windows CA bundle.* The runtime image does not expose its CA bundle
+  to the host JVM (tebako#437); the workflow extracts `ssl/cert.pem`
+  from the cached runtime image and points `SSL_CERT_FILE` at it during
+  the compile diagnostic.
 
-Icon can be updated with `make png2ico` with use `imagemagick` under the hood
+* *First run needs the network.* Lean packages resolve the runtime pair
+  on first run (one-time, cached afterwards).
 
-== metanorma_entry_point
+== License
 
-This script loads all dependencies in order to ruby packer
-correctly link all gems and their native extensions.
+See the upstream Metanorma project for licensing terms.

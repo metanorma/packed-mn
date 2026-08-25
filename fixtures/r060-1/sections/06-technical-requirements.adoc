@@ -1,0 +1,183 @@
+
+== Technical requirements
+
+=== Software
+
+Provision shall be made for appropriate sealing by mechanical, electronic and/or
+cryptographic means, making any change that affects the metrological integrity of
+the device impossible or evident. Any embedded programming (i.e. firmware) that influences
+the raw count output of the load cell will be evaluated under the terms of this Recommendation.
+In addition, if the software modifies load cell performance, not exceeding the functions
+of analogue to digital conversion and the linearization of the load cell output,
+then that software shall be evaluated under the terms in this Recommendation and
+in accordance with <<OIML_D_31_2008>>. Any weighing instrument function shall be evaluated
+under other appropriate Recommendations for weighing instruments.
+
+Functionality of any software which is not covered by this Recommendation, e.g. functionalities
+of weighing instruments, is outside the scope of this Recommendation and is therefore
+not evaluated. It may be required to undergo additional evaluations against other
+requirements contained in the applicable OIML Recommendations for weighing instruments.
+
+The requirements which are relevant to the evaluation of load cells and provided
+in <<OIML_D_31_2008>> shall be fulfilled for the load cell by taking into account the
+following aspects.
+
+. In general, for load cells, the severity level I, examined with validation procedure
+A, is required.
+
+. For legally relevant software of digital load cells the following statements according
+to <<OIML_D_31_2008>> shall be applied.
+
+.. The exception described in <<OIML_D_31_2008,clause="5.1.1">> for an imprint of the software
+identification is allowed.
+
+.. The level of conformity of manufactured devices to the approved type is according
+to <<OIML_D_31_2008,clause="5.2.5">>.
+
+.. Updating the legally relevant software of a load cell in the field is possible
+via verified or traced update according to <<OIML_D_31_2008,clause="5.2.6.2">>.
+
+.. The software documentation shall include descriptions according to the applicable
+requirements of <<OIML_D_31_2008,clause="6.1.1">>.
+
+The validation procedures are described in <<OIML_D_31_2008,clause="6.4">>.
+
+=== Inscriptions and presentation of load cell information
+
+Technical information markings including load cell classifications as indicated in
+<<sec-5.1.5>> must be specified for the load cell(s).
+
+==== Mandatory markings on the load cell
+
+The following mandatory markings shall be clearly and indelibly marked on the load
+cell. When a sticker or data plate is used it shall be impossible to remove them
+without damaging them.
+
+. Manufacturer's name or trade mark
+
+. Manufacturer's type designation or load cell model
+
+. Serial number
+
+. Maximum capacity as: stem:[E_("max") = "(in units g, kg, t)"]
+
+. Year of production
+
+. Type approval mark (if applicable)
+
+If due to the limitation of the size of the load cell, it is impossible to apply
+all the mandatory markings, the manufacturer's name or trade mark, the load cell
+type designation, the serial number, and the maximum capacity shall be provided as
+a minimum on the load cell itself. All other mandatory information shall be provided
+in an accompanying document supplied by the manufacturer and submitted to the user.
+Where such a document is provided, the information required in <<sec-6.2.2>> shall
+also be given therein.
+
+[[sec-6.2.2]]
+==== Mandatory additional information
+
+The following mandatory information shall be provided in a document accompanying
+the load cell supplied by the manufacturer and submitted to the user or, if space
+permits, they may be marked on the load cell. Where the information provided is associated
+with a specific unit of measure, the unit (g, kg, t) shall also be specified.
+
+. Manufacturer's name or trade mark
+
+. Manufacturer's type designation or load cell model
+
+. Accuracy class(es); see <<sec-6.2.4.1>>
+
+. Type of load; see <<sec-6.2.4.2>>
+
+. Working temperature when required; see <<sec-6.2.4.3>>
+
+. Humidity symbol when required; see <<sec-6.2.4.4>>
+
+. Maximum capacity as: stem:[E_("max") =]
+
+. Minimum dead load as: stem:[E_("min") =]
+
+. Safe load limit as: stem:[E_("lim") =]
+
+. Minimum load cell verification interval as stem:[v_("min")] (or relative minimum
+load cell verification interval, stem:[Y]) =
+
+. Value of the apportioning factor, stem:[p_("LC")], if not equal to 0.7; and
+
+. Other pertinent conditions that must be observed to obtain the specified performance
+(for example, electrical characteristics of the load cell such as output rating,
+input impedance, supply voltage, cable details, mounting torque, etc.).
+
+==== Non-mandatory additional information
+
+In addition to the information required in <<sec-6.2.2>>, the following information
+may optionally be specified:
+
+. for a weighing instrument (for example a multiple range instrument according to
+<<OIML_R_76_2006>>), the relative stem:[v_("min")], stem:[Y], where
+stem:[Y = (E_("max") - E_("min")) // v_("min")] (see <<sec-3.5.15>>);
+
+. for a weighing instrument (for example a multi-interval instrument according to
+<<OIML_R_76_76_2006>>), the relative DR, Z, where
+stem:[Z = (E_("max") - E_("min")) // (2 xx DR)] (see <<sec-3.5.14>>) and the value
+of DR (see <<sec-3.5.10>>) is set at the maximum permissible minimum dead load output
+return according to R 60-2, 2.10.1;
+
+. other information considered necessary or useful by the manufacturer.
+
+==== Specific markings
+
+[[sec-6.2.4.1]]
+===== Accuracy class designation
+
+Class A load cells shall be designated by the character "A", class B by "B",
+class C by "C" and class D by the character "D".
+
+[[sec-6.2.4.2]]
+===== Designation of the type of load applied to the load cell
+
+The designation of the type of load applied to the load cell shall be specified when
+it is not clearly apparent from the load cell construction, using the symbols shown
+in <<table-6>>.
+
+[[table-6]]
+.Symbols for different types of load transmission principles
+[cols="2"]
+|===
+| Tension     | ↑ +
+↓
+| Compression | ↓ +
+↑
+| Beam        | ↑ or ↓
+| Universal   | ↑ ↓ +
+↓ ↑
+|===
+
+[[sec-6.2.4.3]]
+===== Working temperature designation
+
+The special limits of working temperature, as referred to in <<sec-5.6.1.2>>, shall
+be specified when the load cell cannot perform within the limits of error in <<sec-5.3;to!sec-5.6>>
+over the temperature range specified in <<sec-5.6.1.1>>. In such cases, the limits
+of temperature shall be designated in degrees Celsius (stem:["unitsml(degC)"]).
+
+[[sec-6.2.4.4]]
+===== Humidity symbols
+
+. A load cell not designed to meet performance criteria evaluated under
+R 60-2, 2.10.5 or 2.10.6 shall be marked by the symbol NH.
+
+. A load cell submitted for evaluation and designed to meet performance criteria
+evaluated under R 60-2, 2.10.5 shall be marked by the symbol CH or not be marked
+with any humidity classification.
+
+. A load cell submitted for evaluation and manufactured to meet performance criteria
+evaluated under R 60-2, 2.10.6 shall be marked by the symbol SH.
+
+[[sec-6.2.4.5]]
+===== Maximum number of load cell verification intervals
+
+The maximum number of load cell verification intervals for which the accuracy class
+applies shall be designated in actual units (e.g. stem:[3000]) or, when combined
+with the accuracy class designation (see <<sec-6.2.4.1>>) to produce a classification
+symbol (see <<sec-5.1.6>>), it shall be designated in units of stem:[1000].

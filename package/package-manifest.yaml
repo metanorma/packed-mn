@@ -1,0 +1,53 @@
+# =============================================================================
+# package-manifest.yaml — the L2 package manifest template (spec 03 §6),
+# embedded as tpkg extension block type 2 by `tebako-pkg bundle`.
+#
+# The workflow renders this template per leg (tools/render-manifest):
+#   @@VERSION@@        — the package (payload) version, from versions.yaml
+#   @@CREATED@@        — the press timestamp (RFC 3339)
+#   @@RUNTIME_REF@@    — ruby@<ruby>;tebako=<line>;image (versions.yaml)
+#   @@RUNTIME_ROOT@@   — the runtime root's DECLARED spelling (spec 17 §1):
+#                        /__tfs__ on POSIX, /t on windows (the driver
+#                        re-qualifies it onto the VFS drive, A:/t)
+#
+# The spec-18 contract declaration (contract_era / pressed_by /
+# reader_era) is NOT authored here — `tebako-pkg bundle` injects it
+# (tpkg ext.rs: the block payload is the composition view + the current
+# contract card).
+#
+# Composition: slot 0 is the metanorma app slice, union-mounted over the
+# env image at the runtime root (precedence after-env — the env image is
+# always the lowest member). Slots 1–2 are the toolkit slices the
+# metanorma payload's own `requires:` declares, exclusive at the
+# consumer-declared points /opt/openjdk and /opt/inkscape. No `jail:`
+# block — the package requests nothing (v1 parity: the open policy,
+# spec 23 §5's never_denies).
+# =============================================================================
+
+schema_version: 1
+package:
+  name: metanorma
+  version: "@@VERSION@@"
+  producer:
+    tool: packed-mn
+    tool_version: "2"
+  created: "@@CREATED@@"
+entries:
+  - name: metanorma
+    slot: 0
+    # The mount-relative in-image PATH (the payload's PROVIDES entrypoint
+    # path), not the bare command name: the bootstrap passes the value
+    # verbatim as --tebako-entry and the driver resolves it against the
+    # first image mount; a bare name with no '/' is the interpreter
+    # keyword (spec 17 §1) and would boot a bare ruby.
+    entrypoint: /bin/metanorma
+    runtime_ref: "@@RUNTIME_REF@@"
+mounts:
+  - slot: 0
+    point: "@@RUNTIME_ROOT@@"
+    mode: union
+    precedence: after-env
+  - slot: 1
+    point: /opt/openjdk
+  - slot: 2
+    point: /opt/inkscape

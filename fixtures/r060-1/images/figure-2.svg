@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 593.44 251.71">
+  <!-- Generator: Adobe Illustrator 30.2.1, SVG Export Plug-In . SVG Version: 2.1.1 Build 1)  -->
+  <defs>
+    <style>
+      .st0 {
+        font-size: 13px;
+      }
+
+      .st0, .st1, .st2 {
+        font-family: ArialMT, Arial;
+      }
+
+      .st1 {
+        font-size: 10px;
+      }
+
+      .st3 {
+        fill: #fff;
+      }
+
+      .st3, .st4 {
+        stroke: #000;
+        stroke-miterlimit: 10;
+        stroke-width: .75px;
+      }
+
+      .st4 {
+        fill: none;
+      }
+
+      .st2 {
+        font-size: 8px;
+      }
+    </style>
+  </defs>
+  <g id="lines">
+    <line class="st4" x1="91.04" y1="41.98" x2="499.68" y2="41.98"/>
+    <polyline class="st4" points="189.84 65.54 189.84 84.86 398.62 84.86 398.62 65.54"/>
+    <polyline class="st4" points="491.28 65.54 491.28 84.86 592.06 84.86 592.06 65.54"/>
+  </g>
+  <g id="rectangles">
+    <rect class="st3" x=".97" y="18.46" width="90.07" height="46.08"/>
+    <rect class="st3" x="106.18" y="18.46" width="76.22" height="46.08"/>
+    <rect class="st3" x="197.54" y="18.46" width="93.98" height="46.08"/>
+    <rect class="st3" x="291.35" y="18.46" width="99.37" height="46.08"/>
+    <rect class="st3" x="405.52" y="18.46" width="76.4" height="46.08"/>
+    <rect class="st3" x="500.21" y="18.46" width="82.19" height="46.08"/>
+  </g>
+  <g id="texts">
+    <text class="st2" transform="translate(25.77 29.23)"><tspan x="0" y="0">Mechanical</tspan><tspan x="-15.57" y="9.6">parts of the load cell</tspan><tspan x="-13.12" y="28.8">(force introduction)</tspan></text>
+    <text class="st2" transform="translate(113.61 34.03)"><tspan x="0" y="0">Force conversion</tspan><tspan x="-2.67" y="19.2">(e.g strain gauges)</tspan></text>
+    <text class="st2" transform="translate(212.95 29.23)"><tspan x="0" y="0">Passive analogue</tspan><tspan x=".67" y="9.6">signal processing</tspan><tspan x="7.57" y="28.8">(linearization)</tspan></text>
+    <text class="st2" transform="translate(301.01 29.23)"><tspan x="0" y="0">Active analogue signal</tspan><tspan x="20.68" y="9.6">processing</tspan><tspan x="15.13" y="28.8">(amplification)</tspan></text>
+    <text class="st2" transform="translate(413.03 34.03)"><tspan x="0" y="0">Analogue / digital</tspan><tspan x="11.35" y="19.2">conversion</tspan></text>
+    <text class="st2" transform="translate(521.29 29.23)"><tspan x="0" y="0">Digital data</tspan><tspan x=".67" y="9.6">processing</tspan><tspan x="4.9" y="28.8">(scaling)</tspan></text>
+    <text class="st1" transform="translate(258.65 95.4)"><tspan x="0" y="0">Analogue signal</tspan></text>
+    <text class="st0" transform="translate(.59 137.88)"><tspan x="0" y="0">Analogue passive load cell</tspan></text>
+    <text class="st0" transform="translate(246.98 137.88)"><tspan x="0" y="0">A - C</tspan></text>
+    <text class="st0" transform="translate(246.98 163.51)"><tspan x="0" y="0">A - D</tspan></text>
+    <text class="st0" transform="translate(246.98 189.14)"><tspan x="0" y="0">A - E</tspan></text>
+    <text class="st0" transform="translate(246.98 214.78)"><tspan x="0" y="0">A - F</tspan></text>
+    <text class="st0" transform="translate(.59 163.51)"><tspan x="0" y="0">Analogue active load cell</tspan></text>
+    <text class="st0" transform="translate(.57 189.15)"><tspan x="0" y="0">Digital load cell</tspan></text>
+    <text class="st0" transform="translate(.57 214.78)"><tspan x="0" y="0">Digital load cell with data processing</tspan></text>
+    <text class="st0" transform="translate(.59 247.13)"><tspan x="0" y="0">Analogue load cells and digital load cells without data processing are within scope of OIML R 60.</tspan></text>
+    <text class="st1" transform="translate(42.67 13.14)"><tspan x="0" y="0">A</tspan></text>
+    <text class="st1" transform="translate(140.95 13.14)"><tspan x="0" y="0">B</tspan></text>
+    <text class="st1" transform="translate(240.92 13.14)"><tspan x="0" y="0">C</tspan></text>
+    <text class="st1" transform="translate(337.42 13.14)"><tspan x="0" y="0">D</tspan></text>
+    <text class="st1" transform="translate(440.38 13.14)"><tspan x="0" y="0">E</tspan></text>
+    <text class="st1" transform="translate(538.25 13.14)"><tspan x="0" y="0">F</tspan></text>
+    <text class="st1" transform="translate(513.32 95.4)"><tspan x="0" y="0">Digital signal</tspan></text>
+  </g>
+</svg>

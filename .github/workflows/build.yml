@@ -1,0 +1,573 @@
+name: build
+
+# Tebako v2 assembly for packed-mn. One pipeline: fetch (sha256-pinned
+# tebako toolchain + payload slices) → assemble (tebako-pkg bundle) →
+# validate (structural gates + smoke + PDF diagnostic) → publish (release +
+# downstream dispatches). Replaces the six retired v1 workflows. Inputs live
+# in versions.yaml (SSOT); the package manifest template lives in
+# package/package-manifest.yaml.
+#
+# KNOWN UPSTREAM BLOCKER (tebako v0.2.4): the runtime hands mounted payload
+# regions to spawned child processes via TEBAKO_TFS_MOUNTS as bare
+# `image:mount` pairs — the child then mounts the whole package FILE at the
+# payload's mount point, which fails with EINVAL (the spec-17 contract
+# requires an offset/length region for packaged slots). Any step that makes
+# metanorma spawn java/inkscape (i.e. the PDF compile) fails with
+#   libtfs-preload: TEBAKO_TFS_MOUNTS: cannot mount <pkg> at /opt/openjdk: Invalid argument
+# The PDF leg below is therefore a non-blocking DIAGNOSTIC that fails the
+# build on any *other* signature. Flip `continue-on-error` off once a tebako
+# release carrying the region-mounts fix is pinned in versions.yaml.
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      payload_version:
+        description: 'metanorma payload version to pin (e.g. 1.17.0)'
+        required: true
+        type: string
+  repository_dispatch:
+    types: [tebako-packages/metanorma]
+
+concurrency:
+  group: build-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: true
+
+env:
+  TEBAKO_HOME: ${{ runner.temp }}/tebako-home
+
+jobs:
+  press:
+    name: press (${{ matrix.triplet }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - triplet: aarch64-macos
+            os: macos-14
+            legacy: metanorma-darwin-arm64
+          - triplet: x86_64-linux-gnu
+            os: ubuntu-24.04
+            legacy: metanorma-linux-x86_64
+          - triplet: x86_64-windows-ucrt
+            os: windows-latest
+            legacy: metanorma-windows-x86_64.exe
+    env:
+      LEGACY: ${{ matrix.legacy }}
+      TEBAKO_TOOLS: ${{ runner.temp }}/tebako-tools
+      TEBAKO_BOOT: ${{ runner.temp }}/tebako-boot
+      PAYLOADS: ${{ runner.temp }}/payloads
+    steps:
+      - uses: actions/checkout@v4
+
+      # setup-msys2 must precede every `shell: msys2 {0}` step (the shell
+      # wrapper is only on PATH once this action has run).
+      - name: Setup msys2 (Windows)
+        if: runner.os == 'Windows'
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: true
+          install: >-
+            tar
+            curl
+            git
+            ruby
+            zip
+
+      - name: Read pins (POSIX)
+        if: runner.os != 'Windows'
+        run: ruby tools/pins.rb "${{ matrix.triplet }}" "${{ matrix.os }}" --env >> "$GITHUB_ENV"
+
+      - name: Read pins (Windows)
+        if: runner.os == 'Windows'
+        shell: msys2 {0}
+        run: ruby tools/pins.rb "${{ matrix.triplet }}" "${{ matrix.os }}" --env >> "$GITHUB_ENV"
+
+      - name: Fetch tebako toolchain (POSIX)
+        if: runner.os != 'Windows'
+        run: |
+          set -euo pipefail
+          mkdir -p "$TEBAKO_TOOLS" "$TEBAKO_BOOT"
+          base="https://github.com/tamatebako/tebako/releases/download/v${TEBAKO_VERSION}"
+          curl -fSL "$base/$TEBAKO_PKG_ASSET"      -o "$TEBAKO_TOOLS/tebako-pkg"
+          curl -fSL "$base/$TFS_ASSET"             -o "$TEBAKO_TOOLS/tfs"
+          curl -fSL "$base/$TEBAKO_BOOTSTRAP_ASSET" -o "$TEBAKO_BOOT/tebako-bootstrap"
+          curl -fSL "$base/SHA256SUMS"             -o "$RUNNER_TEMP/tebako-SHA256SUMS"
+          chmod +x "$TEBAKO_TOOLS/tebako-pkg" "$TEBAKO_TOOLS/tfs" "$TEBAKO_BOOT/tebako-bootstrap"
+          cd "$RUNNER_TEMP"
+          {
+            echo "$TEBAKO_PKG_SHA256  $TEBAKO_TOOLS/tebako-pkg"
+            echo "$TFS_SHA256  $TEBAKO_TOOLS/tfs"
+            echo "$TEBAKO_BOOTSTRAP_SHA256  $TEBAKO_BOOT/tebako-bootstrap"
+          } > local-sums.txt
+          if command -v sha256sum >/dev/null 2>&1; then
+            sha256sum -c local-sums.txt
+          else
+            shasum -a 256 -c local-sums.txt
+          fi
+          # Cross-check our pins against the release's own SHA256SUMS
+          for pair in "$TEBAKO_PKG_ASSET:$TEBAKO_PKG_SHA256" "$TFS_ASSET:$TFS_SHA256" "$TEBAKO_BOOTSTRAP_ASSET:$TEBAKO_BOOTSTRAP_SHA256"; do
+            asset="${pair%%:*}"; want="${pair##*:}"
+            got=$(awk -v a="$asset" '$2 == a {print $1}' tebako-SHA256SUMS | tr 'A-F' 'a-f')
+            [ "$got" = "$want" ] || { echo "::error::pin mismatch for $asset: versions.yaml=$want release=$got"; exit 1; }
+          done
+          echo "toolchain OK: $("$TEBAKO_TOOLS/tebako-pkg" --version)"
+
+      - name: Fetch tebako toolchain (Windows)
+        if: runner.os == 'Windows'
+        shell: msys2 {0}
+        run: |
+          set -euo pipefail
+          TEBAKO_TOOLS=$(cygpath -u "$TEBAKO_TOOLS")
+          TEBAKO_BOOT=$(cygpath -u "$TEBAKO_BOOT")
+          RUNNER_TEMP=$(cygpath -u "$RUNNER_TEMP")
+          mkdir -p "$TEBAKO_TOOLS" "$TEBAKO_BOOT"
+          base="https://github.com/tamatebako/tebako/releases/download/v${TEBAKO_VERSION}"
+          curl -fSL "$base/$TEBAKO_PKG_ASSET"      -o "$TEBAKO_TOOLS/tebako-pkg.exe"
+          curl -fSL "$base/$TFS_ASSET"             -o "$TEBAKO_TOOLS/tfs.exe"
+          curl -fSL "$base/$TEBAKO_BOOTSTRAP_ASSET" -o "$TEBAKO_BOOT/tebako-bootstrap.exe"
+          curl -fSL "$base/SHA256SUMS"             -o "$RUNNER_TEMP/tebako-SHA256SUMS"
+          cd "$RUNNER_TEMP"
+          {
+            echo "$TEBAKO_PKG_SHA256 *$TEBAKO_TOOLS/tebako-pkg.exe"
+            echo "$TFS_SHA256 *$TEBAKO_TOOLS/tfs.exe"
+            echo "$TEBAKO_BOOTSTRAP_SHA256 *$TEBAKO_BOOT/tebako-bootstrap.exe"
+          } > local-sums.txt
+          sha256sum -c local-sums.txt
+          for pair in "$TEBAKO_PKG_ASSET:$TEBAKO_PKG_SHA256" "$TFS_ASSET:$TFS_SHA256" "$TEBAKO_BOOTSTRAP_ASSET:$TEBAKO_BOOTSTRAP_SHA256"; do
+            asset="${pair%%:*}"; want="${pair##*:}"
+            got=$(awk -v a="$asset" '$2 == a {print $1}' tebako-SHA256SUMS | tr 'A-F' 'a-f')
+            [ "$got" = "$want" ] || { echo "::error::pin mismatch for $asset: versions.yaml=$want release=$got"; exit 1; }
+          done
+          echo "toolchain OK"
+
+      - name: Fetch payload slices (POSIX)
+        if: runner.os != 'Windows'
+        run: |
+          set -euo pipefail
+          mkdir -p "$PAYLOADS"
+          mnb="https://github.com/tebako-packages/metanorma/releases/download/$MN_RELEASE"
+          jdb="https://github.com/tebako-packages/openjdk/releases/download/$JDK_RELEASE"
+          ikb="https://github.com/tebako-packages/inkscape/releases/download/$INK_RELEASE"
+          curl -fSL "$mnb/$MN_FILE"  -o "$PAYLOADS/$MN_FILE"
+          curl -fSL "$jdb/$JDK_FILE" -o "$PAYLOADS/$JDK_FILE"
+          curl -fSL "$ikb/$INK_FILE" -o "$PAYLOADS/$INK_FILE"
+          cd "$PAYLOADS"
+          {
+            echo "$MN_SHA256  $MN_FILE"
+            echo "$JDK_SHA256  $JDK_FILE"
+            echo "$INK_SHA256  $INK_FILE"
+          } > sums.txt
+          if command -v sha256sum >/dev/null 2>&1; then sha256sum -c sums.txt; else shasum -a 256 -c sums.txt; fi
+          ls -l
+
+      - name: Fetch payload slices (Windows)
+        if: runner.os == 'Windows'
+        shell: msys2 {0}
+        run: |
+          set -euo pipefail
+          PAYLOADS=$(cygpath -u "$PAYLOADS")
+          mkdir -p "$PAYLOADS"
+          mnb="https://github.com/tebako-packages/metanorma/releases/download/$MN_RELEASE"
+          jdb="https://github.com/tebako-packages/openjdk/releases/download/$JDK_RELEASE"
+          ikb="https://github.com/tebako-packages/inkscape/releases/download/$INK_RELEASE"
+          curl -fSL "$mnb/$MN_FILE"  -o "$PAYLOADS/$MN_FILE"
+          curl -fSL "$jdb/$JDK_FILE" -o "$PAYLOADS/$JDK_FILE"
+          curl -fSL "$ikb/$INK_FILE" -o "$PAYLOADS/$INK_FILE"
+          cd "$PAYLOADS"
+          {
+            echo "$MN_SHA256 *$MN_FILE"
+            echo "$JDK_SHA256 *$JDK_FILE"
+            echo "$INK_SHA256 *$INK_FILE"
+          } > sums.txt
+          sha256sum -c sums.txt
+          ls -l
+
+      - name: Render package manifest (POSIX)
+        if: runner.os != 'Windows'
+        run: sh tools/render-manifest "$RUNTIME_ROOT" "$RUNTIME_REF" "$PKG_VERSION" "$RUNNER_TEMP/pkg.yaml"
+
+      - name: Render package manifest (Windows)
+        if: runner.os == 'Windows'
+        shell: msys2 {0}
+        run: |
+          RUNNER_TEMP=$(cygpath -u "$RUNNER_TEMP")
+          sh tools/render-manifest "$RUNTIME_ROOT" "$RUNTIME_REF" "$PKG_VERSION" "$RUNNER_TEMP/pkg.yaml"
+
+      - name: Assemble package (POSIX)
+        if: runner.os != 'Windows'
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          "$TEBAKO_TOOLS/tebako-pkg" bundle \
+            --bootstrap "$TEBAKO_BOOT/tebako-bootstrap" \
+            --image "$PAYLOADS/$MN_FILE:/__tfs__" \
+            --image "$PAYLOADS/$JDK_FILE:/opt/openjdk" \
+            --image "$PAYLOADS/$INK_FILE:/opt/inkscape" \
+            --runtime-ref "$RUNTIME_REF" \
+            --package-manifest "$RUNNER_TEMP/pkg.yaml" \
+            --launcher-abi "$LAUNCHER_ABI" \
+            --lean \
+            -o "dist/$LEGACY"
+          chmod +x "dist/$LEGACY"
+          ls -l dist
+
+      - name: Assemble package (Windows)
+        if: runner.os == 'Windows'
+        shell: msys2 {0}
+        # Two msys2 hazards, both handled:
+        #  - relative spellings for every host path (msys2 mangles absolute
+        #    paths in argv passed to native binaries like tebako-pkg.exe);
+        #  - MSYS2_ARG_CONV_EXCL='*' so the `--image <file>:/<mount>` args
+        #    survive verbatim (their colon makes msys2 treat them as path
+        #    LISTS and rewrite the in-image mount onto the host drive).
+        run: |
+          set -euo pipefail
+          TEBAKO_TOOLS=$(cygpath -u "$TEBAKO_TOOLS")
+          TEBAKO_BOOT=$(cygpath -u "$TEBAKO_BOOT")
+          PAYLOADS=$(cygpath -u "$PAYLOADS")
+          RUNNER_TEMP=$(cygpath -u "$RUNNER_TEMP")
+          mkdir -p dist
+          rel_payloads=$(realpath --relative-to=. "$PAYLOADS")
+          rel_boot=$(realpath --relative-to=. "$TEBAKO_BOOT")
+          rel_tmp=$(realpath --relative-to=. "$RUNNER_TEMP")
+          MSYS2_ARG_CONV_EXCL='*' "$TEBAKO_TOOLS/tebako-pkg.exe" bundle \
+            --bootstrap "$rel_boot/tebako-bootstrap.exe" \
+            --image "$rel_payloads/$MN_FILE:/__tfs__" \
+            --image "$rel_payloads/$JDK_FILE:/opt/openjdk" \
+            --image "$rel_payloads/$INK_FILE:/opt/inkscape" \
+            --runtime-ref "$RUNTIME_REF" \
+            --package-manifest "$rel_tmp/pkg.yaml" \
+            --launcher-abi "$LAUNCHER_ABI" \
+            --lean \
+            -o "dist/$LEGACY"
+          ls -l dist
+
+      - name: Structural gates (POSIX)
+        if: runner.os != 'Windows'
+        run: |
+          set -euo pipefail
+          pkg="dist/$LEGACY"
+          "$TEBAKO_TOOLS/tebako-pkg" info --json "$pkg" > "$RUNNER_TEMP/info.json"
+          ruby - "$RUNNER_TEMP/info.json" "$RUNTIME_REF" <<'RUBY'
+            require "json"
+            j = JSON.parse(File.read(ARGV[0]))
+            die = ->(msg) { warn "::error::#{msg}"; exit 1 }
+            pkg = j["package"] or die.call("no package block in info json")
+            die.call("expected lean flag, got #{pkg["flags"].inspect}") unless pkg["flags"].include?("lean")
+            die.call("launcher_abi != 1") unless pkg["launcher_abi"] == 1
+            die.call("runtime_ref mismatch: #{pkg["runtime_ref"].inspect}") unless pkg["runtime_ref"] == ARGV[1]
+            slots = j["slots"]
+            die.call("expected 3 slots, got #{slots.length}") unless slots.length == 3
+            want = ["/__tfs__", "/opt/openjdk", "/opt/inkscape"]
+            slots.each_with_index do |s, i|
+              die.call("slot#{i} mount #{s["mount"].inspect} != #{want[i].inspect}") unless s["mount"] == want[i]
+              die.call("slot#{i} format #{s["format"].inspect} != dwarfs") unless s["format"] == "dwarfs"
+            end
+            puts "trailer gates OK (lean, abi=1, runtime_ref, 3 slots)"
+          RUBY
+          set +e
+          "$TEBAKO_TOOLS/tebako-pkg" validate "$pkg" > "$RUNNER_TEMP/validate.log" 2>&1
+          rc=$?
+          set -e
+          cat "$RUNNER_TEMP/validate.log"
+          if [ "$rc" = 0 ]; then
+            :
+          elif [ "$rc" = 70 ]; then
+            # spec 03 §7 fixed-point: an in-image manifest cannot carry its
+            # own digest, so feedstocks embed zeros and validate reports
+            # exactly three "manifest blob_sha256 00000000…" slot lines.
+            # Anything else is a real structural failure. The trailing
+            # "result: FAILED (exit 70)" summary line is excluded by the
+            # em-dash anchor.
+            fails=$(grep -c 'digest agreement: FAILED — manifest blob_sha256 00000000' "$RUNNER_TEMP/validate.log" || true)
+            total=$(grep -c ': FAILED — ' "$RUNNER_TEMP/validate.log" || true)
+            if [ "$fails" = 3 ] && [ "$total" = 3 ]; then
+              echo "::notice::validate exit 70 with only the three known blob_sha256 fixed-point placeholders — accepted"
+            else
+              echo "::error::validate exit 70 with unexpected failures (placeholder lines: $fails, total FAILED: $total)"
+              exit 1
+            fi
+          else
+            echo "::error::tebako-pkg validate failed with exit $rc"
+            exit 1
+          fi
+
+      - name: Structural gates (Windows)
+        if: runner.os == 'Windows'
+        shell: msys2 {0}
+        run: |
+          set -euo pipefail
+          TEBAKO_TOOLS=$(cygpath -u "$TEBAKO_TOOLS")
+          RUNNER_TEMP=$(cygpath -u "$RUNNER_TEMP")
+          pkg="dist/$LEGACY"
+          MSYS2_ARG_CONV_EXCL='*' "$TEBAKO_TOOLS/tebako-pkg.exe" info --json "$pkg" > "$RUNNER_TEMP/info.json"
+          ruby - "$RUNNER_TEMP/info.json" "$RUNTIME_REF" <<'RUBY'
+            require "json"
+            j = JSON.parse(File.read(ARGV[0]))
+            die = ->(msg) { warn "::error::#{msg}"; exit 1 }
+            pkg = j["package"] or die.call("no package block in info json")
+            die.call("expected lean flag") unless pkg["flags"].include?("lean")
+            die.call("launcher_abi != 1") unless pkg["launcher_abi"] == 1
+            die.call("runtime_ref mismatch") unless pkg["runtime_ref"] == ARGV[1]
+            want = ["/__tfs__", "/opt/openjdk", "/opt/inkscape"]
+            j["slots"].each_with_index do |s, i|
+              die.call("slot#{i} mount/format wrong") unless s["mount"] == want[i] && s["format"] == "dwarfs"
+            end
+            puts "trailer gates OK"
+          RUBY
+          set +e
+          MSYS2_ARG_CONV_EXCL='*' "$TEBAKO_TOOLS/tebako-pkg.exe" validate "$pkg" > "$RUNNER_TEMP/validate.log" 2>&1
+          rc=$?
+          set -e
+          cat "$RUNNER_TEMP/validate.log"
+          if [ "$rc" = 0 ]; then
+            :
+          elif [ "$rc" = 70 ]; then
+            fails=$(grep -c 'digest agreement: FAILED — manifest blob_sha256 00000000' "$RUNNER_TEMP/validate.log" || true)
+            total=$(grep -c ': FAILED — ' "$RUNNER_TEMP/validate.log" || true)
+            if [ "$fails" = 3 ] && [ "$total" = 3 ]; then
+              echo "::notice::validate exit 70 with only the three known blob_sha256 fixed-point placeholders — accepted"
+            else
+              echo "::error::validate exit 70 with unexpected failures"
+              exit 1
+            fi
+          else
+            echo "::error::tebako-pkg validate failed with exit $rc"
+            exit 1
+          fi
+
+      - name: Smoke (POSIX)
+        if: runner.os != 'Windows'
+        run: |
+          set -euo pipefail
+          "dist/$LEGACY" --version 2>&1 | tee "$RUNNER_TEMP/smoke.log"
+          grep -q "Metanorma::Cli $PKG_VERSION" "$RUNNER_TEMP/smoke.log" || {
+            echo "::error::smoke output does not contain 'Metanorma::Cli $PKG_VERSION'"
+            exit 1
+          }
+
+      - name: Smoke (Windows)
+        if: runner.os == 'Windows'
+        shell: msys2 {0}
+        run: |
+          set -euo pipefail
+          "./dist/$LEGACY" --version 2>&1 | tee "$RUNNER_TEMP/smoke.log"
+          grep -q "Metanorma::Cli $PKG_VERSION" "$RUNNER_TEMP/smoke.log" || {
+            echo "::error::smoke output does not contain 'Metanorma::Cli $PKG_VERSION'"
+            exit 1
+          }
+
+      - name: Extract CA bundle from cached runtime image (Windows)
+        if: runner.os == 'Windows'
+        shell: msys2 {0}
+        # tebako#437 workaround: mn2pdf's JVM needs a Windows-native CA file.
+        # POSIX runtime images ship no ssl/cert.pem, hence Windows-only.
+        # Runs after Smoke, so the runtime image is already in TEBAKO_HOME.
+        # Slash-less in-image path: msys2 would rewrite a leading slash.
+        run: |
+          set -euo pipefail
+          TEBAKO_TOOLS=$(cygpath -u "$TEBAKO_TOOLS")
+          home="$(cygpath -m "$TEBAKO_HOME")"
+          img="$home/runtimes/ruby-${RUNTIME_RUBY}-${RUNTIME_TEBAKO}-windows-ucrt64/tebako-runtime-${RUNTIME_TEBAKO}-${RUNTIME_RUBY}-windows-ucrt64.tfs"
+          pem="$(cygpath -u "$RUNNER_TEMP")/compile/cacert.pem"
+          mkdir -p "$(dirname "$pem")"
+          MSYS2_ARG_CONV_EXCL='*' "$TEBAKO_TOOLS/tfs.exe" cat "$img" ssl/cert.pem > "$pem"
+          echo "SSL_CERT_FILE=$(cygpath -w "$pem")" >> "$GITHUB_ENV"
+
+      - name: Compile PDF (diagnostic — tebako region-mounts blocker)
+        if: runner.os != 'Windows'
+        continue-on-error: true
+        id: pdf
+        run: |
+          mkdir -p "$RUNNER_TEMP/compile"
+          cd fixtures/r060-1
+          "$GITHUB_WORKSPACE/dist/$LEGACY" compile -t oiml -x pdf --agree-to-terms document.adoc 2>&1 | tee "$RUNNER_TEMP/compile/compile.log"
+
+      - name: Compile PDF (diagnostic — tebako region-mounts blocker)
+        if: runner.os == 'Windows'
+        continue-on-error: true
+        id: pdf
+        shell: msys2 {0}
+        run: |
+          mkdir -p "$RUNNER_TEMP/compile"
+          cd fixtures/r060-1
+          "$GITHUB_WORKSPACE/dist/$LEGACY" compile -t oiml -x pdf --agree-to-terms document.adoc 2>&1 | tee "$RUNNER_TEMP/compile/compile.log"
+
+      - name: Compile verdict
+        shell: bash
+        run: |
+          set -euo pipefail
+          log="$RUNNER_TEMP/compile/compile.log"
+          if [ '${{ steps.pdf.outcome }}' = 'success' ]; then
+            echo "::notice::PDF compile passed — the tebako region-mounts fix has landed; flip this leg to enforced (remove continue-on-error)"
+          elif grep -q 'TEBAKO_TFS_MOUNTS' "$log"; then
+            echo "::warning::PDF compile blocked by the known tebako v0.2.4 region-mounts gap (TEBAKO_TFS_MOUNTS cannot express slot regions) — see README Known limitations"
+          else
+            echo "::error::PDF compile failed with an UNEXPECTED signature — this is a real regression, not the known blocker"
+            exit 1
+          fi
+
+      - name: Package artifacts (POSIX)
+        if: runner.os != 'Windows'
+        run: |
+          set -euo pipefail
+          mkdir -p dist/final
+          tar -C dist -czf "dist/final/$LEGACY.tgz" "$LEGACY"
+          cd dist/final
+          if command -v sha256sum >/dev/null 2>&1; then
+            sha256sum "$LEGACY.tgz" | awk '{print $1}' > "$LEGACY.tgz.sha256.txt"
+          else
+            shasum -a 256 "$LEGACY.tgz" | awk '{print $1}' > "$LEGACY.tgz.sha256.txt"
+          fi
+          ls -l
+
+      - name: Package artifacts (Windows)
+        if: runner.os == 'Windows'
+        shell: msys2 {0}
+        run: |
+          set -euo pipefail
+          mkdir -p dist/final
+          zip -j "dist/final/$LEGACY.zip" "dist/$LEGACY"
+          cp "dist/$LEGACY" "dist/final/$LEGACY"
+          cd dist/final
+          sha256sum "$LEGACY"     | awk '{print $1}' > "$LEGACY.sha256.txt"
+          sha256sum "$LEGACY.zip" | awk '{print $1}' > "$LEGACY.zip.sha256.txt"
+          ls -l
+
+      - name: Upload dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-${{ matrix.triplet }}
+          path: dist/final/
+          retention-days: 14
+
+  prepare:
+    # Feedstock-bumped flow: fetch the new pins from the metanorma registry,
+    # rewrite versions.yaml, commit to main, tag v<version>. Release then
+    # fires from the tag push. Only runs on explicit dispatch.
+    if: github.event_name == 'repository_dispatch' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
+      - name: Resolve target version
+        id: prep
+        run: |
+          set -euo pipefail
+          v='${{ github.event.client_payload.version }}'
+          [ -n "$v" ] || v='${{ github.event.inputs.payload_version }}'
+          case "$v" in
+            [0-9]*.[0-9]*.[0-9]*) ;;
+            *) echo "::error::malformed version '$v'"; exit 1;;
+          esac
+          echo "version=$v" >> "$GITHUB_OUTPUT"
+      - name: Fetch metanorma registry + sync pins
+        run: |
+          set -euo pipefail
+          curl -fSL https://raw.githubusercontent.com/tebako-packages/metanorma/main/tpkg-registry.yaml \
+            -o "$RUNNER_TEMP/metanorma-registry.yaml"
+          ruby tools/sync-payload.rb "${{ steps.prep.outputs.version }}" "$RUNNER_TEMP/metanorma-registry.yaml"
+      - name: Commit + tag
+        run: |
+          set -euo pipefail
+          git config user.name tebako-ci
+          git config user.email tebako@ribose.com
+          git add versions.yaml
+          if git diff --cached --quiet; then
+            echo "::notice::versions.yaml already at ${{ steps.prep.outputs.version }} — nothing to commit"
+          else
+            git commit -m "chore: metanorma payload ${{ steps.prep.outputs.version }}"
+            git push origin HEAD:main
+          fi
+          git tag -f "v${{ steps.prep.outputs.version }}"
+          git push -f origin "v${{ steps.prep.outputs.version }}"
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [press]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read release pins
+        run: ruby tools/pins.rb --release >> "$GITHUB_ENV"
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: dist-*
+          path: stage
+      - name: Assemble release layout
+        run: |
+          set -euo pipefail
+          mkdir -p rel
+          cp stage/dist-aarch64-macos/metanorma-darwin-arm64.tgz* rel/
+          cp stage/dist-x86_64-linux-gnu/metanorma-linux-x86_64.tgz* rel/
+          cp stage/dist-x86_64-windows-ucrt/metanorma-windows-x86_64.exe* rel/
+          ls -l rel
+      - name: Release notes
+        run: |
+          set -euo pipefail
+          tag="${GITHUB_REF_NAME}"
+          cat > RELEASE-NOTES.md <<EOF
+          # metanorma $tag (tebako v2 assembly)
+
+          Single-executable Metanorma assembled with the tebako v2 pipeline
+          (fetch → assemble → validate → publish). Nothing compiles on your
+          machine: the package carries the metanorma/OpenJDK/Inkscape payload
+          slices and resolves the tebako Ruby runtime on first run.
+
+          - metanorma payload: $PKG_VERSION (release $MN_RELEASE_NOTE)
+          - OpenJDK slice: $JDK_RELEASE_NOTE · Inkscape slice: $INK_RELEASE_NOTE
+          - runtime: tebako ruby $RUNTIME_RUBY_NOTE (runtime $RUNTIME_TEBAKO_NOTE), resolved via tebako toolchain v$TEBAKO_VERSION
+
+          ## First run
+
+          The package is LEAN: on first run it downloads the Ruby runtime pair
+          (interpreter + env image, sha256-verified) into ~/.tebako and caches
+          it machine-wide; later runs start immediately.
+
+          ## Known limitations
+
+          - PDF output is temporarily unavailable in this assembly: tebako
+            v$TEBAKO_VERSION cannot hand mounted payload regions to spawned
+            child processes (the mn2pdf JVM), so \`compile -x pdf\` fails with
+            a libtfs-preload TEBAKO_TFS_MOUNTS error. Tracked upstream; the
+            gate flips back to enforced once a fixed tebako is pinned.
+          - Windows executable ships without a file icon (pending resource
+            embedding in the tebako toolchain).
+
+          | Platform | Asset |
+          |---|---|
+          | macOS (Apple Silicon) | metanorma-darwin-arm64.tgz |
+          | Linux (x86_64) | metanorma-linux-x86_64.tgz |
+          | Windows (x86_64) | metanorma-windows-x86_64.exe (+ .zip) |
+          EOF
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: RELEASE-NOTES.md
+          files: |
+            rel/metanorma-darwin-arm64.tgz
+            rel/metanorma-darwin-arm64.tgz.sha256.txt
+            rel/metanorma-linux-x86_64.tgz
+            rel/metanorma-linux-x86_64.tgz.sha256.txt
+            rel/metanorma-windows-x86_64.exe
+            rel/metanorma-windows-x86_64.exe.sha256.txt
+            rel/metanorma-windows-x86_64.exe.zip
+            rel/metanorma-windows-x86_64.exe.zip.sha256.txt
+      - name: Dispatch downstream
+        env:
+          GH_TOKEN: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
+        run: |
+          set -euo pipefail
+          for target in metanorma/metanorma-snap metanorma/homebrew-metanorma metanorma/chocolatey-metanorma metanorma/winget-metanorma; do
+            gh api "repos/$target/dispatches" \
+              -f event_type='${{ github.repository }}' \
+              -f "client_payload[ref]=${GITHUB_REF_NAME}" \
+              -X POST
+          done

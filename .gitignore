@@ -1,9 +1,7 @@
 /.vscode
-/.archive
-/build
 /parallel.log
 /relaton
 /site*
 /samples
-/Gemfile.lock
-/vendor/cacert.pem.mozilla
+/dist
+/out
