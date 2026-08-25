@@ -399,7 +399,7 @@ jobs:
       - name: Compile PDF (diagnostic — tebako region-mounts blocker)
         if: runner.os != 'Windows'
         continue-on-error: true
-        id: pdf
+        id: pdf-posix
         run: |
           mkdir -p "$RUNNER_TEMP/compile"
           cd fixtures/r060-1
@@ -408,7 +408,7 @@ jobs:
       - name: Compile PDF (diagnostic — tebako region-mounts blocker)
         if: runner.os == 'Windows'
         continue-on-error: true
-        id: pdf
+        id: pdf-windows
         shell: msys2 {0}
         run: |
           mkdir -p "$RUNNER_TEMP/compile"
@@ -417,10 +417,13 @@ jobs:
 
       - name: Compile verdict
         shell: bash
+        # Exactly one of the two compile steps ran (they are mutex on
+        # runner.os); the skipped one's outcome interpolates empty.
         run: |
           set -euo pipefail
           log="$RUNNER_TEMP/compile/compile.log"
-          if [ '${{ steps.pdf.outcome }}' = 'success' ]; then
+          outcome='${{ steps.pdf-posix.outcome }}${{ steps.pdf-windows.outcome }}'
+          if [ "$outcome" = 'success' ]; then
             echo "::notice::PDF compile passed — the tebako region-mounts fix has landed; flip this leg to enforced (remove continue-on-error)"
           elif grep -q 'TEBAKO_TFS_MOUNTS' "$log"; then
             echo "::warning::PDF compile blocked by the known tebako v0.2.4 region-mounts gap (TEBAKO_TFS_MOUNTS cannot express slot regions) — see README Known limitations"
