@@ -36,9 +36,6 @@ concurrency:
   group: build-${{ github.ref }}-${{ github.event_name }}
   cancel-in-progress: true
 
-env:
-  TEBAKO_HOME: ${{ runner.temp }}/tebako-home
-
 jobs:
   press:
     name: press (${{ matrix.triplet }})
@@ -58,9 +55,6 @@ jobs:
             legacy: metanorma-windows-x86_64.exe
     env:
       LEGACY: ${{ matrix.legacy }}
-      TEBAKO_TOOLS: ${{ runner.temp }}/tebako-tools
-      TEBAKO_BOOT: ${{ runner.temp }}/tebako-boot
-      PAYLOADS: ${{ runner.temp }}/payloads
     steps:
       - uses: actions/checkout@v4
 
@@ -81,12 +75,34 @@ jobs:
 
       - name: Read pins (POSIX)
         if: runner.os != 'Windows'
-        run: ruby tools/pins.rb "${{ matrix.triplet }}" "${{ matrix.os }}" --env >> "$GITHUB_ENV"
+        # Also anchors every scratch dir at $RUNNER_TEMP (the `runner`
+        # context is not legal in workflow/job env, so these flow via
+        # $GITHUB_ENV from here). TEBAKO_HOME is the runtime cache the
+        # smoke/compile runs download into.
+        run: |
+          ruby tools/pins.rb "${{ matrix.triplet }}" "${{ matrix.os }}" --env >> "$GITHUB_ENV"
+          {
+            echo "TEBAKO_HOME=$RUNNER_TEMP/tebako-home"
+            echo "TEBAKO_TOOLS=$RUNNER_TEMP/tebako-tools"
+            echo "TEBAKO_BOOT=$RUNNER_TEMP/tebako-boot"
+            echo "PAYLOADS=$RUNNER_TEMP/payloads"
+          } >> "$GITHUB_ENV"
 
       - name: Read pins (Windows)
         if: runner.os == 'Windows'
         shell: msys2 {0}
-        run: ruby tools/pins.rb "${{ matrix.triplet }}" "${{ matrix.os }}" --env >> "$GITHUB_ENV"
+        # cygpath -m: native binaries (the package, tebako-pkg.exe) need
+        # win32 spellings; each later msys2 step re-normalizes with
+        # cygpath -u for its own shell use.
+        run: |
+          ruby tools/pins.rb "${{ matrix.triplet }}" "${{ matrix.os }}" --env >> "$GITHUB_ENV"
+          tmp=$(cygpath -m "$RUNNER_TEMP")
+          {
+            echo "TEBAKO_HOME=$tmp/tebako-home"
+            echo "TEBAKO_TOOLS=$tmp/tebako-tools"
+            echo "TEBAKO_BOOT=$tmp/tebako-boot"
+            echo "PAYLOADS=$tmp/payloads"
+          } >> "$GITHUB_ENV"
 
       - name: Fetch tebako toolchain (POSIX)
         if: runner.os != 'Windows'
