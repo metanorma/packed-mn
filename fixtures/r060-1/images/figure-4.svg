@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 459.12 285.96">
+  <!-- Generator: Adobe Illustrator 30.2.1, SVG Export Plug-In . SVG Version: 2.1.1 Build 1)  -->
+  <defs>
+    <style>
+      .st0, .st1 {
+        font-family: Arial-ItalicMT, Arial;
+        font-style: italic;
+      }
+
+      .st0, .st2, .st3 {
+        font-size: 10px;
+      }
+
+      .st1 {
+        font-size: 9px;
+      }
+
+      .st2 {
+        font-family: ArialMT, Arial;
+      }
+
+      .st3, .st4 {
+        font-family: Arial-BoldMT, Arial;
+        font-weight: 700;
+      }
+
+      .st5 {
+        fill: none;
+        stroke: #000;
+        stroke-miterlimit: 10;
+        stroke-width: .25px;
+      }
+
+      .st4 {
+        font-size: 14px;
+      }
+    </style>
+  </defs>
+  <g id="lines">
+    <line class="st5" x1="125.59" y1="30.33" x2="136" y2="114.51"/>
+    <line class="st5" x1="204.65" y1="10.72" x2="168.17" y2="111.5"/>
+    <line class="st5" x1="324.2" y1="49.39" x2="239.81" y2="121.47"/>
+    <line class="st5" x1="214.88" y1="157.59" x2="197.34" y2="130.58"/>
+    <line class="st5" x1="103.17" y1="158.11" x2="125.51" y2="128.81"/>
+  </g>
+  <g id="texts">
+    <text class="st2" transform="translate(12.53 11.61)"><tspan x="0" y="0">Maximum number of load cell verification</tspan><tspan x="0" y="12">intervals, stated in units of 1000:</tspan></text>
+    <text class="st2" transform="translate(208.03 13.25)"><tspan x="0" y="0">Humidity</tspan><tspan x="0" y="12">classification</tspan></text>
+    <text class="st2" transform="translate(327.02 47.1)"><tspan x="0" y="0">Special temperature limits</tspan></text>
+    <text class="st2" transform="translate(343.31 60.72)"><tspan x="0" y="0">e.g. - 5/30 represents</tspan></text>
+    <text class="st2" transform="translate(365.68 75.06)"><tspan x="0" y="0">-5°C to +30°C </tspan></text>
+    <text class="st2" transform="translate(30.77 172.86)"><tspan x="0" y="0">Accuracy class designation</tspan></text>
+    <text class="st2" transform="translate(216.85 165.81)"><tspan x="0" y="0">Symbol for different types of loads</tspan></text>
+    <text class="st2" transform="translate(218.1 186.86)"><tspan x="0" y="0">Tension</tspan></text>
+    <text class="st2" transform="translate(218.1 216.89)"><tspan x="0" y="0">Compression</tspan></text>
+    <text class="st2" transform="translate(218.1 246.92)"><tspan x="0" y="0">Beam</tspan></text>
+    <text class="st2" transform="translate(287.07 246.92)"><tspan x="0" y="0">↓ or ↑</tspan></text>
+    <g>
+      <text class="st2" transform="translate(292.2 271)"><tspan x="0" y="0">↑ ↓</tspan></text>
+      <text class="st2" transform="translate(292.2 282.89)"><tspan x="0" y="0">↑ ↑</tspan></text>
+    </g>
+    <text class="st2" transform="translate(296.18 180.86)"><tspan x="0" y="0">↑</tspan><tspan x="0" y="12">↓</tspan></text>
+    <text class="st4" transform="translate(192.69 123.01)"><tspan x="0" y="0">↑</tspan></text>
+    <text class="st2" transform="translate(296.17 210.89)"><tspan x="0" y="0">↓</tspan><tspan x="0" y="12">↑</tspan></text>
+    <text class="st2" transform="translate(218.1 276.95)"><tspan x="0" y="0">Universal</tspan></text>
+    <text class="st2" transform="translate(58.63 187.12)"><tspan x="0" y="0">A - Class A</tspan></text>
+    <text class="st2" transform="translate(58.63 202.46)"><tspan x="0" y="0">B - Class B</tspan></text>
+    <text class="st2" transform="translate(58.63 217.8)"><tspan x="0" y="0">C - Class C</tspan></text>
+    <text class="st2" transform="translate(58.63 233.14)"><tspan x="0" y="0">D - Class D</tspan></text>
+    <text class="st3" transform="translate(214.35 123.68)"><tspan x="0" y="0">-5/30</tspan></text>
+    <text class="st3" transform="translate(157.16 123.68)"><tspan x="0" y="0">NH</tspan></text>
+    <text class="st3" transform="translate(126.17 123.68)"><tspan x="0" y="0">C3</tspan></text>
+    <text class="st2" transform="translate(11.8 41.5)"><tspan x="0" y="0" xml:space="preserve">e.g.  3 represents 3 000</tspan></text>
+    <text class="st2" transform="translate(208.03 39.84)"><tspan x="0" y="0">1. NH</tspan></text>
+    <text class="st2" transform="translate(208.03 55.52)"><tspan x="0" y="0">2. SH or</tspan></text>
+    <text class="st2" transform="translate(208.03 70.29)"><tspan x="0" y="0">3. CH or no symbol</tspan></text>
+    <text class="st2" transform="translate(25.84 58.67)"><tspan x="0" y="0">1.5 represents 1 500</tspan></text>
+    <text class="st0" transform="translate(53.65 122.94)"><tspan x="0" y="0">For example</tspan></text>
+    <text class="st1" transform="translate(330.07 96.13)"><tspan x="0" y="0">Note:</tspan></text>
+    <text class="st1" transform="translate(353.77 96.13)"><tspan x="0" y="0">This is only prescribed</tspan><tspan x="0" y="10.8">when the temperature</tspan><tspan x="0" y="21.6">limits are different</tspan><tspan x="0" y="32.4">from -10°C to +40°C</tspan></text>
+  </g>
+</svg>

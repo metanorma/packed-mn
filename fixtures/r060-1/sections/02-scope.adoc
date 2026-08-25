@@ -1,0 +1,58 @@
+
+[heading=clause]
+== Scope
+
+=== {blank}
+
+This Recommendation prescribes the principal metrological static requirements and
+static evaluation procedures for load cells used in the determination of conformity
+to this Recommendation. It is intended to provide authorities with uniform means
+for determining the metrological characteristics of load cells used in measuring
+instruments that are subjected to metrological controls.
+
+It is acknowledged that test procedures found in OIML R 60-2 are useful in the evaluation
+of load cells that are currently in service (i.e. primarily of the strain gauge design)
+however, there may be variations in designs for load cells that will require additional
+or modified test procedures to appropriately evaluate them. These additional test
+procedures may be annexed when necessary.
+
+Except where otherwise specified, these requirements apply regardless of the technology
+or operating principle employed. The requirements and evaluation procedures in this
+Recommendation have been drafted to be non-specific with regard to load cell design
+and their operating principles.
+
+=== {blank}
+
+This Recommendation utilises the principle that several measurement errors shall
+be considered together when applying load cell performance characteristics to the
+permitted error envelope. Thus, it is not considered appropriate to specify individual
+errors for given characteristics (e.g. non-linearity, hysteresis, effects of influence
+factors), but rather to consider the total error envelope allowed for a load cell
+as the limiting factor. The use of an error envelope allows the balancing of the
+individual contributions to the total error of measurement while still achieving
+the intended final result.
+
+NOTE: The error envelope may be defined as the boundary of the combined individual
+errors (see <<table-4>>) as a function of the force introduced by the applied load
+(expressed in mass units) over the measuring range. The combined error determined
+may be positive or negative and include the effects of non-linearity, hysteresis
+and temperature.
+
+[[sec-2.3]]
+=== {blank}
+
+"Weighing modules" as noted in <<OIML_R_76_2006>>, T.2.2.7 (see R 60, Annex A, A.2.1),
+are not covered by this Recommendation. Weighing instruments that include load cells
+and which give an indication of mass are the subjects of separate Recommendations.
+While digital load cells may be covered under this Recommendation, a load cell that
+produces an output consisting of more than digital "raw counts" is not covered.
+In the illustration from OIML R 76 below, the scope of R 60 would not extend beyond
+module #3.
+
+[[fig-1]]
+.Typical components in a weighing instrument
+image::figure-1.svg[]
+
+[[fig-2]]
+.Characterisation of load cell capabilities
+image::figure-2.svg[]

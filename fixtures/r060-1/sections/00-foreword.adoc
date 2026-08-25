@@ -1,0 +1,62 @@
+
+== Foreword
+
+The International Organisation of Legal Metrology (OIML) is a worldwide, intergovernmental
+organisation whose primary aim is to harmonise the regulations and metrological controls
+applied by the national metrological services, or related organisations, of its Member
+States. The main categories of OIML publications are:
+
+* *International Recommendations (OIML R)*, which are model regulations that establish
+the metrological characteristics required of certain measuring instruments and which
+specify methods and equipment for checking their conformity. OIML Member States shall
+implement these Recommendations to the greatest possible extent;
+
+* *International Documents (OIML D)*, which are informative in nature and which are
+intended to harmonise and improve work in the field of legal metrology;
+
+* *International Guides (OIML G)*, which are also informative in nature and which
+are intended to give guidelines for the application of certain requirements to legal
+metrology; and
+
+* *International Basic Publications (OIML B)*, which define the operating rules of
+the various OIML structures and systems.
+
+OIML Draft Recommendations, Documents and Guides are developed by Project Groups
+linked to Technical Committees or Subcommittees which comprise representatives from
+OIML Member States. Certain international and regional institutions also participate
+on a consultation basis. Cooperative agreements have been established between the
+OIML and certain institutions, such as ISO and the IEC, with the objective of avoiding
+contradictory requirements. Consequently, manufacturers and users of measuring instruments,
+test laboratories, etc. may simultaneously apply OIML publications and those of other
+institutions.
+
+International Recommendations, Documents, Guides and Basic Publications are published
+in English (E) and translated into French (F) and are subject to periodic revision.
+
+Additionally, the OIML publishes or participates in the publication of
+*Vocabularies (OIML V)* and periodically commissions legal metrology experts to write
+*Expert Reports (OIML E)*. Expert Reports are intended to provide information and
+advice, and are written solely from the viewpoint of their author, without the involvement
+of a Technical Committee or Subcommittee, nor that of the CIML. Thus, they do not
+necessarily represent the views of the OIML.
+
+This publication -- reference OIML R 60-1:2021 -- is an updated edition
+(developed by the OIML Certification System Management Committee) of OIML R 60-1:2017
+(developed by Project Group 1 of OIML Technical Committee TC 9
+_Instruments for measuring mass and density_). This updated edition consolidates
+the Amendment (2019-12-23) to R 60:2017, and includes other editorial and minor technical
+changes. It was approved for final publication by the International Committee of
+Legal Metrology at its 56th meeting in October 2021 and was sanctioned by the 16th
+International Conference on Legal Metrology in 2021. It supersedes the previous edition
+of R 60 dated 2017.
+
+OIML Publications may be downloaded from the OIML web site in the form of PDF files.
+Additional information on OIML Publications may be obtained from the Organisation's
+headquarters:
+
+Bureau International de Métrologie Légale +
+11, rue Turgot - 75009 Paris - France +
+Telephone: 33 (0)1 48 78 12 82 +
+Fax: 33 (0)1 42 82 17 27 +
+E-mail: biml@oiml.org +
+Internet: www.oiml.org

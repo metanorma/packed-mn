@@ -1,0 +1,15 @@
+
+[heading=clause]
+== Introduction
+
+Load cells comprise a distinct element or module within other complex instruments;
+they do not produce distinct quantitative values that are inherently identified or
+associated with denominations or units. The data that can be extracted from a load
+cell is simply a measurement of change in the output of the load cell in relation
+to the input. This relative change must be converted by other elements or modules
+within an instrument into values that are meaningful measurements which can then
+be used to identify a quantity.
+
+Although strain gauge technology was a primary focus in the initial development of
+R 60, it is to be understood that load cells that operate using other principles
+may also be evaluated under this Recommendation.

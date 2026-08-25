@@ -1,0 +1,32 @@
+#!/bin/sh
+# render-manifest — render package/package-manifest.yaml for one leg.
+#
+#   tools/render-manifest <runtime-root> <runtime-ref> <version> <out-file>
+#
+# <runtime-root> is the root's DECLARED spelling (/__tfs__ POSIX, /t
+# windows); the other placeholders come straight from versions.yaml via
+# tools/pins.rb. `created` is stamped here (RFC 3339 UTC).
+set -eu
+
+[ $# -eq 4 ] || { echo "usage: tools/render-manifest <runtime-root> <runtime-ref> <version> <out-file>" >&2; exit 64; }
+
+root=$1
+ref=$2
+version=$3
+out=$4
+created=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+
+template=$(dirname "$0")/../package/package-manifest.yaml
+sed -e "s|@@RUNTIME_ROOT@@|$root|g" \
+    -e "s|@@RUNTIME_REF@@|$ref|g" \
+    -e "s|@@VERSION@@|$version|g" \
+    -e "s|@@CREATED@@|$created|g" \
+    "$template" > "$out"
+
+# The render must be total: a surviving placeholder is a named error,
+# never a silent half-render.
+if grep -q '@@[A-Z_]*@@' "$out"; then
+    echo "render-manifest: unsubstituted placeholder in $out" >&2
+    exit 65
+fi
+echo "rendered $out (root=$root ref=$ref version=$version)"

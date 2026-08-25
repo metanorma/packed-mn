@@ -1,0 +1,572 @@
+
+<<<
+
+== Terminology (Terms and definitions)
+
+The terms most frequently used in the load cell field and their definitions are given
+below (see <<sec-3.6>> for an illustration of certain definitions). The terminology
+used in this Recommendation conforms to OIML V 2-200 _International Vocabulary of
+Metrology - Basic and General Concepts and Associated Terms_ (VIM) <<OIML_V_2_200_2012>>, to OIML V
+1 _International Vocabulary of Terms in Legal Metrology_ (VIML) <<OIML_V_1_2013>>, to OIML D 9
+_Principles of metrological supervision_ <<OIML_D_9_2004>>, to OIML D 11 _General requirements
+for measuring instruments_ <<OIML_D_11_2008>>, and to OIML B 18 _Framework for the OIML Certification
+System (OIML-CS)_ <<OIML_B_18_2018>>.
+
+In addition, for the purposes of this Recommendation, the following definitions apply:
+
+[heading="terms and definitions"]
+=== General definitions
+
+==== durability
+
+ability of a measuring instrument to maintain its performance characteristics over
+a period of use
+
+[.source]
+<<OIML_V_1_2013,clause="5.15">>
+
+==== legal metrology
+
+practice and process of applying statutory and regulatory structure and enforcement
+to metrology
+
+(For notes, refer to the <<OIML_V_1_2013>>).
+
+[.source]
+<<OIML_V_1_2013,clause="1.01">>
+
+==== load cell
+
+measuring transducer that will produce an output in response to an applied load.
+This output may be converted by another device into measurement units such as mass
+
+===== analogue-passive load cell
+
+load cell from which the output provides either measurable data or direct information
+representing the measurand value
+
+[NOTE]
+====
+The ratio between output and input may be adjustable and this type of load cell may
+utilise
+
+* passive electronics (e.g. strain gauges), and
+* passive temperature compensation elements
+====
+
+===== analogue-active load cell
+
+load cell which is capable of performing the functions as described under
+{{analogue-passive load cell}} and which also utilises active electronics
+
+[NOTE]
+====
+This type of load cell may utilise the active electronics for
+
+* gaining an electronic representation of the measurand value,
+* active temperature compensation, and
+* similar functions being of influence to the measurand value.
+====
+
+===== digital load cell
+
+analogue-active load cell which includes an analogue to digital conversion device
+providing a representation of the measurand value in some unprocessed digital format
+
+[[sec-3.1.3.4]]
+===== digital load cell equipped with further data processing (Figure 2, A-F)
+
+analogue-active load cell which includes an analogue to digital conversion device
+providing a representation of the measurand value in some digital format and includes
+further digital processing (e.g. scaling)
+
+==== marking
+
+affixing of one or more marks
+
+(For notes, refer to the <<OIML_V_1_2013>>).
+
+[.source]
+<<OIML_V_1_2013,clause="2.19">>
+
+==== metrological supervision
+
+activity of legal metrological control to check the observance of metrology laws
+and regulations
+
+(For notes, refer to the <<OIML_V_1_2013>>).
+
+[.source]
+<<OIML_V_1_2013,clause="2.03">>
+
+==== measuring transducer
+
+device, used in measurement, that provides an output quantity having a specified
+relation to the input quantity
+
+[.source]
+<<OIML_V_2_200_2012,clause="3.7">>
+
+==== performance test
+
+test to verify whether the load cell under test is capable of performing its intended
+functions
+
+==== rated operating condition
+
+operating condition that must be fulfilled during measurement in order that a measuring
+instrument or measuring system perform as designed
+
+(For notes, refer to the <<OIML_V_2_200_2012>>).
+
+[.source]
+<<OIML_V_2_200_2012,clause="4.9">>
+
+==== sealing
+
+means intended to protect the measuring instrument against any unauthorised modification,
+readjustment, removal of parts, software, etc.
+
+(For notes, refer to the <<OIML_V_1_2013>>).
+
+[.source]
+<<OIML_V_1_2013,clause="2.20">>
+
+==== type (pattern) evaluation
+
+conformity assessment procedure on one or more specimens of an identified type (pattern)
+of measuring instruments which results in an evaluation report and / or an evaluation
+certificate
+
+(For notes, refer to the <<OIML_V_1_2013>>).
+
+[.source]
+<<OIML_V_1_2013,clause="2.04">>
+
+==== type approval
+
+decision of legal relevance, based on the review of the type evaluation report, that
+the type of a measuring instrument complies with the relevant statutory requirements
+and results in the issuance of the type approval certificate
+
+[.source]
+<<OIML_V_1_2013,clause="2.05">>
+
+=== Categories of load cells
+
+[heading="terms and definitions"]
+==== Application of load
+
+===== compression loading
+
+applying a compressive force to the load receptor of a load cell
+
+===== tension loading
+
+applying a tension force to the load receptor of a load cell
+
+[heading="terms and definitions"]
+=== Construction of load cells (see sections 1 and 2.1)
+
+==== strain gauge
+
+analogue resistive element that is attached to a load cell structure and that changes
+resistance depending on the deformation of the load cell structure when compression
+or tension forces are applied to the load cell
+
+[heading="terms and definitions"]
+=== Metrological characteristics of a load cell
+
+==== humidity symbol
+
+symbol assigned to a load cell that indicates the conditions of humidity under which
+the load cell has been tested
+
+==== load cell family
+
+group of load cells which for the purposes of type evaluation are considered as one
+family and that are of:
+
+. the same material or combination of materials (for example mild steel, stainless
+steel or aluminium);
+
+. the same design of the measurement technique (for example strain gauges bonded
+to metal);
+
+. when used, the same principle used to attach the strain gauge to the load cell;
+
+. the same method of construction (for example shape, sealing of strain gauges, mounting
+method, manufacturing method);
+
+. the same set of specifications (for example output rating, input impedance, supply
+voltage, cable details); and
+
+. one or more load cell groups where all load cells within the group possess identical
+metrological characteristics (as listed in <<sec-5.1.5>> -- including: class; stem:[n_("LC")];
+temperature rating, etc.).
+
+NOTE: The examples provided are not intended to be limiting.
+
+[[sec-3.5]]
+[heading="terms and definitions"]
+=== Range, capacity and output terms
+
+==== load cell interval
+
+subdivision of the load cell measuring range
+
+==== load cell measuring range (for verification)
+
+range between the maximum load of the measuring range stem:[D_("max")] and minimum
+load of the measuring range stem:[D_("min")]
+
+load cell measuring range stem:[= (D_("max") - D_("min")])
+
+==== load cell output
+
+measurable quantity into which a load cell converts the measured input quantity
+
+==== load cell verification interval (stem:[v])
+
+load cell interval, expressed in units of mass, used in the test of the load cell
+for accuracy classification
+
+[[sec-3.5.5]]
+==== maximum capacity (stem:[E_("max")])
+
+largest value of a quantity expressed in units of mass, which may be applied to a
+load cell
+
+[[sec-3.5.6]]
+==== maximum load of the measuring range (stem:[D_("max")])
+
+largest value of a quantity expressed in units of mass which can be introduced to
+a load cell under test
+
+==== maximum measuring range
+
+range of values of the quantity expressed in units of mass that may be applied to
+a load cell
+
+NOTE: maximum measuring range is the range between maximum capacity stem:[E_("max")]
+and minimum dead load stem:[E_("min")]
+
+maximum measuring range stem:[= (E_("max") - E_("min"))]
+
+[[sec-3.5.8]]
+==== maximum number of load cell verification intervals (stem:[n_("LC")])
+
+maximum number of load cell verification intervals into which the maximum measuring
+range may be divided
+
+[[sec-3.5.9]]
+==== minimum dead load (stem:[E_("min")])
+
+smallest value of a quantity (expressed in mass units) that may be applied to a load
+cell
+
+[[sec-3.5.10]]
+==== minimum dead load output return (DR)
+
+difference of load cell output, expressed in units of mass at the minimum dead load
+(stem:[D_("min")]), measured before and after application of a load of stem:[D_("max")]
+
+[[sec-3.5.11]]
+==== minimum load cell verification interval (stem:[v_("min")])
+
+smallest load cell verification interval in units of mass into which the maximum
+measuring range (stem:[E_("max") - E_("min")]) can be divided
+
+[[sec-3.5.12]]
+==== minimum load of the measuring range (stem:[D_("min")])
+
+smallest value of a quantity expressed in units of mass, applied to a load cell under
+test
+
+==== number of load cell verification intervals (stem:[n])
+
+total of load cell verification intervals into which the maximum measuring range
+is divided
+
+[[sec-3.5.14]]
+==== relative minimum dead load output return (stem:[Z])
+
+ratio of the maximum measuring range, to two times the minimum dead load output return, DR
+
+NOTE: This ratio is used to describe multi-interval instruments.
+
+[[sec-3.5.15]]
+==== relative minimum load cell verification interval (stem:[Y])
+
+ratio of the maximum measuring range, to the minimum load cell verification interval,
+stem:[v_("min")]
+
+NOTE: This ratio describes the resolution of the load cell independent from the load
+cell capacity.
+
+==== safe load limit (stem:[E_("lim")])
+
+maximum load that can be applied without producing a permanent shift in the performance
+characteristics beyond those specified
+
+==== warm-up time
+
+time between the moment power is applied to a load cell and the moment at which the
+load cell is capable of complying with the requirements
+
+[[sec-3.6]]
+=== Illustration of certain definitions
+
+The terms that appear above the central horizontal line (related to parameters stem:[E_("min")]
+and stem:[E_("max")]) are parameters that are fixed by the design of the load cell.
+The terms that appear below that line (related to parameters stem:[D_("min")] and
+stem:[D_("max")]) are parameters that are variable, dependent on the conditions of
+the test of a load cell (in particular, those load cells used in weighing instruments).
+
+.Illustration of certain definitions
+image::figure-3.svg[]
+
+The following statements apply: (see also R 60-2, 2.7.3.4)
+
+. stem:[(D_("max") - D_("min"))  (E_("max") - E_("min"))]
+
+. stem:[E_("min") <= D_("min") <= (0.1 E_("max"))], and stem:[(0.9 E_("max")) <= D_("max") <= E_("max")]
+
+[heading="terms and definitions"]
+=== Measurement and error terms
+
+==== creep
+
+change in load cell output occurring with time while under constant load and with
+all environmental conditions and other variables also remaining constant
+
+==== apportioning factor (stem:[p_("LC")])
+
+value of a dimensionless fraction expressed as a decimal (for example, 0.7) representing
+that portion of an error observed in the (weighing) instrument which is attributed
+to the load cell alone
+
+NOTE: This value is used in determining the MPE (see <<sec-3.7.10>>).
+
+==== durability error
+
+difference between the intrinsic error after a period of use and the initial intrinsic
+error of a measuring instrument
+
+[.source]
+<<OIML_V_1_2013,clause="5.16">>
+
+==== expanded uncertainty
+
+quantity defining an interval about the result of a measurement that may be expected to encompass
+a large fraction of the distribution of values that could reasonably be attributed to the measurand
+(<<OIML_G_1_100_2008>>)
+
+==== fault
+
+difference between the error of indication and the intrinsic error of a measuring
+instrument (For notes, refer to the <<OIML_V_1_2013>>).
+
+[.source]
+<<OIML_V_1_2013,clause="5.12">>
+
+==== fault detection output
+
+electrical representation issued by the load cell indicating that a fault condition exists
+
+==== hysteresis error
+
+difference in load cell output readings for the same applied force between the reading
+obtained by increasing the load from minimum load (stem:[D_("min")]), and the reading
+obtained by decreasing the load from maximum load (stem:[D_("max")])
+
+==== initial intrinsic error
+
+intrinsic error of a measuring instrument as determined prior to performance tests
+and durability evaluations
+
+[.source]
+<<OIML_V_1_2013,clause="5.11">>
+
+==== load cell intrinsic error
+
+error resulting from a load cell, determined under reference conditions
+
+[[sec-3.7.10]]
+==== maximum permissible error (MPE)
+
+extreme value of measurement error, with respect to a known reference quantity value,
+permitted by specifications or regulations for a given measurement, measuring instrument,
+or measuring system
+
+(For notes, refer to the <<OIML_V_2_200_2012>>).
+
+[.source]
+<<OIML_V_2_200_2012,clause="4.26">>
+
+==== measurement error
+
+measured quantity minus a reference quantity value.
+
+NOTE: The term "measurement error" in this Recommendation refers to load cell measurement
+errors.
+
+(For additional notes, refer to the <<OIML_V_2_200_2012>>).
+
+[.source]
+<<OIML_V_2_200_2012,clause="2.16">>
+
+==== measured quantity (value)
+
+quantity value representing a measurement result
+
+(For notes, refer to the <<OIML_V_2_200_2012>>).
+
+[.source]
+<<OIML_V_2_200_2012,clause="2.10">>
+
+==== non-linearity
+
+deviation from the average of the values of load cell signals from a straight line
+through zero force applied and maximum force applied
+
+==== repeatability error
+
+difference between load cell output readings taken from consecutive tests under the
+same loading and environmental conditions of measurement
+
+==== resolution
+
+smallest change in a quantity being measured that causes a perceptible change in
+the corresponding indication
+
+(For notes, refer to the <<OIML_V_2_200_2012>>).
+
+[.source]
+<<OIML_V_2_200_2012,clause="4.14">>
+
+==== significant durability error
+
+durability error exceeding the value specified in the applicable Recommendation
+
+(For notes, refer to the <<OIML_V_1_2013>>).
+
+[.source]
+<<OIML_V_1_2013,clause="5.17">>
+
+==== significant fault
+
+fault exceeding the applicable fault limit value
+
+(For notes, refer to the <<OIML_V_1_2013>>).
+
+[.source]
+<<OIML_V_1_2013,clause="5.14">>
+
+==== span stability
+
+capability of a load cell to maintain the load cell output of the load cell's measuring
+range over a period of use within specified limits
+
+==== temperature effect on minimum dead load output
+
+change of the signal output under minimum dead load due to a change in ambient temperature
+
+==== temperature effect on sensitivity
+
+change in sensitivity due to a change in ambient temperature
+
+==== type approval mark
+
+mark applied to a measuring instrument certifying its conformity to the approved type
+
+[.source]
+<<OIML_V_1_2013,clause="3.07">>
+
+[heading="terms and definitions"]
+=== Influences and reference conditions
+
+==== disturbance
+
+influence quantity having a value within the limits specified in the relevant Recommendation,
+but outside the specified rated operating conditions of a measuring instrument
+
+[.source]
+<<OIML_V_1_2013,clause="5.19">>
+
+==== influence factor
+
+influence quantity having a value which ranges within the rated operating conditions
+of a measuring instrument
+
+(For notes, refer to the <<OIML_V_1_2013>>).
+
+[.source]
+<<OIML_V_1_2013,clause="5.17">>
+
+==== influence quantity
+
+quantity that, in a direct measurement, does not affect the quantity that is actually
+measured, but that affects the relation between the indication and the measurement
+result
+
+(For examples and notes, refer to the <<OIML_V_2_200_2012>>).
+
+[.source]
+<<OIML_V_2_200_2012,clause="2.52">>
+
+==== rated operating condition
+
+operating condition that must be fulfilled during measurement in order that a measuring
+instrument or measuring system perform as designed
+
+(For notes, refer to the <<OIML_V_2_200_2012>>).
+
+[.source]
+<<OIML_V_2_200_2012,clause="4.9">>
+
+==== reference (operating) condition
+
+operating condition prescribed for evaluating the performance of a measuring instrument
+or measuring system or for comparison of measurement results
+
+(For notes, refer to the <<OIML_V_2_200_2012>>).
+
+[.source]
+<<OIML_V_2_200_2012,clause="4.11">>
+
+=== Abbreviations
+
+AC:: Alternating Current
+
+CH:: Cyclic Humidity
+
+DC:: Direct Current
+
+DR:: Minimum Deadload Output Return
+
+EMC:: Electro Magnetic Compatibility
+
+EUT:: Equipment Under Test
+
+IEC:: International Electrotechnical Commission
+
+ISO:: International Organization for Standardization
+
+I/O:: Input/Output
+
+LC:: Load Cell
+
+MPE:: Maximum Permissible Error
+
+NH:: No Humidity
+
+OIML:: International Organisation of Legal Metrology
+
+SH:: Steady-State Humidity
+
+VIM:: International Vocabulary of Metrology - Basic and General Concepts and Associated Terms
+
+VIML:: International vocabulary of terms in legal metrology
+
+OIML:: R 60-1:2021 (E)

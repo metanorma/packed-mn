@@ -1,0 +1,21 @@
+
+== Description of load cells
+
+A load cell provides an output proportional to a force resulting from applying a
+load. Load cells may be used as a single transducer or applied together with other
+load cells in a system where the design allows such application. The term "load cell"
+in this Recommendation is not limited to any particular type of technology or design
+principle.
+
+While many technologies are used in the design of load cells, those used in legal
+metrology applications are commonly designed to provide an electrical output relative
+to a mechanical input. Both analogue and digital outputs are recognised in load cells
+within that category. Although strain gauge technology was a primary focus in the
+development of R 60, it is to be understood that load cells that operate using other
+principles may also be evaluated under this Recommendation. Variations of transducers
+that operate using alternative basis of input/output may include, but are not limited
+to pressure (e.g. hydraulic, pneumatic), vibratory frequency and magnetic forces.
+
+The term load cell may describe an elemental component/module or a somewhat more
+complex instrument including constituents that perform functions such as signal filtering
+and analogue-to-digital conversion.

@@ -1,0 +1,108 @@
+# =============================================================================
+# versions.yaml — the single source of truth for every byte packed-mn
+# assembles (spec 00 §10: one owner; everything else flows from here).
+#
+# packed-mn compiles nothing: every input is a published, sha256-pinned
+# release artifact. Bumping ANY input is a one-line edit of this file
+# (the release trigger flow writes it; the workflow reads it; nothing
+# else in the repo hardcodes a version or a digest).
+#
+# Grammar (schema_version 1):
+#   tebako.version / .release   — the tamatebako/tebako toolchain release
+#   tebako.sha256.<tool>.<tool-platform>   — digest of the release asset
+#       <tool>-<version>.<tool-platform>[.exe]; tool platforms:
+#       macos-arm64, linux-gnu-x86_64, windows-ucrt64
+#   runtime                       — the tebako-runtime-ruby line the
+#       package resolves at first run (lean: downloaded once per machine,
+#       sha256-verified against the release's own manifest/SHA256SUMS.txt)
+#   runtime.sha256.<asset-kind>.<tool-platform> — the exe / env-image /
+#       windows dll digests (the resolution anchor; also the future fat
+#       composition's slot pins)
+#   payloads[]                    — the .tfs slices, keyed by FEEDSTOCK
+#       triplet (aarch64-macos, x86_64-linux-gnu, x86_64-windows-ucrt)
+#       with the release tag + asset file name + sha256 mirrored from the
+#       feedstock's tpkg-registry.yaml (the registries are the upstream
+#       SSOT for these digests — this file mirrors them by value).
+# =============================================================================
+
+schema_version: 1
+
+tebako:
+  version: 0.2.4
+  release: v0.2.4
+  sha256:
+    tebako-pkg:
+      macos-arm64: e1e8d10ed92f4b5355bebba09da8b9535a60f9ce9df4541719c1c994a7338364
+      linux-gnu-x86_64: 6c6f40356ed9c8acbf5a3cf7dc5105c131e849517443d1156acb2ae8e141723d
+      windows-ucrt64: 3248f454b5819deacc5ec65e342a48901ec7b6adca3613d5ff132366fb428111
+    tebako-bootstrap:
+      macos-arm64: 26402f4cdb2005cc1004010c3694c289006de983d3764b6cf7226d935e847ed1
+      linux-gnu-x86_64: 6728f73a7562aab568349c2360aa0c0f6aedd4e10a1419085733f6966d4256ad
+      windows-ucrt64: 82af7cc6327382d08417db4748ba2aa8a440f3c5c06da98e5719b9680318fd3c
+    tfs:
+      macos-arm64: d26505db35c19d48c4cb6c574389f30687e93b40eba64d368af7832b203c6ea0
+      linux-gnu-x86_64: fba99516ca76c984ce08187565a06d911049880e9c3b7f426f45f92dddbaa034
+      windows-ucrt64: 8aa69b1348be40a9d2339c2a4833d44e473de2693a3b889c55d8a0bce3baa17c
+
+runtime:
+  # The runtime reference every package entry carries:
+  #   ruby@3.3.12;tebako=0.16.9;image
+  release: v0.16.9 # tamatebako/tebako-runtime-ruby tag
+  tebako: 0.16.9 # the runtime line (tebako=<abi> in the ref)
+  ruby: 3.3.12 # the interpreter version
+  sha256:
+    exe:
+      macos-arm64: f32c9c13bb0a87ed75ed242041e1c645edbf4e72c2a7509f8c0e5842cd67615c
+      linux-gnu-x86_64: e4435a2d1d63ece9490291ec9d7d2de3f1df4f88ac9c79acd2e43a1ab88625bc
+      windows-ucrt64: 396f5e6a73be129388819bc3192ba656a052170f185019f252a5b43884259eb8
+    image:
+      macos-arm64: efa94afe23c1045eff6ae9e24f87d4f5855d811b0167382fc78a195528722290
+      linux-gnu-x86_64: e9395443abe0ec75f717d4aa046b58601b20a6bb1a03b54314009b7b2617866f
+      windows-ucrt64: e4665948eee2b4cde601044fe6dfc3b194d006c8ea50065210d7d90671a01ad8
+    dll: # windows-only facet (install_as: x64-ucrt-ruby330.dll)
+      windows-ucrt64: 7d5f2cdbc1949b232601157c716aef6f38f2275c6e0bcf037dfddd804785f23f
+
+package:
+  name: metanorma
+  # The user-facing version = the metanorma payload version (the release
+  # tag is v<this>). The composition's truth lives in the L2 package
+  # manifest + the release's SHA256SUMS, not in an invented composite.
+  version: 1.16.9
+
+payloads:
+  - name: metanorma
+    release: 1.16.9-3 # tebako-packages/metanorma tag (see Deviations: not "1.16.9")
+    assets:
+      aarch64-macos:
+        file: metanorma-1.16.9-macos-arm64.tfs
+        sha256: 666a877e78fcbbe3e358b7a7592b146410fe4047373b27aa22045113467b39ee
+      x86_64-linux-gnu:
+        file: metanorma-1.16.9-linux-gnu-x86_64.tfs
+        sha256: 00ec44ebf592d12e92a9039a9163b818475229410e326bbc78a46b57c68cb2e5
+      x86_64-windows-ucrt:
+        file: metanorma-1.16.9-windows-ucrt64.tfs
+        sha256: fff49f9bf29954536987bdba02db2ae49db3b294037f5dbf8430c6e5de8f503d
+  - name: openjdk
+    release: "21.0.12" # tebako-packages/openjdk tag
+    assets:
+      aarch64-macos:
+        file: openjdk-21.0.12-macos-arm64.tfs
+        sha256: f5f6ab8d33874f63fcc81705e20d0b26fed5ac44a145a05881a6b9fbd7983523
+      x86_64-linux-gnu:
+        file: openjdk-21.0.12-linux-gnu-x86_64.tfs
+        sha256: a5c6aece5b30605eed66eb1e89db6a63807f0ec1e8c23dc0ee664fd7f800fcac
+      x86_64-windows-ucrt:
+        file: openjdk-21.0.12-windows-ucrt64.tfs
+        sha256: 3d3b9dad8bd4d17136eacb2ca4a5e3a9cb44dc3fb354f27c5e0bb3affb3947f6
+  - name: inkscape
+    release: 1.4.3 # tebako-packages/inkscape tag
+    assets:
+      aarch64-macos:
+        file: inkscape-1.4.3-aarch64-macos.tfs
+        sha256: 488d6192fc454aee6e6158da02e844b61ec675645e07839042d1f7e1f7ed7a39
+      x86_64-linux-gnu:
+        file: inkscape-1.4.3-x86_64-linux-gnu.tfs
+        sha256: 31f9b73a7f77b630f1909969606b6db765917b737398b9572273ab01f1816610
+      x86_64-windows-ucrt:
+        file: inkscape-1.4.3-x86_64-windows-ucrt.tfs
+        sha256: 012e74517f231f6956984b956d20483bb3ff7bcf9a9f22fc852b55a91761ab9c
