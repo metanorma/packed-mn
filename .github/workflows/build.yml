@@ -46,12 +46,15 @@ jobs:
         include:
           - triplet: aarch64-macos
             os: macos-14
+            tool: macos-arm64
             legacy: metanorma-darwin-arm64
           - triplet: x86_64-linux-gnu
             os: ubuntu-24.04
+            tool: linux-gnu-x86_64
             legacy: metanorma-linux-x86_64
           - triplet: x86_64-windows-ucrt
             os: windows-latest
+            tool: windows-ucrt64
             legacy: metanorma-windows-x86_64.exe
     env:
       LEGACY: ${{ matrix.legacy }}
@@ -80,7 +83,7 @@ jobs:
         # $GITHUB_ENV from here). TEBAKO_HOME is the runtime cache the
         # smoke/compile runs download into.
         run: |
-          ruby tools/pins.rb "${{ matrix.triplet }}" "${{ matrix.os }}" --env >> "$GITHUB_ENV"
+          ruby tools/pins.rb "${{ matrix.triplet }}" "${{ matrix.tool }}" --env >> "$GITHUB_ENV"
           {
             echo "TEBAKO_HOME=$RUNNER_TEMP/tebako-home"
             echo "TEBAKO_TOOLS=$RUNNER_TEMP/tebako-tools"
@@ -95,7 +98,7 @@ jobs:
         # win32 spellings; each later msys2 step re-normalizes with
         # cygpath -u for its own shell use.
         run: |
-          ruby tools/pins.rb "${{ matrix.triplet }}" "${{ matrix.os }}" --env >> "$GITHUB_ENV"
+          ruby tools/pins.rb "${{ matrix.triplet }}" "${{ matrix.tool }}" --env >> "$GITHUB_ENV"
           tmp=$(cygpath -m "$RUNNER_TEMP")
           {
             echo "TEBAKO_HOME=$tmp/tebako-home"
