@@ -98,14 +98,14 @@ payloads:
         file: openjdk-21.0.12-windows-ucrt64.tfs
         sha256: 2e099706a8bbf80c760e56229370c907ef97aadb281cb89d993c043f27ddfa57
   - name: inkscape
-    release: 1.4.3 # tebako-packages/inkscape tag
+    release: 1.4.3-2 # tebako-packages/inkscape tag
     assets:
       aarch64-macos:
         file: inkscape-1.4.3-aarch64-macos.tfs
-        sha256: 488d6192fc454aee6e6158da02e844b61ec675645e07839042d1f7e1f7ed7a39
+        sha256: 68a6b3717c1a01249e0d2ff2e9f9c41f8c4441faaeeb65657e18b7c2e7ea2a7a
       x86_64-linux-gnu:
         file: inkscape-1.4.3-x86_64-linux-gnu.tfs
-        sha256: 31f9b73a7f77b630f1909969606b6db765917b737398b9572273ab01f1816610
+        sha256: 56aa809b13c0b5875e98fcfea0facbb172d8aa51a5860e1ccdafeebd3183ce45
       x86_64-windows-ucrt:
         file: inkscape-1.4.3-x86_64-windows-ucrt.tfs
-        sha256: 012e74517f231f6956984b956d20483bb3ff7bcf9a9f22fc852b55a91761ab9c
+        sha256: 1df2edb60ecaaef46c0f077b9421b597ef975ba31b076ef8a2ae3d0a971f4292
