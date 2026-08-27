@@ -74,29 +74,29 @@ package:
 
 payloads:
   - name: metanorma
-    release: 1.16.9-3 # tebako-packages/metanorma tag (see Deviations: not "1.16.9")
+    release: 1.16.9-4 # tebako-packages/metanorma tag (see Deviations: not "1.16.9")
     assets:
       aarch64-macos:
         file: metanorma-1.16.9-macos-arm64.tfs
-        sha256: 666a877e78fcbbe3e358b7a7592b146410fe4047373b27aa22045113467b39ee
+        sha256: 8eabdd208e8cd8a95de7eee180e0f5f3e38c0c9a3bb8e852eff8f82f7b27e609
       x86_64-linux-gnu:
         file: metanorma-1.16.9-linux-gnu-x86_64.tfs
-        sha256: 00ec44ebf592d12e92a9039a9163b818475229410e326bbc78a46b57c68cb2e5
+        sha256: 71f5933256e999f6e0053eedd2a35a0415f6e9c75b2439027405d6f9b1d035a0
       x86_64-windows-ucrt:
         file: metanorma-1.16.9-windows-ucrt64.tfs
-        sha256: fff49f9bf29954536987bdba02db2ae49db3b294037f5dbf8430c6e5de8f503d
+        sha256: f0453dee9a3cf20c62ae3538730963ab9d4b185d86593632b1c6c864776da645
   - name: openjdk
-    release: "21.0.12" # tebako-packages/openjdk tag
+    release: 21.0.12-2 # tebako-packages/openjdk tag
     assets:
       aarch64-macos:
         file: openjdk-21.0.12-macos-arm64.tfs
-        sha256: f5f6ab8d33874f63fcc81705e20d0b26fed5ac44a145a05881a6b9fbd7983523
+        sha256: 95bbe6ee52d376281923e6816236b8ca3d54a7d817d4cad03ca80364a81f8309
       x86_64-linux-gnu:
         file: openjdk-21.0.12-linux-gnu-x86_64.tfs
-        sha256: a5c6aece5b30605eed66eb1e89db6a63807f0ec1e8c23dc0ee664fd7f800fcac
+        sha256: 626389dab69bc7bc24a36917fe6a4c0e81d2f96c80e5b9aa4dd3e5ffc7e87257
       x86_64-windows-ucrt:
         file: openjdk-21.0.12-windows-ucrt64.tfs
-        sha256: 3d3b9dad8bd4d17136eacb2ca4a5e3a9cb44dc3fb354f27c5e0bb3affb3947f6
+        sha256: 2e099706a8bbf80c760e56229370c907ef97aadb281cb89d993c043f27ddfa57
   - name: inkscape
     release: 1.4.3 # tebako-packages/inkscape tag
     assets:
