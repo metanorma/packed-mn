@@ -420,7 +420,7 @@ jobs:
           mkdir -p "$RUNNER_TEMP/compile"
           cd fixtures/r060-1
           set +e
-          timeout --signal=TERM --kill-after=10 780 \
+          "$GITHUB_WORKSPACE/tools/with-timeout" 780 \
             "$GITHUB_WORKSPACE/dist/$LEGACY" compile -t oiml -x xml,html --agree-to-terms --continue-without-fonts document.adoc 2>&1 | tee "$RUNNER_TEMP/compile/compile-xml-html.log"
           rc=${PIPESTATUS[0]}
           set -e
@@ -447,7 +447,7 @@ jobs:
           mkdir -p "$RUNNER_TEMP/compile"
           cd fixtures/iso-test
           set +e
-          timeout --signal=TERM --kill-after=10 1500 \
+          "$GITHUB_WORKSPACE/tools/with-timeout" 1500 \
             "$GITHUB_WORKSPACE/dist/$LEGACY" compile -t iso -x pdf --agree-to-terms document.adoc 2>&1 | tee "$RUNNER_TEMP/compile/compile-pdf.log"
           rc=${PIPESTATUS[0]}
           set -e
@@ -471,7 +471,7 @@ jobs:
           mkdir -p "$RUNNER_TEMP/compile"
           cd fixtures/r060-1
           set +e
-          timeout --signal=TERM --kill-after=10 780 \
+          "$GITHUB_WORKSPACE/tools/with-timeout" 780 \
             "$GITHUB_WORKSPACE/dist/$LEGACY" compile -t oiml -x xml,html --agree-to-terms --continue-without-fonts document.adoc 2>&1 | tee "$RUNNER_TEMP/compile/compile-xml-html.log"
           rc=${PIPESTATUS[0]}
           set -e
@@ -495,7 +495,7 @@ jobs:
           mkdir -p "$RUNNER_TEMP/compile"
           cd fixtures/iso-test
           set +e
-          timeout --signal=TERM --kill-after=10 1500 \
+          "$GITHUB_WORKSPACE/tools/with-timeout" 1500 \
             "$GITHUB_WORKSPACE/dist/$LEGACY" compile -t iso -x pdf --agree-to-terms document.adoc 2>&1 | tee "$RUNNER_TEMP/compile/compile-pdf.log"
           rc=${PIPESTATUS[0]}
           set -e

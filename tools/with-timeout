@@ -1,0 +1,36 @@
+#!/bin/bash
+# with-timeout SECONDS CMD [ARGS...] — portable timeout(1) for the build
+# workflow: GNU timeout where it exists (linux, msys2), a background
+# watchdog elsewhere (macOS has no GNU timeout). Exit 124 signals a
+# timeout either way (the diagnostics steps key on it).
+#
+# Watchdog limitation: only the direct child is signalled (no process-group
+# kill); a timed-out command's own children may linger and are surfaced by
+# the workflow's diagnostics step.
+secs=$1; shift
+
+if command -v timeout >/dev/null 2>&1; then
+  exec timeout --signal=TERM --kill-after=10 "$secs" "$@"
+fi
+
+"$@" &
+pid=$!
+marker=$(mktemp)
+rm -f "$marker" # created empty by mktemp; watchdog re-creates on fire
+(
+  sleep "$secs"
+  touch "$marker"
+  kill -TERM "$pid" 2>/dev/null
+  sleep 10
+  kill -KILL "$pid" 2>/dev/null
+) &
+watchdog=$!
+wait "$pid"
+rc=$?
+kill "$watchdog" 2>/dev/null
+wait "$watchdog" 2>/dev/null
+if [ -f "$marker" ]; then
+  rm -f "$marker"
+  exit 124
+fi
+exit "$rc"
