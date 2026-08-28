@@ -417,10 +417,23 @@ jobs:
       - name: Compile PDF
         if: runner.os == 'Windows'
         shell: msys2 {0}
+        # TEMPORARY DEBUG (revert before merge): TEBAKO_DEBUG_TFS=1 traces the
+        # argv bridge's materialization decisions (exec_materialize/dlmap2file
+        # host-path answers for every bridged token). The post-failure dump
+        # lists whatever survived the per-process dl-tmpdir cleanup.
         run: |
           mkdir -p "$RUNNER_TEMP/compile"
           cd fixtures/r060-1
-          "$GITHUB_WORKSPACE/dist/$LEGACY" compile -t oiml -x pdf --agree-to-terms document.adoc 2>&1 | tee "$RUNNER_TEMP/compile/compile.log"
+          set +e
+          TEBAKO_DEBUG_TFS=1 "$GITHUB_WORKSPACE/dist/$LEGACY" compile -t oiml -x pdf --agree-to-terms document.adoc 2>&1 | tee "$RUNNER_TEMP/compile/compile.log"
+          rc=${PIPESTATUS[0]}
+          set -e
+          if [ "$rc" -ne 0 ]; then
+            echo "::notice::compile rc=$rc — exec-cache ground truth (post-cleanup view)"
+            ls -la /tmp/tebako-exec-*/ 2>/dev/null || true
+            find /tmp/tebako-exec-* \( -name 'relaton-iso.rng' -o -name 'jing-20091111.jar' \) 2>/dev/null | head -20 || true
+            exit "$rc"
+          fi
 
       - name: Package artifacts (POSIX)
         if: runner.os != 'Windows'
