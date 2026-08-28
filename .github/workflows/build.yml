@@ -413,7 +413,7 @@ jobs:
           set -o pipefail
           mkdir -p "$RUNNER_TEMP/compile"
           cd fixtures/r060-1
-          "$GITHUB_WORKSPACE/dist/$LEGACY" compile -t oiml -x pdf --agree-to-terms --continue-without-fonts document.adoc 2>&1 | tee "$RUNNER_TEMP/compile/compile.log"
+          "$GITHUB_WORKSPACE/dist/$LEGACY" compile -t oiml -x pdf --agree-to-terms --no-install-fonts document.adoc 2>&1 | tee "$RUNNER_TEMP/compile/compile.log"
           test -s document.pdf || { echo "::error::compile produced no document.pdf"; exit 1; }
 
       - name: Compile PDF
@@ -423,7 +423,7 @@ jobs:
           mkdir -p "$RUNNER_TEMP/compile"
           cd fixtures/r060-1
           set +e
-          "$GITHUB_WORKSPACE/dist/$LEGACY" compile -t oiml -x pdf --agree-to-terms --continue-without-fonts document.adoc 2>&1 | tee "$RUNNER_TEMP/compile/compile.log"
+          "$GITHUB_WORKSPACE/dist/$LEGACY" compile -t oiml -x pdf --agree-to-terms --no-install-fonts document.adoc 2>&1 | tee "$RUNNER_TEMP/compile/compile.log"
           rc=${PIPESTATUS[0]}
           set -e
           [ "$rc" -eq 0 ] || { echo "::error::compile exited $rc"; exit "$rc"; }
