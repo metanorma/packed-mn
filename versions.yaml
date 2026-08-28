@@ -28,21 +28,21 @@
 schema_version: 1
 
 tebako:
-  version: 0.3.1
-  release: v0.3.1
+  version: 0.3.3
+  release: v0.3.3
   sha256:
     tebako-pkg:
-      macos-arm64: fbc823e74c57c1a5fb338fe7ed623489109c251a50e1e1efbae7b4dbe6ecff32
-      linux-gnu-x86_64: cefdda73fc40b750a0c30c34d05f2f60cdf914d5991d1841db0a8c0fb13a5c96
-      windows-ucrt64: 8695cca9e3ec7ff6cfb9ac72310541aaf98206003dd1a3a53d1770811b93b450
+      macos-arm64: 67a132123886f49e45fd5ebbcb5a8a46a4747a2725ecd5e4e416189b493c0e6c
+      linux-gnu-x86_64: 403a558969e807ded2d3005cf33a29fcbae92398c05c2e959e76188cb779ea40
+      windows-ucrt64: 62e37b5de0b35810988dc7d32c36645f47d8970e3b8e4aada5bf2fa51e102126
     tebako-bootstrap:
-      macos-arm64: 1e053759a19ac025ef2d5d53585b8fb689b5d39aab14867729af26c82ceff0d3
-      linux-gnu-x86_64: c105b0259761ffe148bd0158921ca99b32dd12ec615759b415c688feb4279b6a
-      windows-ucrt64: bb8f09514e06eed935c8ae655bac42d3fca8b081a4f630fd64de0ebd5d0d44e0
+      macos-arm64: e0858a13d5957391f5fbd5e4d9ff6d3b61b880258932b7bb58c78db510665594
+      linux-gnu-x86_64: aa3861c9687f108715b2e1c5cc0650c39a34ed2677b7534db8e234d32676ca07
+      windows-ucrt64: e2a9d41388e505b7c4c6f0c9c9261608350a16871fa091ad8d49bdaa8af5d3e0
     tfs:
-      macos-arm64: 4136cf476a9e7470d401ee66546a841edf154e6a39f6083021b1f8786b6cc755
-      linux-gnu-x86_64: 2dca2fe24401dc7110d7d3297984023e44eb466727ec3cf74459d3d14ea8d623
-      windows-ucrt64: 4fde6e7252a0aef0767fb09c08971396b004f0d25f39f05c774ab8644bd1efe2
+      macos-arm64: 16d78952d97dbb4f3f903f1bf24e1c3b6d5e13d8ebf2dda70e0ebf1e28dadf2e
+      linux-gnu-x86_64: 4a2d8b366e93d3bf3b368ea432cd100807e592a44603a0fb4c63f364aa1e4c83
+      windows-ucrt64: d491fb49067fd5d7087529e70ee028e1827ebf794bd7427da0d7fb413f57038a
 
 runtime:
   # The runtime reference every package entry carries:
