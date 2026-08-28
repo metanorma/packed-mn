@@ -409,44 +409,77 @@ jobs:
 
       - name: Compile xml+html (OIML — jing/schema validation)
         if: runner.os != 'Windows'
+        timeout-minutes: 15
         # r060-1 proves the schema/argv-bridge stack on every leg. Fonts are
         # continued-past: the OIML theme declares Futura PT (commercial, no
         # public fontist formula); html/xml never resolve font locations.
+        # The in-step timeout is a hard guard: a compile must NEVER hang
+        # silently (the step-level timeout-minutes is the runner backstop).
         run: |
           set -o pipefail
           mkdir -p "$RUNNER_TEMP/compile"
           cd fixtures/r060-1
-          "$GITHUB_WORKSPACE/dist/$LEGACY" compile -t oiml -x xml,html --agree-to-terms --continue-without-fonts document.adoc 2>&1 | tee "$RUNNER_TEMP/compile/compile-xml-html.log"
+          set +e
+          timeout --signal=TERM --kill-after=10 780 \
+            "$GITHUB_WORKSPACE/dist/$LEGACY" compile -t oiml -x xml,html --agree-to-terms --continue-without-fonts document.adoc 2>&1 | tee "$RUNNER_TEMP/compile/compile-xml-html.log"
+          rc=${PIPESTATUS[0]}
+          set -e
+          if [ "$rc" -eq 124 ] || [ "$rc" -eq 137 ]; then
+            echo "::error::compile TIMED OUT after 780s (rc=$rc) — last log lines:"
+            tail -50 "$RUNNER_TEMP/compile/compile-xml-html.log" || true
+            exit 1
+          fi
+          [ "$rc" -eq 0 ] || { echo "::error::compile exited $rc"; exit "$rc"; }
           test -s document.xml || { echo "::error::compile produced no document.xml"; exit 1; }
           test -s document.html || { echo "::error::compile produced no document.html"; exit 1; }
 
       - name: Compile PDF (ISO — the full font pipeline)
         if: runner.os != 'Windows'
+        timeout-minutes: 30
         # The PDF acceptance runs the ISO flavour with font install ENABLED:
         # ISO's fonts (Cambria, Times New Roman, Source Han Sans, Inter…)
         # all resolve from public fontist formulas, so fontist downloads
         # them into the runner's ~/.fontist at compile time and mn2pdf/FOP
         # (on the openjdk payload) renders with real fonts.
+        # First-run font downloads budget the longer timeout.
         run: |
           set -o pipefail
           mkdir -p "$RUNNER_TEMP/compile"
           cd fixtures/iso-test
-          "$GITHUB_WORKSPACE/dist/$LEGACY" compile -t iso -x pdf --agree-to-terms document.adoc 2>&1 | tee "$RUNNER_TEMP/compile/compile-pdf.log"
+          set +e
+          timeout --signal=TERM --kill-after=10 1500 \
+            "$GITHUB_WORKSPACE/dist/$LEGACY" compile -t iso -x pdf --agree-to-terms document.adoc 2>&1 | tee "$RUNNER_TEMP/compile/compile-pdf.log"
+          rc=${PIPESTATUS[0]}
+          set -e
+          if [ "$rc" -eq 124 ] || [ "$rc" -eq 137 ]; then
+            echo "::error::compile TIMED OUT after 1500s (rc=$rc) — last log lines:"
+            tail -50 "$RUNNER_TEMP/compile/compile-pdf.log" || true
+            exit 1
+          fi
+          [ "$rc" -eq 0 ] || { echo "::error::compile exited $rc"; exit "$rc"; }
           test -s document.pdf || { echo "::error::compile produced no document.pdf"; exit 1; }
 
       - name: Compile xml+html (OIML — jing/schema validation)
         if: runner.os == 'Windows'
         shell: msys2 {0}
+        timeout-minutes: 15
         # Same rationale as the POSIX leg: Futura PT is commercial; the
         # continue flag softens the install step (html/xml never resolve
-        # font locations — that path is pdf-gated).
+        # font locations — that path is pdf-gated). The in-step timeout is
+        # the hard guard against a silent hang.
         run: |
           mkdir -p "$RUNNER_TEMP/compile"
           cd fixtures/r060-1
           set +e
-          "$GITHUB_WORKSPACE/dist/$LEGACY" compile -t oiml -x xml,html --agree-to-terms --continue-without-fonts document.adoc 2>&1 | tee "$RUNNER_TEMP/compile/compile-xml-html.log"
+          timeout --signal=TERM --kill-after=10 780 \
+            "$GITHUB_WORKSPACE/dist/$LEGACY" compile -t oiml -x xml,html --agree-to-terms --continue-without-fonts document.adoc 2>&1 | tee "$RUNNER_TEMP/compile/compile-xml-html.log"
           rc=${PIPESTATUS[0]}
           set -e
+          if [ "$rc" -eq 124 ] || [ "$rc" -eq 137 ]; then
+            echo "::error::compile TIMED OUT after 780s (rc=$rc) — last log lines:"
+            tail -50 "$RUNNER_TEMP/compile/compile-xml-html.log" || true
+            exit 1
+          fi
           [ "$rc" -eq 0 ] || { echo "::error::compile exited $rc"; exit "$rc"; }
           test -s document.xml || { echo "::error::compile produced no document.xml"; exit 1; }
           test -s document.html || { echo "::error::compile produced no document.html"; exit 1; }
@@ -454,6 +487,7 @@ jobs:
       - name: Compile PDF (ISO — the full font pipeline)
         if: runner.os == 'Windows'
         shell: msys2 {0}
+        timeout-minutes: 30
         # Font install enabled: public-formula fonts download into the
         # runner's ~/.fontist at compile time; mn2pdf/FOP on the openjdk
         # payload renders with real fonts (the windows java bridge).
@@ -461,11 +495,31 @@ jobs:
           mkdir -p "$RUNNER_TEMP/compile"
           cd fixtures/iso-test
           set +e
-          "$GITHUB_WORKSPACE/dist/$LEGACY" compile -t iso -x pdf --agree-to-terms document.adoc 2>&1 | tee "$RUNNER_TEMP/compile/compile-pdf.log"
+          timeout --signal=TERM --kill-after=10 1500 \
+            "$GITHUB_WORKSPACE/dist/$LEGACY" compile -t iso -x pdf --agree-to-terms document.adoc 2>&1 | tee "$RUNNER_TEMP/compile/compile-pdf.log"
           rc=${PIPESTATUS[0]}
           set -e
+          if [ "$rc" -eq 124 ] || [ "$rc" -eq 137 ]; then
+            echo "::error::compile TIMED OUT after 1500s (rc=$rc) — last log lines:"
+            tail -50 "$RUNNER_TEMP/compile/compile-pdf.log" || true
+            exit 1
+          fi
           [ "$rc" -eq 0 ] || { echo "::error::compile exited $rc"; exit "$rc"; }
           test -s document.pdf || { echo "::error::compile produced no document.pdf"; exit 1; }
+
+      - name: Compile diagnostics on failure
+        if: failure()
+        shell: bash
+        # Fires when any compile leg failed or timed out: the tee'd partial
+        # logs and the surviving process tree are the evidence.
+        run: |
+          for f in "$RUNNER_TEMP"/compile/*.log "$RUNNER_TEMP"/smoke.log; do
+            [ -f "$f" ] || continue
+            echo "=== $f (tail 80) ==="
+            tail -80 "$f" || true
+          done
+          echo "=== process tree ==="
+          ps aux 2>/dev/null | grep -iE "java|jing|ruby|metanorma|tebako" | grep -v grep || true
 
       - name: Package artifacts (POSIX)
         if: runner.os != 'Windows'
