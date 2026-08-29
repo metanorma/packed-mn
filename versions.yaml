@@ -74,17 +74,17 @@ package:
 
 payloads:
   - name: metanorma
-    release: 1.16.9-4 # tebako-packages/metanorma tag (see Deviations: not "1.16.9")
+    release: 1.16.9-5 # tebako-packages/metanorma tag (see Deviations: not "1.16.9")
     assets:
       aarch64-macos:
         file: metanorma-1.16.9-macos-arm64.tfs
-        sha256: 8eabdd208e8cd8a95de7eee180e0f5f3e38c0c9a3bb8e852eff8f82f7b27e609
+        sha256: f4864b772a17dcc6cb3e1ab53dae155e3401f14c073ca3953b679cd14f552dd3
       x86_64-linux-gnu:
         file: metanorma-1.16.9-linux-gnu-x86_64.tfs
-        sha256: 71f5933256e999f6e0053eedd2a35a0415f6e9c75b2439027405d6f9b1d035a0
+        sha256: 6a4a270492e57485db32ebd761f9de11cff83c0048188d7732e92bb95d7d7552
       x86_64-windows-ucrt:
         file: metanorma-1.16.9-windows-ucrt64.tfs
-        sha256: f0453dee9a3cf20c62ae3538730963ab9d4b185d86593632b1c6c864776da645
+        sha256: d83ad623e0961ac6ea42ea17b670522ee5283305c4c5575cae0cea3e093d1798
   - name: openjdk
     release: 21.0.12-2 # tebako-packages/openjdk tag
     assets:
