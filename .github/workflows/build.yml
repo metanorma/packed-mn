@@ -372,6 +372,21 @@ jobs:
             exit 1
           }
 
+      - name: argv0 dispatch smoke — fontist (POSIX)
+        if: runner.os != 'Windows'
+        run: |
+          set -euo pipefail
+          # The L2 entries mirror the payload's complete declared inventory
+          # (spec 03 §6 lockstep): a real copy under another declared name
+          # argv0-dispatches THAT command (argv0 integrity — links/copies
+          # only, never wrapper scripts).
+          cp "dist/$LEGACY" "$RUNNER_TEMP/fontist"
+          "$RUNNER_TEMP/fontist" --help 2>&1 | tee "$RUNNER_TEMP/smoke-fontist.log"
+          grep -q "fontist " "$RUNNER_TEMP/smoke-fontist.log" || {
+            echo "::error::argv0 fontist smoke did not print the fontist command list"
+            exit 1
+          }
+
       - name: Smoke (Windows)
         if: runner.os == 'Windows'
         shell: msys2 {0}
@@ -380,6 +395,18 @@ jobs:
           "./dist/$LEGACY" --version 2>&1 | tee "$RUNNER_TEMP/smoke.log"
           grep -q "Metanorma::Cli $PKG_VERSION" "$RUNNER_TEMP/smoke.log" || {
             echo "::error::smoke output does not contain 'Metanorma::Cli $PKG_VERSION'"
+            exit 1
+          }
+
+      - name: argv0 dispatch smoke — fontist (Windows)
+        if: runner.os == 'Windows'
+        shell: msys2 {0}
+        run: |
+          set -euo pipefail
+          cp "dist/$LEGACY" "$RUNNER_TEMP/fontist.exe"
+          "$RUNNER_TEMP/fontist.exe" --help 2>&1 | tee "$RUNNER_TEMP/smoke-fontist.log"
+          grep -q "fontist " "$RUNNER_TEMP/smoke-fontist.log" || {
+            echo "::error::argv0 fontist smoke did not print the fontist command list"
             exit 1
           }
 

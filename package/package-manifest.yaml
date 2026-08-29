@@ -22,6 +22,14 @@
 # consumer-declared points /opt/openjdk and /opt/inkscape. No `jail:`
 # block — the package requests nothing (v1 parity: the open policy,
 # spec 23 §5's never_denies).
+#
+# entries[] mirrors the payload's COMPLETE declared command inventory
+# (spec 03 §6 lockstep — tebako-pkg validate cross-checks L1<->L2,
+# tebako#494): argv0 dispatch can reach every declared command, and the
+# distributor picks which exe names to lay down (chocolatey hardlinks
+# fontist.exe; argv0 integrity admits real links/copies only — a wrapper
+# generator would break argv0 selection). L1's per-entrypoint `active`
+# governs MANAGED-mode install only; it has no L2 reading.
 # =============================================================================
 
 schema_version: 1
@@ -33,15 +41,81 @@ package:
     tool_version: "2"
   created: "@@CREATED@@"
 entries:
-  - name: metanorma
-    slot: 0
-    # The mount-relative in-image PATH (the payload's PROVIDES entrypoint
-    # path), not the bare command name: the bootstrap passes the value
-    # verbatim as --tebako-entry and the driver resolves it against the
-    # first image mount; a bare name with no '/' is the interpreter
-    # keyword (spec 17 §1) and would boot a bare ruby.
-    entrypoint: /bin/metanorma
-    runtime_ref: "@@RUNTIME_REF@@"
+  # `entrypoint` is the mount-relative in-image PATH (the payload's
+  # PROVIDES entrypoint path), never the bare command name: the bootstrap
+  # passes the value verbatim as --tebako-entry and the driver resolves it
+  # against the first image mount; a bare name with no '/' is the
+  # interpreter keyword (spec 17 §1) and would boot a bare ruby.
+  - {name: metanorma, slot: 0, entrypoint: /bin/metanorma, runtime_ref: "@@RUNTIME_REF@@"}
+  # --- the active set (L1 default PATH exposure), same slot/ref
+  - {name: metanorma-manifest, slot: 0, entrypoint: /bin/metanorma-manifest, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: asciidoctor, slot: 0, entrypoint: /bin/asciidoctor, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: canon, slot: 0, entrypoint: /bin/canon, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: coradoc, slot: 0, entrypoint: /bin/coradoc, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: expressir, slot: 0, entrypoint: /bin/expressir, runtime_ref: "@@RUNTIME_REF@@"}
+  # the chocolatey OIML leg's packaged answer (chocolatey-metanorma#89)
+  - {name: fontist, slot: 0, entrypoint: /bin/fontist, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: fontisan, slot: 0, entrypoint: /bin/fontisan, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: glossarist, slot: 0, entrypoint: /bin/glossarist, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: lutaml, slot: 0, entrypoint: /bin/lutaml, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: lutaml-model, slot: 0, entrypoint: /bin/lutaml-model, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: lutaml-sysml, slot: 0, entrypoint: /bin/lutaml-sysml, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: lutaml-wsd2uml, slot: 0, entrypoint: /bin/lutaml-wsd2uml, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: lutaml-xsd, slot: 0, entrypoint: /bin/lutaml-xsd, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: lutaml-yaml2uml, slot: 0, entrypoint: /bin/lutaml-yaml2uml, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: omnizip, slot: 0, entrypoint: /bin/omnizip, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: plurimath, slot: 0, entrypoint: /bin/plurimath, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: png_conform, slot: 0, entrypoint: /bin/png_conform, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: relaton, slot: 0, entrypoint: /bin/relaton, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: reverse_adoc, slot: 0, entrypoint: /bin/reverse_adoc, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: suma, slot: 0, entrypoint: /bin/suma, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: svg_conform, slot: 0, entrypoint: /bin/svg_conform, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: unitsdb, slot: 0, entrypoint: /bin/unitsdb, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: vectory, slot: 0, entrypoint: /bin/vectory, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: w2a, slot: 0, entrypoint: /bin/w2a, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: w2m, slot: 0, entrypoint: /bin/w2m, runtime_ref: "@@RUNTIME_REF@@"}
+  # --- declared-but-inactive in L1 (active: false): still argv0-
+  # dispatchable here — the distributor chooses what to lay down
+  - {name: cabriolet, slot: 0, entrypoint: /bin/cabriolet, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: console, slot: 0, entrypoint: /bin/console, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: convert2oscalyaml.rb, slot: 0, entrypoint: /bin/convert2oscalyaml.rb, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: dot2ruby, slot: 0, entrypoint: /bin/dot2ruby, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: ea, slot: 0, entrypoint: /bin/ea, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: ebnf, slot: 0, entrypoint: /bin/ebnf, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: emf, slot: 0, entrypoint: /bin/emf, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: emfsvg, slot: 0, entrypoint: /bin/emfsvg, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: excavate, slot: 0, entrypoint: /bin/excavate, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: fractor, slot: 0, entrypoint: /bin/fractor, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: fuzzy_match, slot: 0, entrypoint: /bin/fuzzy_match, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: gem2gv, slot: 0, entrypoint: /bin/gem2gv, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: git2gv, slot: 0, entrypoint: /bin/git2gv, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: japanese_calendar, slot: 0, entrypoint: /bin/japanese_calendar, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: jsonld, slot: 0, entrypoint: /bin/jsonld, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: ldiff, slot: 0, entrypoint: /bin/ldiff, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: loc-mods, slot: 0, entrypoint: /bin/loc-mods, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: nokogiri, slot: 0, entrypoint: /bin/nokogiri, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: premailer, slot: 0, entrypoint: /bin/premailer, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: pubid-nist, slot: 0, entrypoint: /bin/pubid-nist, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: rdf, slot: 0, entrypoint: /bin/rdf, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: reverse_markdown, slot: 0, entrypoint: /bin/reverse_markdown, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: rng, slot: 0, entrypoint: /bin/rng, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: rougify, slot: 0, entrypoint: /bin/rougify, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: ruby-ll, slot: 0, entrypoint: /bin/ruby-ll, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: ruby2gv, slot: 0, entrypoint: /bin/ruby2gv, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: setup, slot: 0, entrypoint: /bin/setup, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: socksify_ruby, slot: 0, entrypoint: /bin/socksify_ruby, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: sparql, slot: 0, entrypoint: /bin/sparql, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: sxp2json, slot: 0, entrypoint: /bin/sxp2json, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: sxp2rdf, slot: 0, entrypoint: /bin/sxp2rdf, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: sxp2xml, slot: 0, entrypoint: /bin/sxp2xml, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: sxp2yaml, slot: 0, entrypoint: /bin/sxp2yaml, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: thor, slot: 0, entrypoint: /bin/thor, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: tokenize, slot: 0, entrypoint: /bin/tokenize, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: ukiryu, slot: 0, entrypoint: /bin/ukiryu, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: unibuf, slot: 0, entrypoint: /bin/unibuf, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: w3c_api, slot: 0, entrypoint: /bin/w3c_api, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: xml2gv, slot: 0, entrypoint: /bin/xml2gv, runtime_ref: "@@RUNTIME_REF@@"}
+  - {name: xsdvi, slot: 0, entrypoint: /bin/xsdvi, runtime_ref: "@@RUNTIME_REF@@"}
 mounts:
   - slot: 0
     point: "@@RUNTIME_ROOT@@"
