@@ -136,7 +136,7 @@ jobs:
             got=$(awk -v a="$asset" '$2 == a {print $1}' tebako-SHA256SUMS | tr 'A-F' 'a-f')
             [ "$got" = "$want" ] || { echo "::error::pin mismatch for $asset: versions.yaml=$want release=$got"; exit 1; }
           done
-          echo "toolchain OK: $("$TEBAKO_TOOLS/tebako-pkg" --version)"
+          echo "toolchain OK"
 
       - name: Fetch tebako toolchain (Windows)
         if: runner.os == 'Windows'
@@ -176,11 +176,13 @@ jobs:
           ikb="https://github.com/tebako-packages/inkscape/releases/download/$INK_RELEASE"
           curl -fSL "$mnb/$MN_FILE"  -o "$PAYLOADS/$MN_FILE"
           curl -fSL "$jdb/$JDK_FILE" -o "$PAYLOADS/$JDK_FILE"
+          curl -fSL "$jdb/$JDK_EXE_FILE" -o "$PAYLOADS/$JDK_EXE_FILE"
           curl -fSL "$ikb/$INK_FILE" -o "$PAYLOADS/$INK_FILE"
           cd "$PAYLOADS"
           {
             echo "$MN_SHA256  $MN_FILE"
             echo "$JDK_SHA256  $JDK_FILE"
+            echo "$JDK_EXE_SHA256  $JDK_EXE_FILE"
             echo "$INK_SHA256  $INK_FILE"
           } > sums.txt
           if command -v sha256sum >/dev/null 2>&1; then sha256sum -c sums.txt; else shasum -a 256 -c sums.txt; fi
@@ -198,11 +200,13 @@ jobs:
           ikb="https://github.com/tebako-packages/inkscape/releases/download/$INK_RELEASE"
           curl -fSL "$mnb/$MN_FILE"  -o "$PAYLOADS/$MN_FILE"
           curl -fSL "$jdb/$JDK_FILE" -o "$PAYLOADS/$JDK_FILE"
+          curl -fSL "$jdb/$JDK_EXE_FILE" -o "$PAYLOADS/$JDK_EXE_FILE"
           curl -fSL "$ikb/$INK_FILE" -o "$PAYLOADS/$INK_FILE"
           cd "$PAYLOADS"
           {
             echo "$MN_SHA256 *$MN_FILE"
             echo "$JDK_SHA256 *$JDK_FILE"
+            echo "$JDK_EXE_SHA256 *$JDK_EXE_FILE"
             echo "$INK_SHA256 *$INK_FILE"
           } > sums.txt
           sha256sum -c sums.txt
@@ -226,8 +230,10 @@ jobs:
           mkdir -p dist
           "$TEBAKO_TOOLS/tebako-pkg" bundle \
             --bootstrap "$TEBAKO_BOOT/tebako-bootstrap" \
+            --exact-mounts \
             --image "$PAYLOADS/$MN_FILE:/__tfs__" \
-            --image "$PAYLOADS/$JDK_FILE:/opt/openjdk" \
+            --image "$PAYLOADS/$JDK_EXE_FILE" \
+            --image "$PAYLOADS/$JDK_FILE" \
             --image "$PAYLOADS/$INK_FILE:/opt/inkscape" \
             --runtime-ref "$RUNTIME_REF" \
             --package-manifest "$RUNNER_TEMP/pkg.yaml" \
@@ -258,8 +264,10 @@ jobs:
           rel_tmp=$(realpath --relative-to=. "$RUNNER_TEMP")
           MSYS2_ARG_CONV_EXCL='*' "$TEBAKO_TOOLS/tebako-pkg.exe" bundle \
             --bootstrap "$rel_boot/tebako-bootstrap.exe" \
+            --exact-mounts \
             --image "$rel_payloads/$MN_FILE:/__tfs__" \
-            --image "$rel_payloads/$JDK_FILE:/opt/openjdk" \
+            --image "$rel_payloads/$JDK_EXE_FILE" \
+            --image "$rel_payloads/$JDK_FILE" \
             --image "$rel_payloads/$INK_FILE:/opt/inkscape" \
             --runtime-ref "$RUNTIME_REF" \
             --package-manifest "$rel_tmp/pkg.yaml" \
@@ -283,13 +291,16 @@ jobs:
             die.call("launcher_abi != 1") unless pkg["launcher_abi"] == 1
             die.call("runtime_ref mismatch: #{pkg["runtime_ref"].inspect}") unless pkg["runtime_ref"] == ARGV[1]
             slots = j["slots"]
-            die.call("expected 3 slots, got #{slots.length}") unless slots.length == 3
-            want = ["/__tfs__", "/opt/openjdk", "/opt/inkscape"]
+            die.call("expected 4 slots, got #{slots.length}") unless slots.length == 4
+            # spec 30 layout: 0=app, 1=java exe (claimed, never mounted),
+            # 2=java env image (claimed, never mounted), 3=inkscape.
+            want = ["/__tfs__", "", "", "/opt/inkscape"]
+            fmts = ["dwarfs", "auto", "dwarfs", "dwarfs"]
             slots.each_with_index do |s, i|
               die.call("slot#{i} mount #{s["mount"].inspect} != #{want[i].inspect}") unless s["mount"] == want[i]
-              die.call("slot#{i} format #{s["format"].inspect} != dwarfs") unless s["format"] == "dwarfs"
+              die.call("slot#{i} format #{s["format"].inspect} != #{fmts[i].inspect}") unless s["format"] == fmts[i]
             end
-            puts "trailer gates OK (lean, abi=1, runtime_ref, 3 slots)"
+            puts "trailer gates OK (lean, abi=1, runtime_ref, 4 slots)"
           RUBY
           set +e
           "$TEBAKO_TOOLS/tebako-pkg" validate "$pkg" > "$RUNNER_TEMP/validate.log" 2>&1
@@ -335,9 +346,13 @@ jobs:
             die.call("expected lean flag") unless pkg["flags"].include?("lean")
             die.call("launcher_abi != 1") unless pkg["launcher_abi"] == 1
             die.call("runtime_ref mismatch") unless pkg["runtime_ref"] == ARGV[1]
-            want = ["/__tfs__", "/opt/openjdk", "/opt/inkscape"]
+            # spec 30 layout: 0=app, 1=java exe (claimed, never mounted),
+            # 2=java env image (claimed, never mounted), 3=inkscape.
+            want = ["/__tfs__", "", "", "/opt/inkscape"]
+            fmts = ["dwarfs", "auto", "dwarfs", "dwarfs"]
+            die.call("expected 4 slots") unless j["slots"].length == 4
             j["slots"].each_with_index do |s, i|
-              die.call("slot#{i} mount/format wrong") unless s["mount"] == want[i] && s["format"] == "dwarfs"
+              die.call("slot#{i} mount/format wrong") unless s["mount"] == want[i] && s["format"] == fmts[i]
             end
             puts "trailer gates OK"
           RUBY

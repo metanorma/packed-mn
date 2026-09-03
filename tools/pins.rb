@@ -99,12 +99,21 @@ pairs = {
   "LAUNCHER_ABI" => "1",
   "EXE_SUFFIX" => exe,
   "MN_RELEASE" => mn_p.fetch("release"),
+  "MN_VERSION" => mn_p.fetch("version"),
   "MN_FILE" => mn.fetch("file"),
   "MN_SHA256" => mn.fetch("sha256"),
   "JDK_RELEASE" => jdk_p.fetch("release"),
+  # The runtime-kind identity (spec 30): the spawned lock row's version
+  # pair, and the exe facet pins (the pair rides slots 1-2, claimed by
+  # lock.spawned[] — never mounted).
+  "JDK_LANG" => jdk_p.fetch("lang_version"),
+  "JDK_TEBAKO" => jdk_p.fetch("tebako_version"),
   "JDK_FILE" => jdk.fetch("file"),
   "JDK_SHA256" => jdk.fetch("sha256"),
+  "JDK_EXE_FILE" => jdk.fetch("exe_file"),
+  "JDK_EXE_SHA256" => jdk.fetch("exe_sha256"),
   "INK_RELEASE" => ink_p.fetch("release"),
+  "INK_VERSION" => ink_p.fetch("version"),
   "INK_FILE" => ink.fetch("file"),
   "INK_SHA256" => ink.fetch("sha256"),
 }

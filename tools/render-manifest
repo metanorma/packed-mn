@@ -5,7 +5,10 @@
 #
 # <runtime-root> is the root's DECLARED spelling (/__tfs__ POSIX, /t
 # windows); the other placeholders come straight from versions.yaml via
-# tools/pins.rb. `created` is stamped here (RFC 3339 UTC).
+# tools/pins.rb (the lock-row digests/versions arrive as ENV: the
+# workflow sources pins.rb --env first). `created` is stamped here
+# (RFC 3339 UTC). Every substitution source must be NON-EMPTY — a blank
+# render is a named error, never a silent half-render.
 set -eu
 
 [ $# -eq 4 ] || { echo "usage: tools/render-manifest <runtime-root> <runtime-ref> <version> <out-file>" >&2; exit 64; }
@@ -16,11 +19,30 @@ version=$3
 out=$4
 created=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 
+# The lock block's pins (spec 23 §4/§13.6): the carried slice digests and
+# the spawned java pair's identity + digests, from versions.yaml via
+# pins.rb. Fail-closed: each must be set and non-empty.
+for var in MN_SHA256 INK_VERSION INK_SHA256 JDK_LANG JDK_TEBAKO JDK_EXE_SHA256 JDK_SHA256 RUNTIME_RUBY; do
+    eval "val=\${$var:-}"
+    if [ -z "$val" ]; then
+        echo "render-manifest: \$$var is unset/empty (source tools/pins.rb first)" >&2
+        exit 64
+    fi
+done
+
 template=$(dirname "$0")/../package/package-manifest.yaml
 sed -e "s|@@RUNTIME_ROOT@@|$root|g" \
     -e "s|@@RUNTIME_REF@@|$ref|g" \
     -e "s|@@VERSION@@|$version|g" \
     -e "s|@@CREATED@@|$created|g" \
+    -e "s|@@MN_SHA256@@|$MN_SHA256|g" \
+    -e "s|@@INK_VERSION@@|$INK_VERSION|g" \
+    -e "s|@@INK_SHA256@@|$INK_SHA256|g" \
+    -e "s|@@JDK_LANG@@|$JDK_LANG|g" \
+    -e "s|@@JDK_TEBAKO@@|$JDK_TEBAKO|g" \
+    -e "s|@@JDK_EXE_SHA256@@|$JDK_EXE_SHA256|g" \
+    -e "s|@@JDK_IMAGE_SHA256@@|$JDK_SHA256|g" \
+    -e "s|@@RUNTIME_RUBY@@|$RUNTIME_RUBY|g" \
     "$template" > "$out"
 
 # The render must be total: a surviving placeholder is a named error,
