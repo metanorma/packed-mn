@@ -46,24 +46,24 @@ tebako:
 
 runtime:
   # The runtime reference every package entry carries:
-  #   ruby@3.3.12;tebako=0.16.19;image
+  #   ruby@3.3.12;tebako=0.16.20;image
   # ruby stays on the 3.3 line ON PURPOSE: the benchmark comparison vs the
   # old (v1-tebako) packed-mn executables holds the interpreter line fixed
   # (owner decision 2026-08-26 — do NOT bump to 4.0.6 here).
-  release: v0.16.19 # tamatebako/tebako-runtime-ruby tag
-  tebako: 0.16.19 # the runtime line (tebako=<abi> in the ref)
+  release: v0.16.20 # tamatebako/tebako-runtime-ruby tag
+  tebako: 0.16.20 # the runtime line (tebako=<abi> in the ref)
   ruby: 3.3.12 # the interpreter version
   sha256:
     exe:
-      macos-arm64: 82470df42b6980948f27ab94a772cd3efc12d783c3536f816cfa4897bc4a4219
-      linux-gnu-x86_64: 47b860a35baa9afa9ddb49cfa5c4047129850b874558d10fff4790b88ada3e3f
-      windows-ucrt64: 34e84d80450ba63456e69dbe8767015af93a64985e178f08151526e73633736c
+      macos-arm64: fe17095bdd87468c62763a4df8fa45846f461eaccb9e46b9aab1a7a82206c5bf
+      linux-gnu-x86_64: c4a4207e3db18d8b01f2a4c7709844a625529466f06879279f2e75f79de2a886
+      windows-ucrt64: 7b4f034635b82f1e1df2e7910abedbf2d5bc8cfe4c6e0b1343070f39a977e202
     image:
-      macos-arm64: 97980fb8d864fc7c8c1653f5fb0fe84063ef64d4c2cb615d5ad28221e556f739
-      linux-gnu-x86_64: 9502d54f8f50d03fe40f06a106c91543a08a86268b0438a751087bb92573331d
-      windows-ucrt64: d18dbcb7419972dbcc0705f252ae2137e282e8e60fcb8e091e041e669e577af4
+      macos-arm64: 16e21e6fc1060aee7a8bd404be9e0151d04818e6ca6e7416932678e3b6aa02d5
+      linux-gnu-x86_64: b49fd3ef382da57fb5bbe6477270b061c8d2c53a2d8f8a73f24d67e454f9badb
+      windows-ucrt64: 0a168eb9e6972d6ff9e7b12004d1cbd45e005e326f1d03a84c0b26f7add245ab
     dll: # windows-only facet (install_as: x64-ucrt-ruby330.dll)
-      windows-ucrt64: 03ccd38d7a1a54ec9cde427a81d6b6d43317462c05152e5991fc086b8f414493
+      windows-ucrt64: 4e99a6a0f183eba046520874d4d06d20a20fde36b1c48625908cd61d519acc78
 
 package:
   name: metanorma
