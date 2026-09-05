@@ -19,10 +19,13 @@ version=$3
 out=$4
 created=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 
-# The lock block's pins (spec 23 §4/§13.6): the carried slice digests and
-# the spawned java pair's identity + digests, from versions.yaml via
-# pins.rb. Fail-closed: each must be set and non-empty.
-for var in MN_SHA256 INK_VERSION INK_SHA256 JDK_LANG JDK_TEBAKO JDK_EXE_SHA256 JDK_SHA256 RUNTIME_RUBY; do
+# The lock block's pins (spec 23 §4/§13.6 + spec 32 §6): the carried slice
+# digests, the spawned java pair's identity + digests, and the spawned
+# xml2rfc payload row's identity + digests (the provider image pin + the
+# nested python pair), from versions.yaml via pins.rb. Fail-closed: each
+# must be set and non-empty.
+for var in MN_SHA256 INK_VERSION INK_SHA256 JDK_LANG JDK_TEBAKO JDK_EXE_SHA256 JDK_SHA256 \
+           X2RFC_VERSION X2RFC_SHA256 PY_LANG PY_TEBAKO PY_EXE_SHA256 PY_IMAGE_SHA256 RUNTIME_RUBY; do
     eval "val=\${$var:-}"
     if [ -z "$val" ]; then
         echo "render-manifest: \$$var is unset/empty (source tools/pins.rb first)" >&2
@@ -42,6 +45,12 @@ sed -e "s|@@RUNTIME_ROOT@@|$root|g" \
     -e "s|@@JDK_TEBAKO@@|$JDK_TEBAKO|g" \
     -e "s|@@JDK_EXE_SHA256@@|$JDK_EXE_SHA256|g" \
     -e "s|@@JDK_IMAGE_SHA256@@|$JDK_SHA256|g" \
+    -e "s|@@X2RFC_VERSION@@|$X2RFC_VERSION|g" \
+    -e "s|@@X2RFC_IMAGE_SHA256@@|$X2RFC_SHA256|g" \
+    -e "s|@@PY_LANG@@|$PY_LANG|g" \
+    -e "s|@@PY_TEBAKO@@|$PY_TEBAKO|g" \
+    -e "s|@@PY_EXE_SHA256@@|$PY_EXE_SHA256|g" \
+    -e "s|@@PY_IMAGE_SHA256@@|$PY_IMAGE_SHA256|g" \
     -e "s|@@RUNTIME_RUBY@@|$RUNTIME_RUBY|g" \
     "$template" > "$out"
 

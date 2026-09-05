@@ -43,6 +43,17 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
+      # WINDOWS LEG PARKED (spec 32): versions.yaml's xml2rfc entry has no
+      # x86_64-windows-ucrt asset — no windows xml2rfc payload (the
+      # feedstock is POSIX-only today) and no windows python runtime (the
+      # factory's first published line built six POSIX legs) exist.
+      # tools/pins.rb would fail a windows "Read pins" step CLOSED (a
+      # missing asset is a named error, never a silent skip of the spawn
+      # edge), and a permanently-red leg blocks the release job
+      # (needs: [press]) — so the leg is out of the matrix until the
+      # xml2rfc feedstock ships its windows build. The release layout,
+      # notes, asset list, and the chocolatey/winget downstream dispatches
+      # park with it (see the release job).
       matrix:
         include:
           - triplet: aarch64-macos
@@ -53,10 +64,10 @@ jobs:
             os: ubuntu-24.04
             tool: linux-gnu-x86_64
             legacy: metanorma-linux-x86_64
-          - triplet: x86_64-windows-ucrt
-            os: windows-latest
-            tool: windows-ucrt64
-            legacy: metanorma-windows-x86_64.exe
+          # - triplet: x86_64-windows-ucrt   # PARKED — see above
+          #   os: windows-latest
+          #   tool: windows-ucrt64
+          #   legacy: metanorma-windows-x86_64.exe
     env:
       LEGACY: ${{ matrix.legacy }}
     steps:
@@ -174,16 +185,30 @@ jobs:
           mnb="https://github.com/tebako-packages/metanorma/releases/download/$MN_RELEASE"
           jdb="https://github.com/tebako-packages/openjdk/releases/download/$JDK_RELEASE"
           ikb="https://github.com/tebako-packages/inkscape/releases/download/$INK_RELEASE"
+          # spec 32's spawned payload set: the xml2rfc provider image from
+          # its feedstock, plus the nested python runtime pair from the
+          # runtime factory (the same releases-consumed-downward rule as
+          # every input — versions.yaml's xml2rfc entry carries the tags;
+          # both ride PUBLISHED releases: xml2rfc 3.34.0, python v0.1.0).
+          x2b="https://github.com/tebako-packages/xml2rfc/releases/download/$X2RFC_RELEASE"
+          pyb="https://github.com/tamatebako/tebako-runtime-python/releases/download/$PY_RELEASE"
           curl -fSL "$mnb/$MN_FILE"  -o "$PAYLOADS/$MN_FILE"
           curl -fSL "$jdb/$JDK_FILE" -o "$PAYLOADS/$JDK_FILE"
           curl -fSL "$jdb/$JDK_EXE_FILE" -o "$PAYLOADS/$JDK_EXE_FILE"
           curl -fSL "$ikb/$INK_FILE" -o "$PAYLOADS/$INK_FILE"
+          curl -fSL "$x2b/$X2RFC_FILE" -o "$PAYLOADS/$X2RFC_FILE"
+          curl -fSL "$pyb/$PY_EXE_FILE" -o "$PAYLOADS/$PY_EXE_FILE"
+          curl -fSL "$pyb/$PY_IMAGE_FILE" -o "$PAYLOADS/$PY_IMAGE_FILE"
+          chmod +x "$PAYLOADS/$PY_EXE_FILE"
           cd "$PAYLOADS"
           {
             echo "$MN_SHA256  $MN_FILE"
             echo "$JDK_SHA256  $JDK_FILE"
             echo "$JDK_EXE_SHA256  $JDK_EXE_FILE"
             echo "$INK_SHA256  $INK_FILE"
+            echo "$X2RFC_SHA256  $X2RFC_FILE"
+            echo "$PY_EXE_SHA256  $PY_EXE_FILE"
+            echo "$PY_IMAGE_SHA256  $PY_IMAGE_FILE"
           } > sums.txt
           if command -v sha256sum >/dev/null 2>&1; then sha256sum -c sums.txt; else shasum -a 256 -c sums.txt; fi
           ls -l
@@ -235,6 +260,9 @@ jobs:
             --image "$PAYLOADS/$JDK_EXE_FILE" \
             --image "$PAYLOADS/$JDK_FILE" \
             --image "$PAYLOADS/$INK_FILE:/opt/inkscape" \
+            --image "$PAYLOADS/$X2RFC_FILE" \
+            --image "$PAYLOADS/$PY_EXE_FILE" \
+            --image "$PAYLOADS/$PY_IMAGE_FILE" \
             --runtime-ref "$RUNTIME_REF" \
             --package-manifest "$RUNNER_TEMP/pkg.yaml" \
             --launcher-abi "$LAUNCHER_ABI" \
@@ -291,16 +319,25 @@ jobs:
             die.call("launcher_abi != 1") unless pkg["launcher_abi"] == 1
             die.call("runtime_ref mismatch: #{pkg["runtime_ref"].inspect}") unless pkg["runtime_ref"] == ARGV[1]
             slots = j["slots"]
-            die.call("expected 4 slots, got #{slots.length}") unless slots.length == 4
-            # spec 30 layout: 0=app, 1=java exe (claimed, never mounted),
-            # 2=java env image (claimed, never mounted), 3=inkscape.
-            want = ["/__tfs__", "", "", "/opt/inkscape"]
-            fmts = ["dwarfs", "auto", "dwarfs", "dwarfs"]
+            die.call("expected 7 slots, got #{slots.length}") unless slots.length == 7
+            # spec 30 + spec 32 layout: 0=app, 1=java exe (claimed, never
+            # mounted), 2=java env image (claimed, never mounted),
+            # 3=inkscape, 4=xml2rfc provider image (claimed, never
+            # mounted), 5=python exe (claimed, never mounted), 6=python
+            # env image (claimed, never mounted).
+            # Slots 4/6 are limnifs, not dwarfs: the xml2rfc feedstock and
+            # the python runtime factory build on the tebako 2.2.0
+            # toolchain, whose mkimage default is limnifs (spec 20 §6).
+            # Verified against the published bytes (xml2rfc 3.34.0,
+            # tebako-runtime-python v0.1.0); the v2.2.0 runtime mounts
+            # both backends.
+            want = ["/__tfs__", "", "", "/opt/inkscape", "", "", ""]
+            fmts = ["dwarfs", "auto", "dwarfs", "dwarfs", "limnifs", "auto", "limnifs"]
             slots.each_with_index do |s, i|
               die.call("slot#{i} mount #{s["mount"].inspect} != #{want[i].inspect}") unless s["mount"] == want[i]
               die.call("slot#{i} format #{s["format"].inspect} != #{fmts[i].inspect}") unless s["format"] == fmts[i]
             end
-            puts "trailer gates OK (lean, abi=1, runtime_ref, 4 slots)"
+            puts "trailer gates OK (lean, abi=1, runtime_ref, 7 slots)"
           RUBY
           set +e
           "$TEBAKO_TOOLS/tebako-pkg" validate "$pkg" > "$RUNNER_TEMP/validate.log" 2>&1
@@ -312,14 +349,16 @@ jobs:
           elif [ "$rc" = 70 ]; then
             # spec 03 §7 fixed-point: an in-image manifest cannot carry its
             # own digest, so feedstocks embed zeros and validate reports
-            # exactly three "manifest blob_sha256 00000000…" slot lines.
+            # exactly five "manifest blob_sha256 00000000…" slot lines
+            # (slots 0/2/3 — app, java image, inkscape — plus 4/6 — the
+            # xml2rfc provider image and the python env image).
             # Anything else is a real structural failure. The trailing
             # "result: FAILED (exit 70)" summary line is excluded by the
             # em-dash anchor.
             fails=$(grep -c 'digest agreement: FAILED — manifest blob_sha256 00000000' "$RUNNER_TEMP/validate.log" || true)
             total=$(grep -c ': FAILED — ' "$RUNNER_TEMP/validate.log" || true)
-            if [ "$fails" = 3 ] && [ "$total" = 3 ]; then
-              echo "::notice::validate exit 70 with only the three known blob_sha256 fixed-point placeholders — accepted"
+            if [ "$fails" = 5 ] && [ "$total" = 5 ]; then
+              echo "::notice::validate exit 70 with only the five known blob_sha256 fixed-point placeholders — accepted"
             else
               echo "::error::validate exit 70 with unexpected failures (placeholder lines: $fails, total FAILED: $total)"
               exit 1
@@ -600,8 +639,12 @@ jobs:
   prepare:
     # Feedstock-bumped flow: fetch the new pins from the metanorma registry,
     # rewrite versions.yaml, commit to main, tag v<version>. Release then
-    # fires from the tag push. Only runs on explicit dispatch.
-    if: github.event_name == 'repository_dispatch' || github.event_name == 'workflow_dispatch'
+    # fires from the tag push. Only runs on explicit dispatch, and ONLY
+    # from the default branch — a workflow_dispatch on a side branch would
+    # otherwise attempt `git push HEAD:main` plus a FORCE-PUSH of the
+    # release tag pointing at branch commits (observed failing closed —
+    # rejected push — on a feat/v2-assembly dispatch, run 34021017078).
+    if: (github.event_name == 'repository_dispatch' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
@@ -652,12 +695,14 @@ jobs:
           pattern: dist-*
           path: stage
       - name: Assemble release layout
+        # POSIX-only while the windows press leg is parked (spec 32 — see
+        # the press matrix comment): no dist-x86_64-windows-ucrt artifact
+        # exists to copy.
         run: |
           set -euo pipefail
           mkdir -p rel
           cp stage/dist-aarch64-macos/metanorma-darwin-arm64.tgz* rel/
           cp stage/dist-x86_64-linux-gnu/metanorma-linux-x86_64.tgz* rel/
-          cp stage/dist-x86_64-windows-ucrt/metanorma-windows-x86_64.exe* rel/
           ls -l rel
       - name: Release notes
         run: |
@@ -669,10 +714,12 @@ jobs:
           Single-executable Metanorma assembled with the tebako v2 pipeline
           (fetch → assemble → validate → publish). Nothing compiles on your
           machine: the package carries the metanorma/OpenJDK/Inkscape payload
-          slices and resolves the tebako Ruby runtime on first run.
+          slices plus the xml2rfc spawned payload with its python runtime
+          (spec 32), and resolves the tebako Ruby runtime on first run.
 
           - metanorma payload: $PKG_VERSION (release $MN_RELEASE_NOTE)
           - OpenJDK slice: $JDK_RELEASE_NOTE · Inkscape slice: $INK_RELEASE_NOTE
+          - xml2rfc slice (spawned payload, spec 32): $X2RFC_RELEASE_NOTE, dispatched on its bundled python runtime
           - runtime: tebako ruby $RUNTIME_RUBY_NOTE (runtime $RUNTIME_TEBAKO_NOTE), resolved via tebako toolchain v$TEBAKO_VERSION
 
           ## First run
@@ -683,14 +730,17 @@ jobs:
 
           ## Known limitations
 
-          - Windows executable ships without a file icon (pending resource
-            embedding in the tebako toolchain).
+          - NO WINDOWS PACKAGE in this release: the spec-32 xml2rfc spawn
+            edge has no windows payload yet (the xml2rfc feedstock is
+            POSIX-only and no windows python runtime exists), so the windows
+            press leg is parked rather than silently dropping the edge.
+            Windows re-arms with the feedstock's windows build; until then
+            v1.16.9-3 remains the latest windows package.
 
           | Platform | Asset |
           |---|---|
           | macOS (Apple Silicon) | metanorma-darwin-arm64.tgz |
           | Linux (x86_64) | metanorma-linux-x86_64.tgz |
-          | Windows (x86_64) | metanorma-windows-x86_64.exe (+ .zip) |
           EOF
       - name: Publish release
         uses: softprops/action-gh-release@v2
@@ -701,16 +751,14 @@ jobs:
             rel/metanorma-darwin-arm64.tgz.sha256.txt
             rel/metanorma-linux-x86_64.tgz
             rel/metanorma-linux-x86_64.tgz.sha256.txt
-            rel/metanorma-windows-x86_64.exe
-            rel/metanorma-windows-x86_64.exe.sha256.txt
-            rel/metanorma-windows-x86_64.exe.zip
-            rel/metanorma-windows-x86_64.exe.zip.sha256.txt
       - name: Dispatch downstream
+        # POSIX targets only while the windows leg is parked: chocolatey and
+        # winget would fan out a release with no windows assets.
         env:
           GH_TOKEN: ${{ secrets.METANORMA_CI_PAT_TOKEN }}
         run: |
           set -euo pipefail
-          for target in metanorma/metanorma-snap metanorma/homebrew-metanorma metanorma/chocolatey-metanorma metanorma/winget-metanorma; do
+          for target in metanorma/metanorma-snap metanorma/homebrew-metanorma; do
             gh api "repos/$target/dispatches" \
               -f event_type='${{ github.repository }}' \
               -f "client_payload[ref]=${GITHUB_REF_NAME}" \

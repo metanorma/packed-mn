@@ -49,6 +49,7 @@ if ARGV.include?("--release")
     "MN_RELEASE_NOTE" => by_name.fetch("metanorma").fetch("release"),
     "JDK_RELEASE_NOTE" => by_name.fetch("openjdk").fetch("release"),
     "INK_RELEASE_NOTE" => by_name.fetch("inkscape").fetch("release"),
+    "X2RFC_RELEASE_NOTE" => by_name.fetch("xml2rfc").fetch("release"),
   }
   notes.each { |k, v| puts "#{k}=#{v}" }
   exit 0
@@ -72,6 +73,11 @@ end
 mn_p, mn = slice.call("metanorma")
 jdk_p, jdk = slice.call("openjdk")
 ink_p, ink = slice.call("inkscape")
+# spec 32's spawned payload: the xml2rfc slice + its nested python runtime
+# pair. A triplet with no asset (windows today — no windows xml2rfc payload
+# or python runtime exists) dies here on slice.call's named error: the leg
+# fails CLOSED, never a silent skip of the spawn edge.
+x2_p, x2 = slice.call("xml2rfc")
 
 windows = tool.start_with?("windows")
 # The runtime root's DECLARED spelling (spec 17 §1): /__tfs__ on POSIX,
@@ -116,6 +122,21 @@ pairs = {
   "INK_VERSION" => ink_p.fetch("version"),
   "INK_FILE" => ink.fetch("file"),
   "INK_SHA256" => ink.fetch("sha256"),
+  # The spawned-payload identity (spec 32 §6): the provider payload's
+  # version + image pin, and the NESTED python runtime row's version pair
+  # + pair pins (the trio rides slots 4-6, claimed by the lock's spawned[]
+  # payload row — never mounted by the parent).
+  "X2RFC_RELEASE" => x2_p.fetch("release"),
+  "X2RFC_VERSION" => x2_p.fetch("version"),
+  "X2RFC_FILE" => x2.fetch("file"),
+  "X2RFC_SHA256" => x2.fetch("sha256"),
+  "PY_RELEASE" => x2_p.fetch("python_release"),
+  "PY_LANG" => x2_p.fetch("lang_version"),
+  "PY_TEBAKO" => x2_p.fetch("tebako_version"),
+  "PY_EXE_FILE" => x2.fetch("py_exe_file"),
+  "PY_EXE_SHA256" => x2.fetch("py_exe_sha256"),
+  "PY_IMAGE_FILE" => x2.fetch("py_image_file"),
+  "PY_IMAGE_SHA256" => x2.fetch("py_image_sha256"),
 }
 
 if ARGV.include?("--env")

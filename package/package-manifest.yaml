@@ -15,13 +15,17 @@
 #   @@JDK_LANG@@ / @@JDK_TEBAKO@@ / @@JDK_EXE_SHA256@@ /
 #   @@JDK_IMAGE_SHA256@@ — the spawned java runtime's identity + pair pins
 #                        (lock.spawned[], spec 23 §13.6 / spec 30 §2)
+#   @@X2RFC_VERSION@@ / @@X2RFC_IMAGE_SHA256@@ — the spawned xml2rfc
+#                        payload's pick + image pin (spec 32 §6)
+#   @@PY_LANG@@ / @@PY_TEBAKO@@ / @@PY_EXE_SHA256@@ / @@PY_IMAGE_SHA256@@ —
+#                        the nested python runtime row's identity + pair pins
 #
 # The spec-18 contract declaration (contract_era / pressed_by /
 # reader_era) is NOT authored here — `tebako-pkg bundle` injects it
 # (tpkg ext.rs: the block payload is the composition view + the current
 # contract card).
 #
-# Composition (spec 30 era): slot 0 is the metanorma app slice,
+# Composition (spec 30 + spec 32 era): slot 0 is the metanorma app slice,
 # union-mounted over the env image at the runtime root (precedence
 # after-env — the env image is always the lowest member). Slots 1–2 are
 # the carried java RUNTIME pair (exe + env image): claimed by
@@ -29,9 +33,13 @@
 # --exact-mounts), staged into the machine runtime cache by the bootstrap
 # at dispatch, and NEVER co-mounted (spec 30 §1) — the JVM runs as a
 # spawned child process dispatched from the store. Slot 3 is the inkscape
-# toolkit slice, exclusive at the consumer-declared /opt/inkscape. No
-# `jail:` block — the package requests nothing (v1 parity: the open
-# policy, spec 23 §5's never_denies).
+# toolkit slice, exclusive at the consumer-declared /opt/inkscape. Slots
+# 4–6 are the spec 32 spawned-PAYLOAD set: the xml2rfc provider image plus
+# its nested python runtime pair (exe + env image), claimed by the lock's
+# spawned[] payload row with EMPTY mount points, staged into payloads/ and
+# runtimes/ at dispatch — the child mounts them fresh; the parent never
+# does. No `jail:` block — the package requests nothing (v1 parity: the
+# open policy, spec 23 §5's never_denies).
 #
 # The `lock:` block (spec 23 §4/§13) records the press resolution: the
 # lean runtime row (carry: false — first-run resolution rides the spec 05
@@ -140,9 +148,13 @@ lock:
   # toolkit/app images with their digest pins. Spawned: the java edge,
   # mirrored verbatim from the payload's L1 requires[].kind: runtime
   # (spec 30 §2 — validate cross-checks engine/constraint/expose BOTH
-  # directions); the carried pair rides slots 1–2 with EMPTY mount
-  # points, claimed here, staged into the machine runtime cache at
-  # dispatch, TEBAKO_SPAWN_LOCK exported to the driver.
+  # directions), and the xml2rfc payload edge, mirrored from the L1
+  # requires[].kind: executable (spec 32 §6 — validate's two-level
+  # cross-check also asserts the nested runtime row against the
+  # PROVIDER's L1 kind: language edge); the carried pairs ride slots
+  # 1–2 and 4–6 with EMPTY mount points, claimed here, staged into the
+  # machine caches at dispatch, TEBAKO_SPAWN_LOCK exported to the
+  # driver.
   runtime:
     version: "@@RUNTIME_RUBY@@"
     carry: false
@@ -158,12 +170,36 @@ lock:
       carry: true
       exe: {slot: 1, sha256: "@@JDK_EXE_SHA256@@"}
       image: {slot: 2, sha256: "@@JDK_IMAGE_SHA256@@"}
+    # spec 32 §6's payload row (the first instance): the xml2rfc spawn
+    # edge, mirrored from the payload's L1 requires[].kind: executable
+    # (payload / constraint / expose verbatim — tebako-pkg validate's
+    # TWO-LEVEL cross-check asserts this mirror AND the nested runtime
+    # row's constraint against the PROVIDER's L1 kind: language edge,
+    # "~> 3.13.0"). Slots 4–6: the provider image + the nested python
+    # pair, claimed with EMPTY mount points, staged into the machine
+    # payloads/ + runtimes/ caches at dispatch; the nested row's expose
+    # stays empty (the spawn surface rides THIS row's expose).
+    - payload: xml2rfc
+      constraint: ">= 3.34"
+      expose: [xml2rfc]
+      version: "@@X2RFC_VERSION@@"
+      carry: true
+      image: {slot: 4, sha256: "@@X2RFC_IMAGE_SHA256@@"}
+      runtime:
+        engine: python
+        constraint: "~> 3.13.0"
+        version: "@@PY_LANG@@"
+        tebako: "@@PY_TEBAKO@@"
+        carry: true
+        exe: {slot: 5, sha256: "@@PY_EXE_SHA256@@"}
+        image: {slot: 6, sha256: "@@PY_IMAGE_SHA256@@"}
 mounts:
   - slot: 0
     point: "@@RUNTIME_ROOT@@"
     mode: union
     precedence: after-env
-  # slots 1–2 (the spawned java pair) carry NO mount — claimed by
-  # lock.spawned[], never mounted (spec 30 §1)
+  # slots 1–2 (the spawned java pair) and 4–6 (the spawned xml2rfc payload
+  # + nested python pair) carry NO mount — claimed by lock.spawned[],
+  # never mounted by the parent (spec 30 §1 / spec 32 §6)
   - slot: 3
     point: /opt/inkscape
