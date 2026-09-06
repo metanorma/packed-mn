@@ -97,25 +97,30 @@ payloads:
     # spec 30: it is NEVER co-mounted — the package carries the exe+image
     # pair as lock.spawned[]-claimed slots; the bootstrap stages them into
     # the machine runtime cache at dispatch and exports TEBAKO_SPAWN_LOCK.
-    release: v2.1.5 # tebako-packages/openjdk tag
+    # v2.4.0 (REQUIRED 2026-09-06): the pair's launcher must read spec 32's
+    # kind: executable requires edge — 1.16.9-9 declares it (xml2rfc spawn)
+    # and the 2.1.5/2.3.0 launchers refuse it by the evolution law ("Jing
+    # failed … unknown variant `executable`"). Without this bump the carried
+    # java runtime breaks every jing/mn2pdf-spawning compile.
+    release: v2.4.0 # tebako-packages/openjdk tag
     lang_version: 21.0.12 # the engine version (lock.spawned[].version)
-    tebako_version: 2.1.5 # the runtime's own tebako line (lock.spawned[].tebako)
+    tebako_version: 2.4.0 # the runtime's own tebako line (lock.spawned[].tebako)
     assets:
       aarch64-macos:
-        file: tebako-runtime-2.1.5-21.0.12-macos-arm64.tfs
-        sha256: 6de9f55470329f62fcd7f5b0cf79550af64bb8dfb2d4aa53e99d95589aae3a80
-        exe_file: tebako-runtime-2.1.5-21.0.12-macos-arm64
-        exe_sha256: ec2e7fe06e1ac3b5db472568d9e6470038d570d790dd0810fed3dd006aebc0a9
+        file: tebako-runtime-2.4.0-21.0.12-macos-arm64.tfs
+        sha256: af3a0cadbb7d260ec4b369dc866f4e40923fd9e8266040b89d72ca2c0d78e9d7
+        exe_file: tebako-runtime-2.4.0-21.0.12-macos-arm64
+        exe_sha256: b27b44f560af3935458066e6d8815a8c985025ddf9657483303b45ad98e1db4c
       x86_64-linux-gnu:
-        file: tebako-runtime-2.1.5-21.0.12-linux-gnu-x86_64.tfs
-        sha256: 79be86dc37b130ef82b088b5e69fb685b6c89db5fe4a1019ce5cbd9432d02cff
-        exe_file: tebako-runtime-2.1.5-21.0.12-linux-gnu-x86_64
-        exe_sha256: d93fbbf9a837cfed4ee46f8520c843d557214995904a4a936ebf09da979d9f04
+        file: tebako-runtime-2.4.0-21.0.12-linux-gnu-x86_64.tfs
+        sha256: 66259d5dcf50fda827664ef798d7ffa20376f4414ab4af75c2de6bf82b5b1af3
+        exe_file: tebako-runtime-2.4.0-21.0.12-linux-gnu-x86_64
+        exe_sha256: 910fc6d538e624150c9967564c67aefa277686ec00a77d898de8d78753ff12a7
       x86_64-windows-ucrt:
-        file: tebako-runtime-2.1.5-21.0.12-windows-ucrt64.tfs
-        sha256: 59e3fefc85dd104618b2e588ee5bb4eed4cb6f9c1a09ccb0b380233781b72832
-        exe_file: tebako-runtime-2.1.5-21.0.12-windows-ucrt64.exe
-        exe_sha256: c76939db447596f5c4d06cee7520b73ba4353b95f63c1190eb5cbed73e1e6949
+        file: tebako-runtime-2.4.0-21.0.12-windows-ucrt64.tfs
+        sha256: f756e81838eb45e369e2185d13ba31dbc5f8448aec027cdc8f3b4d7a6757b6d9
+        exe_file: tebako-runtime-2.4.0-21.0.12-windows-ucrt64.exe
+        exe_sha256: a97fc14d15f354e561c8c8c2bcfd007469fff343a58d0883de8181b85eee66f9
   - name: inkscape
     version: 1.4.3 # the slice version (lock.slices[].version)
     release: 1.4.3-2 # tebako-packages/inkscape tag
